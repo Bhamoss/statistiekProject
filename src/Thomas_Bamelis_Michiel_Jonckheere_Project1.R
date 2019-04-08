@@ -259,9 +259,84 @@ print(xtable(table(cl$clustering, deaths[,3]), type = "latex"), file = "clusteri
 
 
 diseases = deaths[,6:37]
+pca.pc = prcomp(scale(deaths[,6:37]))
+pca.su = summary(pca.pc)
+pca.var = pca.pc$sdev^2/sum(pca.pc$sdev^2)
+pca.cum = 1:32
+for (i in 1:32) {
+  pca.cum[i] = sum(pca.var[1:i])
+}
+pca.slope = pca.var[1:31] - pca.var[2:32]
+pca.pc
+pca.su
+pca.var
+pca.cum
+pca.slope
 
 
+svg(filename="pcaVar.svg", 
+    width=14, 
+    height=14, 
+    pointsize=12)
 
+par(mfrow=c(2,2))
+
+plot(1:32, pca.var, type = "l", main = "Variance proportions", ylab = "Var. proportion", xlab = "Principal components")
+points(1:32, pca.var)
+
+plot(1:32, pca.cum, type = "l", main = "Cumulative variance proportions", ylab = "Cum. var. proportion", xlab = "Principal components")
+points(1:32, pca.cum)
+
+plot(1:31, pca.slope, main = "Variance proportion descent/slope", ylab = "Variance proportion descent/slope", xlab = "Principal components")
+
+dev.off()
+
+par(mfrow=c(1,1))
+
+plot(1:31, pca.slope)
+pca.var[1:5]
+pca.cum[2]
+pca.cum[4]
+# The most important pc's are pc 1 & 2, and after that, 3 & 4 are a bit more important then the rest (zie de knik in de grafiek)
+
+svg(filename="pcaTop4.svg", 
+    width=14, 
+    height=14, 
+    pointsize=12)
+
+par(mfrow=c(4,2))
+
+i = sort(abs(pca.pc$rotation[1,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
+print(names(deaths[,6:37])[i])
+barplot(pca.pc$rotation[1,], main = "Weights of PC1", xlab = "Diseases", ylab = "Coefficients")
+barplot( abs(pca.pc$rotation[1,]),  main = "Absolut weights of PC1", xlab = "Diseases", ylab = "Absolute value of coefficients")
+text(i[1:5]*1.15, abs(pca.pc$rotation[1,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[1,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+
+i = sort(abs(pca.pc$rotation[2,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
+print(names(deaths[,6:37])[i])
+barplot(pca.pc$rotation[2,], main = "Weights of PC2", xlab = "Diseases", ylab = "Coefficients")
+barplot(abs(pca.pc$rotation[2,]),  main = "Absolut weights of PC2", xlab = "Diseases", ylab = "Absolute value of coefficients")
+text(i[1:5]*1.15, abs(pca.pc$rotation[2,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[2,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+
+i = sort(abs(pca.pc$rotation[3,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
+print(names(deaths[,6:37])[i])
+barplot(pca.pc$rotation[3,], main = "Weights of PC3", xlab = "Diseases", ylab = "Coefficients")
+barplot(abs(pca.pc$rotation[3,]),  main = "Absolut weights of PC3", xlab = "Diseases", ylab = "Absolute value of coefficients")
+text(i[1:5]*1.15, abs(pca.pc$rotation[3,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[3,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+
+i = sort(abs(pca.pc$rotation[4,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
+print(names(deaths[,6:37])[i])
+barplot(pca.pc$rotation[4,], main = "Weights of PC4", xlab = "Diseases", ylab = "Coefficients")
+barplot(abs(pca.pc$rotation[4,]),  main = "Absolut weights of PC4", xlab = "Diseases", ylab = "Absolute value of coefficients")
+text(i[1:5]*1.15, abs(pca.pc$rotation[4,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[4,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+
+dev.off()
+
+#TODO: next step, try to interpret the pca in words with the help of the picture
 
 ###########################################################
 ###########   Multivariate normaliteit   ##################
