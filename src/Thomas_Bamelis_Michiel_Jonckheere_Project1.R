@@ -309,34 +309,59 @@ par(mfrow=c(4,2))
 i = sort(abs(pca.pc$rotation[1,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
 print(names(deaths[,6:37])[i])
 barplot(pca.pc$rotation[1,], main = "Weights of PC1", xlab = "Diseases", ylab = "Coefficients")
+text(i[1:5]*1.15, pca.pc$rotation[1,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[1,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 barplot( abs(pca.pc$rotation[1,]),  main = "Absolut weights of PC1", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[1,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[1,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[1,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[1,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 
 i = sort(abs(pca.pc$rotation[2,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
 print(names(deaths[,6:37])[i])
 barplot(pca.pc$rotation[2,], main = "Weights of PC2", xlab = "Diseases", ylab = "Coefficients")
+text(i[1:5]*1.15, pca.pc$rotation[2,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[2,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 barplot(abs(pca.pc$rotation[2,]),  main = "Absolut weights of PC2", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[2,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[2,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[2,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[2,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 
 i = sort(abs(pca.pc$rotation[3,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
 print(names(deaths[,6:37])[i])
 barplot(pca.pc$rotation[3,], main = "Weights of PC3", xlab = "Diseases", ylab = "Coefficients")
+text(i[1:5]*1.15, pca.pc$rotation[3,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[3,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 barplot(abs(pca.pc$rotation[3,]),  main = "Absolut weights of PC3", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[3,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[3,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[3,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[3,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 
 i = sort(abs(pca.pc$rotation[4,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
 print(names(deaths[,6:37])[i])
 barplot(pca.pc$rotation[4,], main = "Weights of PC4", xlab = "Diseases", ylab = "Coefficients")
+text(i[1:5]*1.15, pca.pc$rotation[4,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[4,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 barplot(abs(pca.pc$rotation[4,]),  main = "Absolut weights of PC4", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[4,i[1:5]])-0.01, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[4,i[6:10]])-0.01, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[4,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[4,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
 
 dev.off()
 
 #TODO: next step, try to interpret the pca in words with the help of the picture
+
+# PCX is large (negatively/positively) when
+# PC1: very negative if
+# 
+# PC2
+
+# analyse what the country does to it
+
+par(mfrow=c(1,1))
+
+# PC values for the countries
+pca.pr = predict(pca.pc)[,1:4]
+barplot(pca.pr[,1])
+barplot(pca.pr[,2])
+barplot(pca.pr[,3])
+barplot(pca.pr[,4])
+#TODO: do this for the continents/development/...
 
 ###########################################################
 ###########   Multivariate normaliteit   ##################
