@@ -204,7 +204,39 @@ clusteringAnalysis(scale(deaths[,6:ncol(deaths)]), "Scaled")
 # this shows somewhat of a structere, but is getting borderline to low structure
 # scaling is clearly worse
 
+# best clustering
+cl = pam(x = deaths[,6:ncol(deaths)], k = 2)
 
+summary(cl)
+# class 1 has 48 members, class 2 has 135
+# The members of class 1 are closer together then those of class 2 (smaller distance and diameter)
+
+svg(filename="difMediods.svg", 
+    width=10, 
+    height=10, 
+    pointsize=12)
+
+# overeenkosmsten met bestaande indelingen
+# see how the mediods differ
+plot(1:32, 1:32,main = "Difference in mediods", xlim = c(1,32), ylim = c(-0.25,0.25), col = "white", xlab = "Diseases", ylab = "Mediod class 1 - mediod class 2")
+points(1:5, cl$medoids[1,1:5]-cl$medoids[2,1:5], col = 2)
+points(6:20,cl$medoids[1,6:20]-cl$medoids[2,6:20], col=3)
+points(21:32,cl$medoids[1,21:32]-cl$medoids[2,21:32], col=4)
+abline(v=5.5)
+abline(v=20.5)
+segments(20.5,0.16,20.5,0.26899, col = "white")
+abline(h=0)
+text(24,0.25, labels = c("Communicable, maternal,\n perinatal and nutritional conditions"), col = 2)
+text(24,0.21, labels = c("Noncommunicable diseases"), col = 3)
+text(24,0.18, labels = c("Injuries"), col = 4)
+
+#* swerelds lelijkste figuur
+
+dev.off()
+# this figure shows class 1 has higher Communicable, maternal, perinatal and nutritional conditions then class 2
+# it also overall has lower Noncommunicable diseases
+
+# about 1/4 of the countries have significantly higher com... and lower noncom... then the rest and are tightly packed compared to the rest
 
 ###########################################################
 ######################   PCA   ############################
