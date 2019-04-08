@@ -224,23 +224,41 @@ points(6:20,cl$medoids[1,6:20]-cl$medoids[2,6:20], col=3)
 points(21:32,cl$medoids[1,21:32]-cl$medoids[2,21:32], col=4)
 abline(v=5.5)
 abline(v=20.5)
-segments(20.5,0.16,20.5,0.26899, col = "white")
+#segments(20.5,0.16,20.5,0.26899, col = "white")
 abline(h=0)
-text(24,0.25, labels = c("Communicable, maternal,\n perinatal and nutritional conditions"), col = 2)
-text(24,0.21, labels = c("Noncommunicable diseases"), col = 3)
-text(24,0.18, labels = c("Injuries"), col = 4)
+text(28,0.25, labels = c("Communicable, maternal,\n perinatal and nutritional conditions"), col = 2)
+text(28,0.21, labels = c("Noncommunicable diseases"), col = 3)
+text(28,0.18, labels = c("Injuries"), col = 4)
 
 #* swerelds lelijkste figuur
 
 dev.off()
 # this figure shows class 1 has higher Communicable, maternal, perinatal and nutritional conditions then class 2
 # it also overall has lower Noncommunicable diseases
+# espicially Infectious and parasitic diseases are much higher and Respiratory diseases are much lower
+table(cl$clustering, deaths[,4])
+# printing it to latex format
+library(xtable)
+print(xtable(table(cl$clustering, deaths[,4]), type = "latex"), file = "clusteringToDevelopment.tex")
+table(cl$clustering, deaths[,3])
+print(xtable(table(cl$clustering, deaths[,3]), type = "latex"), file = "clusteringToContinent.tex")
+# looking at this table, almost all countries of class 1 are developing african countries
+# which makes a lot of sense considering the data and diseases
+# probably less respiratory deaths because of cleaner air, and less malignent neoplasm (= cancers and tumors) because of less chemicals
 
 # about 1/4 of the countries have significantly higher com... and lower noncom... then the rest and are tightly packed compared to the rest
+
+
+
+
 
 ###########################################################
 ######################   PCA   ############################
 ###########################################################
+
+
+
+diseases = deaths[,6:37]
 
 
 
