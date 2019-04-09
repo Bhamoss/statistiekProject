@@ -1,0 +1,128 @@
+
+
+Top 10  greatest positive values for pc 1
+
+          Country  Region Development Population  PCvalue
+ 1        Maldives    Asia  Developing        428 4.033099
+ 2           Samoa Oceania  Developing        195 3.925253
+ 3     Netherlands  Europe   Developed      16987 3.837710
+ 4         Finland  Europe   Developed       5503 3.815528
+ 5     Switzerland  Europe   Developed       8402 3.798756
+ 6          France  Europe   Developed      64721 3.667173
+ 7  United Kingdom  Europe   Developed      65789 3.626711
+ 8           Spain  Europe   Developed      46348 3.604760
+ 9         Iceland  Europe   Developed        332 3.562375
+ 10        Denmark  Europe   Developed       5712 3.557804
+
+
+
+Top 10  greatest negative values for pc 1
+
+                            Country Region Development Population   PCvalue
+ 1                           Burundi Africa  Developing      10524 -6.654051
+ 2                             Niger Africa  Developing      20673 -6.485355
+ 3  Democratic Republic of the Congo Africa  Developing      78736 -6.251271
+ 4                              Chad Africa  Developing      14453 -6.118288
+ 5                           Somalia Africa  Developing      14318 -6.080404
+ 6                            Angola Africa  Developing      28813 -6.031629
+ 7                             Benin Africa  Developing      10872 -5.545302
+ 8                      Burkina Faso Africa  Developing      18646 -5.518504
+ 9                           Eritrea Africa  Developing       4955 -5.412899
+ 10      United Republic of Tanzania Africa  Developing      55572 -5.306229
+
+
+
+Top 10  greatest positive values for pc 2
+
+                            Country  Region Development Population  PCvalue
+ 1               Antigua and Barbuda America  Developing        101 4.958246
+ 2  Micronesia (Federated States of) Oceania  Developing        105 4.958246
+ 3                             Tonga Oceania  Developing        107 4.958246
+ 4                          Kiribati Oceania  Developing        114 4.655315
+ 5  Saint Vincent and the Grenadines America  Developing        110 4.616045
+ 6                           Grenada America  Developing        107 4.383077
+ 7                           Vanuatu Oceania  Developing        270 3.908111
+ 8              Syrian Arab Republic    Asia  Developing      18430 3.349028
+ 9                             Samoa Oceania  Developing        195 3.079470
+ 10                       Montenegro  Europe  Transition        629 3.064384
+
+
+
+Top 10  greatest negative values for pc 2
+
+                    Country  Region Development Population   PCvalue
+ 1                    France  Europe   Developed      64721 -5.689790
+ 2                    Mexico America  Developing     127540 -4.330060
+ 3  United States of America America   Developed     322180 -3.381411
+ 4                   Belgium  Europe   Developed      11358 -3.379042
+ 5                   Ecuador America  Developing      16385 -3.171929
+ 6            United Kingdom  Europe   Developed      65789 -3.017798
+ 7                    Israel    Asia   Developed       8192 -3.016412
+ 8                 Australia Oceania   Developed      24126 -3.015641
+ 9               Switzerland  Europe   Developed       8402 -3.014430
+ 10                  Uruguay America  Developing       3444 -2.938996
+
+
+
+Top 10  greatest positive values for pc 3
+
+                Country  Region Development Population  PCvalue
+ 1                 Qatar    Asia  Developing       2570 5.147538
+ 2  United Arab Emirates    Asia  Developing       9270 3.550347
+ 3              Mongolia    Asia  Developing       3027 3.403108
+ 4    Russian Federation  Europe  Transition     143965 3.359643
+ 5               Belarus  Europe  Transition       9480 3.326514
+ 6           El Salvador America  Developing       6345 2.917231
+ 7            Kazakhstan    Asia  Developing      17988 2.874783
+ 8   Republic of Moldova  Europe  Transition       4060 2.718480
+ 9               Ukraine  Europe  Transition      44439 2.588247
+ 10           Kyrgyzstan    Asia  Developing       5956 2.445902
+
+
+
+Top 10  greatest negative values for pc 3
+
+               Country  Region Development Population   PCvalue
+ 1               France  Europe   Developed      64721 -3.526098
+ 2               Israel    Asia   Developed       8192 -3.499624
+ 3               Mexico America  Developing     127540 -3.123776
+ 4                Italy  Europe   Developed      59430 -3.120940
+ 5                 Fiji Oceania  Developing        899 -2.889565
+ 6  Trinidad and Tobago America  Developing       1365 -2.781250
+ 7              Jamaica America  Developing       2881 -2.710028
+ 8          Philippines    Asia  Developing     103320 -2.562004
+ 9             Barbados America  Developing        285 -2.558590
+ 10             Grenada America  Developing        107 -2.405711
+
+
+
+Top 10  greatest positive values for pc 4
+
+          Country  Region Development Population  PCvalue
+ 1         Finland  Europe   Developed       5503 3.166096
+ 2     Switzerland  Europe   Developed       8402 2.340523
+ 3         Iceland  Europe   Developed        332 2.209496
+ 4          France  Europe   Developed      64721 2.137142
+ 5     Netherlands  Europe   Developed      16987 2.107431
+ 6  United Kingdom  Europe   Developed      65789 2.029218
+ 7          Canada America   Developed      36290 1.945261
+ 8      Luxembourg  Europe   Developed        576 1.865390
+ 9          Norway  Europe   Developed       5255 1.835677
+ 10       Slovenia  Europe   Developed       2078 1.796034
+
+
+
+Top 10  greatest negative values for pc 4
+
+                              Country  Region Development Population   PCvalue
+ 1                            Honduras America  Developing       9113 -4.648827
+ 2  Venezuela (Bolivarian Republic of) America  Developing      31568 -3.613691
+ 3                               Qatar    Asia  Developing       2570 -3.547959
+ 4                                Oman    Asia  Developing       4425 -3.474136
+ 5                 Trinidad and Tobago America  Developing       1365 -3.128318
+ 6                           Guatemala America  Developing      16582 -3.037904
+ 7                         El Salvador America  Developing       6345 -2.836486
+ 8                             Ecuador America  Developing      16385 -2.824912
+ 9                             Jamaica America  Developing       2881 -2.819058
+ 10                             Mexico America  Developing     127540 -2.758069
+

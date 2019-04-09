@@ -361,7 +361,126 @@ barplot(pca.pr[,1])
 barplot(pca.pr[,2])
 barplot(pca.pr[,3])
 barplot(pca.pr[,4])
-#TODO: do this for the continents/development/...
+pca.pr1 = pca.pr[,1]
+pca.pr2 = pca.pr[,2]
+pca.pr3 = pca.pr[,3]
+pca.pr4 = pca.pr[,4]
+pca.pr
+pca.pr1
+
+# constructing info for
+
+pca.pr1p = c(mean(pca.pr1[which(pca.pr1 >= 0)]), sd(pca.pr1[which(pca.pr1 >= 0)]))
+pca.pr1n = c(mean(pca.pr1[which(pca.pr1 < 0)]), sd(pca.pr1[which(pca.pr1 < 0)]))
+pca.pr2p = c(mean(pca.pr2[which(pca.pr2 >= 0)]), sd(pca.pr2[which(pca.pr2 >= 0)]))
+pca.pr2n = c(mean(pca.pr2[which(pca.pr2 < 0)]), sd(pca.pr2[which(pca.pr2 < 0)]))
+pca.pr3p = c(mean(pca.pr3[which(pca.pr3 >= 0)]), sd(pca.pr3[which(pca.pr3 >= 0)]))
+pca.pr3n = c(mean(pca.pr3[which(pca.pr3 < 0)]), sd(pca.pr3[which(pca.pr3 < 0)]))
+pca.pr4p = c(mean(pca.pr4[which(pca.pr4 >= 0)]), sd(pca.pr4[which(pca.pr4 >= 0)]))
+pca.pr4n = c(mean(pca.pr4[which(pca.pr4 < 0)]), sd(pca.pr4[which(pca.pr4 < 0)]))
+
+
+
+pca.regionColors = c()   
+u = unique(deaths$Region)
+for (i in 1:length(deaths$Region)) {
+  if (deaths$Region[i] == "Asia")
+  {
+    pca.regionColors = c(pca.regionColors, "yellow")
+  }
+  else if (deaths$Region[i] == "Europe")
+  {
+    pca.regionColors = c(pca.regionColors, "blue")
+  }
+  else if (deaths$Region[i] == "Africa")
+  {
+    pca.regionColors = c(pca.regionColors, "black")
+  }
+  else if (deaths$Region[i] == "America")
+  {
+    pca.regionColors = c(pca.regionColors, "red")
+  }
+  else if (deaths$Region[i] == "Oceania")
+  {
+    pca.regionColors = c(pca.regionColors, "green")
+  }
+}
+
+
+pca.devColors = c()   
+u = unique(deaths$Developement)
+for (i in 1:length(deaths$Developement)) {
+  if (deaths$Developement[i] == "Developing")
+  {
+    pca.devColors = c(pca.devColors, "red")
+  }
+  else if (deaths$Developement[i] == "Transition")
+  {
+    pca.devColors = c(pca.devColors, "yellow")
+  }
+  else if (deaths$Developement[i] == "Developed")
+  {
+    pca.devColors = c(pca.devColors, "green")
+  }
+  else if (deaths$Developement[i] == "#N/B")
+  {
+    pca.devColors = c(pca.devColors, "black")
+  }
+}
+
+colfunc <- colorRampPalette(c("green", "red"))
+u = order(deaths$Population)
+pca.popColors = colfunc(length(u))[u]
+
+pcs = cbind(pca.pr1, pca.pr2, pca.pr3, pca.pr4)
+cols = cbind(pca.regionColors, pca.devColors, pca.popColors)
+pcsp = cbind(pca.pr1p, pca.pr2p, pca.pr3p, pca.pr4p)
+pcsn = cbind(pca.pr1n, pca.pr2n, pca.pr3n, pca.pr4n)
+
+svg(filename="pcaCountyAnalysis.svg", 
+    width=5*ncol(cols), 
+    height=5*ncol(pcs), 
+    pointsize=12)
+
+par(mfrow=c(ncol(pcs), ncol(cols)))
+
+for (i in 1:ncol(pcs)) {
+  for (j in 1:ncol(cols)) {
+    barplot(pcs[,i], col = cols[,j], border = cols[,j])
+    # drawing mean and sd for positive values
+    abline(h = pcsp[1,i], col = "red")
+    abline(h = (pcsp[1,i] + pcsp[2,i]), col = "blue")
+    abline(h = (pcsp[1,i] - pcsp[2,i]), col = "blue")
+    # drawing mean and sd for negative values
+    abline(h = pcsn[1,i], col = "red")
+    abline(h = (pcsn[1,i] + pcsn[2,i]), col = "blue")
+    abline(h = (pcsn[1,i] - pcsn[2,i]), col = "blue")
+  }
+}
+
+dev.off()
+
+nb = 10
+sink(paste("pca",nb,"HighestLowestPCs.txt",sep = ""))
+for (i in 1:ncol(pcs)) {
+  cat("\n\n")
+  cat(paste("Top", nb," greatest positive values for pc",i))
+  cat("\n\n")
+  u = order(pcs[,i], decreasing = TRUE)[1:nb]
+  k = data.frame(deaths$State[u], deaths$Region[u], deaths$Developement[u],deaths$Population[u] , pcs[,i][u] )
+  colnames(k) = c("Country", "Region", "Development", "Population", "PCvalue")
+  cat(paste(capture.output(k), "\n", sep=""))
+  cat("\n\n\n")
+  cat(paste("Top", nb," greatest negative values for pc",i))
+  cat("\n\n")
+  u = order(pcs[,i])[1:nb]
+  k = data.frame(deaths$State[u], deaths$Region[u], deaths$Developement[u],deaths$Population[u] , pcs[,i][u])
+  colnames(k) = c("Country", "Region", "Development", "Population", "PCvalue")
+  cat(paste(capture.output(k), "\n", sep=""))
+  cat("\n")
+}
+sink()
+
 
 ###########################################################
 ###########   Multivariate normaliteit   ##################
