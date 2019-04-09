@@ -428,25 +428,75 @@ for (i in 1:length(deaths$Developement)) {
   }
 }
 
-colfunc <- colorRampPalette(c("green", "red"))
-u = order(deaths$Population)
-pca.popColors = colfunc(length(u))[u]
+#colfunc <- colorRampPalette(c("green", "red"))
+#u = order(deaths$Population)
+#pca.popColors = colfunc(length(u))[u]
+
+q = quantile(deaths$Population)
+pca.popColors = c()
+for (i in 1:length(deaths$Population)) {
+  if (deaths$Population[i] >= q[4])
+  {
+    pca.popColors = c(pca.popColors, "red")
+  }
+  else if (deaths$Population[i] >= q[3])
+  {
+    pca.popColors = c(pca.popColors, "yellow")
+  }
+  else if (deaths$Population[i] >= q[2])
+  {
+    pca.popColors = c(pca.popColors, "green")
+  }
+  else if (deaths$Population[i] >= q[1])
+  {
+    pca.popColors = c(pca.popColors, "blue")
+  }
+}
 
 pcs = cbind(pca.pr1, pca.pr2, pca.pr3, pca.pr4)
 cols = cbind(pca.regionColors, pca.devColors, pca.popColors)
 pcsp = cbind(pca.pr1p, pca.pr2p, pca.pr3p, pca.pr4p)
 pcsn = cbind(pca.pr1n, pca.pr2n, pca.pr3n, pca.pr4n)
+ma = c("Region","Development","Population")
 
-svg(filename="pcaCountyAnalysis.svg", 
+svg(filename="pcaCountryAnalysis.svg", 
     width=5*ncol(cols), 
     height=5*ncol(pcs), 
     pointsize=12)
 
 par(mfrow=c(ncol(pcs), ncol(cols)))
-
 for (i in 1:ncol(pcs)) {
   for (j in 1:ncol(cols)) {
-    barplot(pcs[,i], col = cols[,j], border = cols[,j])
+    
+    
+    barplot(pcs[,i], col = cols[,j], border = cols[,j], xlab = "Countries", ylab = paste("PC",i ," value of country" , sep = ""))
+    
+    if (j == 1) {
+      mtext(text = paste("PC", i ,": ",ma[j] ,sep = ""), side = 3, line = 3, col = "black")
+      mtext(text = "Asia", side = 3, line = 2, col = "yellow")
+      mtext(text = "Europe", side = 3, line = 1, col = "blue")
+      mtext(text = "Africa", side = 1, line = -1, col = "black")
+      mtext(text = "America", side = 1, line = 0, col = "red")
+      mtext(text = "Oceania", side = 1, line = 1, col = "green")
+    } 
+    else if(j ==2)
+    {
+      mtext(text = paste("PC", i ,": ",ma[j] ,sep = ""), side = 3, line = 3, col = "black")
+      mtext(text = "Developing", side = 3, line = 2, col = "red")
+      mtext(text = "Transition", side = 3, line = 1, col = "yellow")
+      mtext(text = "Developed", side = 1, line = 0, col = "green")
+      mtext(text = "#N/B", side = 1, line = 1, col = "black")
+    }
+    else if(j ==3)
+    {
+      mtext(text = paste("PC", i ,": ",ma[j] ,sep = ""), side = 3, line = 3, col = "black")
+      mtext(text = paste(">= ", q[4]), side = 3, line = 2, col = "red")
+      mtext(text = paste(">= ", q[3]), side = 3, line = 1, col = "yellow")
+      mtext(text = paste(">= ", q[2]), side = 1, line = 0, col = "green")
+      mtext(text = paste(">= ", q[1]), side = 1, line = 1, col = "blue")
+    }
+    
+    #legend(20,0,legend = l)
     # drawing mean and sd for positive values
     abline(h = pcsp[1,i], col = "red")
     abline(h = (pcsp[1,i] + pcsp[2,i]), col = "blue")
@@ -459,6 +509,14 @@ for (i in 1:ncol(pcs)) {
 }
 
 dev.off()
+
+par(mfrow=c(1, 1))
+barplot(pcs[,1], col = cols[,1], border = cols[,1])
+legend(120 ,123 , legend = legr)
+barplot(1:123)
+legend(180,4.5, legend = c("lol", "haha"))
+mtext("test", side = 4, line = 1)
+
 
 nb = 10
 sink(paste("pca",nb,"HighestLowestPCs.txt",sep = ""))
