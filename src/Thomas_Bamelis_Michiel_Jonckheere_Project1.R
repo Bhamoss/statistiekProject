@@ -25,6 +25,17 @@ c = deaths[,6:37]
 c = prop.table(as.matrix(c),1)
 deaths[,6:37] = c[,1:32]
 
+# changing the column names to something more verbose
+# getting rid of the .. first by chaning it to one dot.
+colnames(deaths) = gsub("\\.\\.","\\.",names(deaths))
+
+# changing the . in names to spaces
+colnames(deaths) = gsub("\\."," ",names(deaths))
+
+library(MASS)
+library(ellipse)
+library(car)
+
 #*
 # making sure the sum of the rows for the desease is 1
 #isOne = TRUE
@@ -544,8 +555,75 @@ sink()
 ###########   Multivariate normaliteit   ##################
 ###########################################################
 
+# Verderop wordt de classificatie van landen op basis van doodsoorzaken bestudeerd, waarvoor het nodig
+# is om na te gaan of de verdeling van de verklarende variabelen multivariaat normaal is voor elke groep.
+# Onderzoek de hypothese van multivariaat normale verdeling van de doodsoorzaken voor de afzonderlijke
+# groepen. Hou rekening met de conclusies in het vervolg van het onderzoek.
 
+names(deaths)
+# So I would think the verklarende variables are the ones who have nothing to do with the deaths
+# So Region and Development I think.
+# Everything after population is not verklaredn but an effect of the verklarende.
+# Population is just here so we could calculate the proportions.
+# Population and State = Code is not usefull because they function as individual labels for 1 sample.
+# So we have to verify normality for each region and each degree of development.
 
+# verklarende variabelen
+table(deaths$Region)
+table(deaths$Developement)
+
+africa =  deaths[deaths$Region == "Africa", 6:37]
+america =  deaths[deaths$Region == "America", 6:37]
+asia =  deaths[deaths$Region == "Asia", 6:37]
+europe =  deaths[deaths$Region == "Europe", 6:37]
+oceania =  deaths[deaths$Region == "Oceania", 6:37]
+
+# #N/B not usefull to analyse, because only one sample
+NB =  deaths[deaths$Developement == "#N/B", 6:37]
+developed =  deaths[deaths$Developement == "Developed", 6:37]
+developing =  deaths[deaths$Developement == "Developing", 6:37]
+transition =  deaths[deaths$Developement == "Transition", 6:37]
+
+multiNormality <- function(data, dataName)
+{
+  # zet het al op 1 figuur
+  
+  # 32 colummen, dus 4 * 8 en dan kan de scatterplotmatrix 8*8
+  
+  #### Univariate marginale
+  
+  print(data)
+  
+  for (colIndex in 1:ncol(data) ) {
+    column = data[,colIndex]
+    
+    
+    # Shapiro, ook al zei stijn dat dat bucht is, kan het nog altijd eens handig zijn.
+    shap = shapiro.test(column)
+    
+    # QQplot
+    qqnorm(column, main = paste(names(data)[colIndex], " QQ plot", "\nShapiro p-value: ", toString(shap$p.value) , sep = ""))
+    qqline(column)
+  }
+  
+  ### Bivariate marginalen / Paarsgeweijze plots
+  scatterplotMatrix(data, diagonal = "boxplot", main = "Pair-wise plots")
+  
+  ### Verdeling van de Mahalanobis afstanden
+  MD = mahalanobis(data, colMeans(data), cov(data))
+  qqplot(qchisq(ppoints(nrow(data)),df=ncol(data)), MD, main = "Mahalanobis chisq QQ plot")
+  abline(0,1,col='blue')
+  abline(h=qchisq(.975,ncol(data)),col='red')
+}
+
+verVars = c(africa, america, asia, europe, oceania, developed, developing, transition)
+verVars.names = c("Africa", "America", "Asia", "Europe", "Oceania", "Developed", "Developing", "Transition")
+
+multiNormality(africa, "africa")
+
+for (i in 1:length(verVars)) {
+  multiNormality(verVars[i], verVars.names[i])
+}
 
 ###########################################################
 #################   Classificatie   ########################
