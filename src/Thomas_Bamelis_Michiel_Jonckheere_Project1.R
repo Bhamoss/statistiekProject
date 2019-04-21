@@ -14,7 +14,8 @@
 # TODO: remove comments starting with #* to #* because they are for team communication and clarification
  
 # set wd
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+wd = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(wd)
 
 # loading data, which is in csv2 format (I checked manually and the data is loaded correctly like this)
 deaths = read.csv2(file = "deaths.csv",header = TRUE)
@@ -35,6 +36,8 @@ colnames(deaths) = gsub("\\."," ",names(deaths))
 library(MASS)
 library(ellipse)
 library(car)
+library(class)
+library(klaR)
 
 #*
 # making sure the sum of the rows for the desease is 1
@@ -560,6 +563,10 @@ sink()
 # Onderzoek de hypothese van multivariaat normale verdeling van de doodsoorzaken voor de afzonderlijke
 # groepen. Hou rekening met de conclusies in het vervolg van het onderzoek.
 
+
+#TODO: this is probably wrong, look at this again.
+
+
 names(deaths)
 # So I would think the verklarende variables are the ones who have nothing to do with the deaths
 # So Region and Development I think.
@@ -584,50 +591,196 @@ developed =  deaths[deaths$Developement == "Developed", 6:37]
 developing =  deaths[deaths$Developement == "Developing", 6:37]
 transition =  deaths[deaths$Developement == "Transition", 6:37]
 
-multiNormality <- function(data, dataName)
+multiNormality <- function(dat, dataName)
 {
-  # zet het al op 1 figuur
+  # create a directory if it does not exist already.
+  datDir = paste(dataName, "MultiNorm", sep = "")
+  uniDir = "uniMarg"
+  biDir = "biMarg"
+  dir.create(file.path(wd, datDir), showWarnings = FALSE)
+  dir.create(file.path(wd, datDir, uniDir), showWarnings = FALSE)
+  dir.create(file.path(wd, datDir, biDir), showWarnings = FALSE)
   
   # 32 colummen, dus 4 * 8 en dan kan de scatterplotmatrix 8*8
   
+  w = 5
+  h = 5
+  
+  
+  par(mfrow=c(1,1))
+  
   #### Univariate marginale
   
-  print(data)
+  allTheSame = c()
   
-  for (colIndex in 1:ncol(data) ) {
-    column = data[,colIndex]
+  for (colIndex in 1:ncol(dat) ) {
+    column = dat[,colIndex]
     
+    svg(filename=file.path(datDir, uniDir , paste("UniMarg", gsub(" ","_",names(dat)[colIndex]), ".svg",sep = "")), 
+        width=w, 
+        height=h, 
+        pointsize=12)
     
-    # Shapiro, ook al zei stijn dat dat bucht is, kan het nog altijd eens handig zijn.
-    shap = shapiro.test(column)
+    # some commands do not work when a column has all the same values, decide if this automaticly refutes normality 
+    if (length(unique(column)) == 1)
+    {
+      scatterplot(c(0,1), c(0,1), main = paste(names(dat)[colIndex], "\n!!!ALL VALUES EQUAL!!!!" , sep = ""))
+      abline(0,1,col='red', lwd = 20)
+      abline(1,-1,col='red', lwd = 20)
+      allTheSame = c(colIndex, allTheSame)
+    }
+    else
+    {
+      # Shapiro, ook al zei stijn dat dat bucht is, kan het nog altijd eens handig zijn.
+      shap = shapiro.test(column)
+      
+      # QQplot
+      qqnorm(column, main = paste(names(dat)[colIndex], " QQ plot", "\nShapiro p-value: ", toString(shap$p.value) , sep = ""))
+      qqline(column)
+    }
     
-    # QQplot
-    qqnorm(column, main = paste(names(data)[colIndex], " QQ plot", "\nShapiro p-value: ", toString(shap$p.value) , sep = ""))
-    qqline(column)
+    dev.off()
   }
   
+  # deleting the columns with all the same values
+  for (i in allTheSame) {
+    dat[i] = NULL
+  }
+  
+  
   ### Bivariate marginalen / Paarsgeweijze plots
-  scatterplotMatrix(data, diagonal = "boxplot", main = "Pair-wise plots")
+  
+  for (i in 1:(ncol(dat) - 1)) {
+    for (j in (i+1):ncol(dat)) {
+
+      svg(filename=file.path(datDir, biDir , paste("BiMarg_", gsub(" ","_",names(dat)[i]),"_X_", gsub(" ","_",names(dat)[j]), ".svg",sep = "")), 
+          width=5, 
+          height=5, 
+          pointsize=12)
+      
+      plot(dat[,i],dat[,j], xlab = names(deaths)[i], ylab = names(deaths)[j], main = paste(names(deaths)[i], " versus ",names(deaths)[j] , sep = ""))
+      lines(ellipse::ellipse(cov(dat[,i],dat[,j]), centre=c(mean(dat[,i]),mean(dat[,j])), level=0.95),col='red')
+      
+      dev.off()
+    }
+  }
+  
+  
+  
+  #scatterplotMatrix(data, diagonal = "boxplot", main = "Pair-wise plots", id.n =1, id.col=4, smoother = F, regLine = F, pch = 19, cex = 1.25)
   
   ### Verdeling van de Mahalanobis afstanden
-  MD = mahalanobis(data, colMeans(data), cov(data))
-  qqplot(qchisq(ppoints(nrow(data)),df=ncol(data)), MD, main = "Mahalanobis chisq QQ plot")
-  abline(0,1,col='blue')
-  abline(h=qchisq(.975,ncol(data)),col='red')
+  
+  svg(filename=file.path(datDir , paste("Mahalanobis", dataName,".svg",sep = "")), 
+      width=8, 
+      height=8, 
+      pointsize=12)
+  
+  tryCatch(
+    {
+      MD = mahalanobis(dat, colMeans(dat), cov(dat))
+  
+      qqplot(qchisq(ppoints(nrow(dat)),df=ncol(dat)), MD, main = "Mahalanobis chisq QQ plot")
+      abline(0,1,col='blue')
+      abline(h=qchisq(.975,ncol(dat)),col='red')
+      
+      # first one of last row
+    }, error=function(e){
+      scatterplot(c(0,1), c(0,1), main = "Mahalanobis got error")
+      abline(0,1,col='red', lwd = 20)
+      abline(1,-1,col='red', lwd = 20)
+    }
+  )
+  dev.off()
 }
 
 verVars = c(africa, america, asia, europe, oceania, developed, developing, transition)
 verVars.names = c("Africa", "America", "Asia", "Europe", "Oceania", "Developed", "Developing", "Transition")
 
-multiNormality(africa, "africa")
-
-for (i in 1:length(verVars)) {
-  multiNormality(verVars[i], verVars.names[i])
-}
+multiNormality(africa, "Africa")
+multiNormality(america, "America")
+multiNormality(asia, "Asia")
+multiNormality(europe, "Europe")
+multiNormality(oceania, "Oceania")
+multiNormality(developed, "Developed")
+multiNormality(developing, "Developing")
+multiNormality(transition, "Transition")
 
 ###########################################################
 #################   Classificatie   ########################
 ###########################################################
 
+# Ga na in hoeverre het mogelijk is om de regio van een land te identificeren aan de hand van de doods-
+# oorzaken. Doe hetzelfde voor de globale ontwikkeling. Welke methode is het meest geschikt? Beschrijf
+# de werking van het model. Welke landen worden niet correct ingedeeld en waarom?
 
+cla.dat = deaths[,6:37]
+cla.region = deaths[,3]
+cla.development = deaths[,4]
+cla.scaledDat = scale(cla.dat)
 
+# CV= TRUE?
+# doen met principaalcomponenten?
+#TODO: lda problem with 12 and 20 constant per class
+cla.region.lda = lda(cla.dat, cla.region)
+cla.region.scaledLda = lda(cla.scaledDat, cla.region)
+#TODO: problem some classes do not have enough samples
+cla.region.qda = qda(cla.dat, cla.region)
+cla.region.scaledQda = qda(cla.scaledDat, cla.region)
+cla.region.knn5 = knn.cv(train=cla.dat ,cl=cla.region ,k=5)
+cla.region.scaledKnn5 = knn.cv(train=cla.scaledDat ,cl=cla.region ,k=5)
+cla.region.knn3 = knn.cv(train=cla.dat ,cl=cla.region ,k=3)
+cla.region.scaledKnn3 = knn.cv(train=cla.scaledDat ,cl=cla.region ,k=3)
+cla.region.knn1 = knn.cv(train=cla.dat ,cl=cla.region ,k=1)
+cla.region.scaledKnn1 = knn.cv(train=cla.scaledDat ,cl=cla.region ,k=1)
+
+cla.development.lda = lda(cla.dat, cla.development)
+cla.development.scaledLda = lda(cla.scaledDat, cla.development)
+cla.development.qda = qda(cla.dat, cla.development)
+cla.development.scaledQda = qda(cla.scaledDat, cla.development)
+cla.development.knn5 = knn.cv(train=cla.dat ,cl=cla.development ,k=5)
+cla.development.scaledKnn5 = knn.cv(train=cla.scaledDat ,cl=cla.development ,k=5)
+cla.development.knn3 = knn.cv(train=cla.dat ,cl=cla.development ,k=3)
+cla.development.scaledKnn3 = knn.cv(train=cla.scaledDat ,cl=cla.development ,k=3)
+cla.development.knn1 = knn.cv(train=cla.dat ,cl=cla.development ,k=1)
+cla.development.scaledKnn1 = knn.cv(train=cla.scaledDat ,cl=cla.development ,k=1)
+
+partimat(cla.dat, cla.region, method='lda', imageplot=FALSE)
+partimat(cla.dat, cla.region, method='qda', imageplot=FALSE)
+# sknn is for knn
+partimat(cla.dat, cla.region, method='sknn', imageplot=FALSE)
+
+partimat(cla.scaledDat, cla.region, method='lda', imageplot=FALSE)
+partimat(cla.scaledDat, cla.region, method='qda', imageplot=FALSE)
+partimat(cla.scaledDat, cla.region, method='sknn', imageplot=FALSE)
+
+partimat(cla.dat, cla.development, method='lda', imageplot=FALSE)
+partimat(cla.dat, cla.development, method='qda', imageplot=FALSE)
+partimat(cla.dat, cla.development, method='sknn', imageplot=FALSE)
+
+partimat(cla.scaledDat, cla.development, method='lda', imageplot=FALSE)
+partimat(cla.scaledDat, cla.development, method='qda', imageplot=FALSE)
+partimat(cla.scaledDat, cla.development, method='sknn', imageplot=FALSE)
+
+errorRate <- function(actual, predictions)
+{
+  tb = table(actual, predictions)
+  sum(tb - diag(diag(tb)))/sum(tb)
+}
+
+# normaliteit en classificatie lijken totaal niet te werken 
+# er zijn veel te veel kolommen om iets deftigs te kunnen zeggen
+# Dus misschien is het best om dat opnieuw te doen maar met enkel de 3
+# hoofdcategorieen. Zie de pdf.
+
+communible = rowSums(deaths[,6:10])
+noncommunible = rowSums(deaths[,11:26])
+injuries = rowSums(deaths[,27:37])
+
+relevantData = data.frame(deaths[,3],deaths[,4],communible,noncommunible,injuries, row.names = deaths[,1])
+colnames(relevantData) = c("Region","Development","Communible Diseases", "Non-communible Diseases", "Injuries")
+# remove congo with its #N/B
+# maybe wait to remove until development
+relevantData[-38,]
+cla.dat = relevantData[3:5]
+# maybe enkel van injuries opsplitsen in de 3 subcategorien
