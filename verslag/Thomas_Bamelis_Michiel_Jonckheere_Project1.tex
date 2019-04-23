@@ -28,27 +28,70 @@ opgesplitst naar 32 verschillende doodsoorzaken. De landen worden gegroepeerd in
 geografische ligging en 2 groepen naargelang de globale ontwikkeling van het betreffende land. De gegevens
 met betrekking tot de doodsoorzaken zijn afkomstig van de Wereldgezondheidsorganisatie \cite{ghe} en betreffen
 het jaar 2016, de indeling in groepen is deze volgens de Verenigde Naties \cite{vn}. 
+Deze gegevens werden verwerkt en geïnterpreteerd als proporties van de soorten sterfgevallen per land.
 
 \section{Clustering}
 Als eerste werd een cluster-analyse uitgevoerd op de gegevens. Eerst bespreken we de gegevens zonder schalen, daarna met.
 \subsection{Zonder schalen}
 Om een idee te krijgen van hoeveel clusters er best worden genomen, werden het agglomerate nesting algoritme en divisive analysis toegepast.
 Agglomerate nesting werd gedaan met de volgende dissimilariteiten: group average, nearest neighbour en furthest neighbour, in die volgorde met daarna divisive analysis.
-Zie figuren \ref{fig:hcnd} en \ref{fig:hcnb} in de bijlage \ref{b}.
+Zie figuren \ref{fig:hcnd} op p\pageref{fig:hcnd} en \ref{fig:hcnb} op p\pageref{fig:hcnb} in de bijlage \ref{b}.
 Gegeven deze figuren lijkt het meest aannemelijk om 2, 4 en 6 klassen te proberen.
 De gebruikte clustering algoritmes zijn in volgorde k-means, partitioning around mediods en fuzzy analysis.
 De clustering ermee voor 2, 4 en 6 klassen werd geëvalueerd via een silhouette plot en een clusplot.
-Zie figuur \ref{fig:cne}.
+Zie figuur \ref{fig:cne} op p\pageref{fig:cne}.
 Hieruit blijkt dat partitioning around mediods met 2 clusters het beste presteert met een silhouette coëfficiënt van 0.50 (cluster 1 : 0.69 en cluster 2 : 0.43).
 Dit is niet bepaald goed en balanceert op het randje van een zwakke structuur.
 \subsection{Met schalen}
  We trekken hierbij dezelfde conclusies omtrent het aantal klassen, 2, 4, en 6.
- Zie figuren \ref{fig:hcd} en \ref{fig:hcb}
- Na dezelfde clustering algoritmes toegepast te hebben (figuur \ref{fig:ce}), is de best geobserveerde silhouette coëfficiënt 0.23.
+ Zie figuren \ref{fig:hcd} op p\pageref{fig:hcd}en \ref{fig:hcb} op p\pageref{fig:hcb}.
+ Na dezelfde clustering algoritmes toegepast te hebben (figuur \ref{fig:ce} op p\pageref{fig:ce}), is de best geobserveerde silhouette coëfficiënt 0.23.
  Hieruit besluiten we dat clustering met schalen aanzienlijk slechter is dan zonder schalen.
  We besluiten dus verder te werken met het beste resultaat zonder schalen.
- \subsection{Beschrijving clusters}
+\subsection{Beschrijving clusters}
+We bekijken nu nader de twee clusters geselecteerd door pam met twee clusters zonder schalen.
+We bekijken eerst hoeveel landen uit een bepaalde regio in een bepaalde cluster zitten.
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ Cluster & Africa & America & Asia & Europe & Oceania \\ 
+  \hline
+1 &  45 &   0 &   2 &   0 &   1 \\ 
+  2 &   9 &  33 &  44 &  40 &   9 \\ 
+   \hline
+\end{tabular}
+\end{table}
 
+Hieruit kunnen we afleiden dat 45 van de 48 landen in de eerste cluster Afrikaanse landen zijn.
+Cluster twee bevat bijna alle landen uit America, Asia, Europe en Oceania.
+Ze bevat ook nog 9 Afrikaanse landen.
+De eerste cluster neem dus 4/5 van de Afrikaanse landen en op 3 landen na.
+Het clustering algoritme vindt dus vooral onderscheid tussen Afrikaanse landen tegenover de rest van de wereld qua doodsoorzaken.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ Cluster & \#N/B & Developed & Developing & Transition \\
+  \hline
+1 &   1 &   0 &  47 &   0 \\
+  2 &   0 &  36 &  90 &   9 \\
+   \hline
+\end{tabular}
+\end{table}
+
+Clustering tegenover ontwikkeling toont dat de eerste cluster enkel developing landen selecteert, op Congo na waarvan de ontwikkeling onbepaald is.
+Het valt echter op dat cluster twee dubbel zoveel developing landen selecteert vergeleken met de eerste cluster, maar ook alle developed en transition landen.
+Het is dus niet zo dat de eerste cluster focused op alle developing landen.
+Als we dit samen leggen met de region table, kunnen we besluiten dat de eerste cluster hoofdzakelijk Afrikaanse developing landen bevat en de tweede cluster ``de rest''. \newline
+Daarnaast kunnen we de verschillen van tussen de clusters bekijken qua doodsoorzaken.
+We plotten daarom de marginale gemiddelden van de eerste cluster, afgetrokken met de marginale gemiddelden van de tweede cluster.
+Zie figuur \ref{fig:dm} op p\pageref{fig:dm}.
+Als we de drie hoofdcategoriën van doodsoorzaken bekijken (de verschillende kleuren), blijkt dat communicable, maternal, perinatal and nutritional conditions meer voorkomen bij de eerste cluster dan bij de tweede.
+We zien ook dat twee noncommunicable diseases aanzienlijk meer voorkomen in de tweede cluster, met nog eens 5 van die doodsoorzaken licht meer voorkomen in de tweede cluster.
+Over de injuries tussen de twee clusters valt niets significants te zeggen. \newline
+Met dit alles samen kunnen we besluiten dat de meeste Afrikaanse landen die developing zijn een proportioneel opvallend hoger aantal  communicable, maternal, perinatal and nutritional conditions bevatten en een proportioneel lager aantal noncommunicable diseases hebben tegenover de rest van de wereld.
 
 
 \section*{Besluit}
@@ -68,47 +111,56 @@ TODO
 	
 \end{thebibliography}
 
+\newpage
 \section{Bijlage} \label{b}
 \subsection{Clustering}
 \subsubsection{Zonder schalen}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[height=\textheight]{figures/hierachicalClusteringNoScalingDendogram.jpg}
 	\caption{Hierchical clustering dendograms}
 	\label{fig:hcnd}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[height=\textheight]{figures/hierachicalClusteringNoScalingBanner.jpg}
 	\caption{Hierchical clustering bannerplots}
 	\label{fig:hcnb}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[height=\textheight]{figures/clusteringEvaluationNoScaling.jpg}
 	\caption{Clustering evaluatie}
 	\label{fig:cne}
 \end{figure}
 \subsubsection{Met schalen}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[height=\textheight]{figures/hierachicalClusteringScaledDendogram.jpg}
 	\caption{Hierchical clustering dendograms met schalen}
 	\label{fig:hcd}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[height=\textheight]{figures/hierachicalClusteringScaledBanner.jpg}
 	\caption{Hierchical clustering bannerplots met schalen}
 	\label{fig:hcb}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[height=\textheight]{figures/clusteringEvaluationScaled.jpg}
 	\caption{Clustering evaluatie met schalen}
 	\label{fig:ce}
 \end{figure}
 
+ \subsection{Beschrijving clusters}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{figures/difMediods.jpg}
+	\caption{De verschillen van de gemiddelden}
+	\label{fig:dm}
+\end{figure}
 
  
 \end{document}
