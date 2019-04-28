@@ -664,7 +664,7 @@ names(deaths)
 # verklarende variabelen
 table(deaths$Region)
 table(deaths$Developement)
-X = deaths[,6:37]
+X = deaths[,5:36]
 n = dim(X)[1]
 p= dim(X)[2]
 for (i in 1:p) {
