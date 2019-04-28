@@ -131,11 +131,16 @@ Voor de ontwikkeling van de landen zien we dat bij een positieve PC2 het grootst
 We besluiten hieruit dat de positieve PC2 waarden hoogstwaarschijnlijk landen die in Azi\"e of Afrika liggen en ontwikkelingslanden zijn. Bij een negatieve PC2 waarde is de kans het grootst dat het een Amerikaans ontwikkelingsland of een Europees ontwikkeld land is. Als het een Aziatisch land is, dan is dat land een ontwikkelingsland bij een negatieve PC2 waarde.
 
 \subsection{PC3}
+Bij PC3 waarden vinden we voor volgende drie verandelijken de meest in het oog springende waarden: \textit{Malignant Neoplasms}, \textit{Infectious and Parasitic Diseases} en \textit{Diabetes Mellitus}. De waarden zijn respectievelijk -0.47, -0.51 en 0.53. Deze principaalcomponent kijk dus naar het verschil tussen de eerste twee en de laatst genoemde variabelen. 
+
+Als we naar de regio's kijken van de landen, zien we dat de lagere PC3 waarden voornamelijk uit de regio's Europa en Afrika komen. De opvallend positieve waarden komen uit de regio's Amerika, Azi\" en Oceani\"e. Voor de ontwikkeling hebben alle ontwikkelde landen een negatieve PC3 waarde, voor de andere waarden is dit wat meer verdeeld en komen extremen in beide gevallen voor. 
 
 \subsection{PC4}
+De vierde principaalcomponent vergelijkt de variabele \textit{Diabetes Mellitus} met \textit{Collective Violence and Legal Intervention} en \textit{Neurological Conditions}. De PC4 waarden van deze drie variabelen zijn respectievelijk 0.76, -0.34 en -0.23. 
 
+Bij het kijken naar de regio's en ontwikkeling zien we dat deze over het algemeen rond 0 hangen, al zijn er een paar ontwikkelingslanden die toch relatief grote PC4 waarden hebben. Deze landen zijn twee landen uit Oceani\"e en drie Amerikaanse, nl.  Micronesia en Tonga (eilanden van Oceani\"e) en Antigue en Barbuda, Grenada en Saint Vincent and the Grenadines (allemaal eilanden in de buurt van de Caribische Zee). Op deze eilanden is de PC4 het hoogst en zijn er daar meer doden door \textit{Diabetes Mellitus} en minder door \textit{Collective Violence and Legal Intervention} en \textit{Neurological Conditions}.\\
 
-
+In figuur \ref{fig:vglPC} staan de plots van de PC1 waarden t.o.v. de PC2, PC3 en PC4 waarden. Hieruit zijn de meest getrokken conclusies ook zichtbaar adhv de kleurtjes en figuurtjes gebruikt voor de verschillende regio's en ontwikkelingen. 
 
 \section*{Besluit}
 
@@ -203,6 +208,25 @@ TODO
 	\includegraphics[width=\textwidth]{figures/difMediods.jpg}
 	\caption{De verschillen van de gemiddelden}
 	\label{fig:dm}
+\end{figure}
+
+\subsection{Principaalcomponentenanalyse}
+\begin{figure}
+	\centering
+	\begin{subfigure}{\linewidth}
+		\includegraphics[width = .5\linewidth]{figures/PC1vsPC2.png}
+		\includegraphics[width = .5\linewidth]{figures/PC1vsPC3.png}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width = .5\linewidth]{figures/PC1vsPC4.png}
+	\end{subfigure}
+	\caption{De eerste principaalcomponent vergeleken met de andere drie belangrijkste principaalcomponenten}
+	\label{fig:vglPC}
 \end{figure}
 
  

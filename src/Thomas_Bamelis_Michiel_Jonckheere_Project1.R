@@ -277,7 +277,7 @@ plot(diseases.pca)
 summary(diseases.pca)
 attributes(diseases.pca)
 P = diseases.pca$rotation; P[,1:4] # enkel PC1-PC4 hier bekijken, want die verklaren 90% van de variantie van de data
-Y = predict(diseases.pca); head(Y)[,1:4] # idem als hierboven
+Y = predict(diseases.pca); Y[,1:4] # idem als hierboven
 colSums(P^2)
 
 
@@ -285,14 +285,13 @@ colSums(P^2)
 P[P[,1]>0.1 | P[,1] < -0.2,1:4] # Malignant neoplasms en cardiovascular diseases zijn grootste positieve PC1, resp 0.33, 0.66
 P[P[,1] < -0.1,1:4] # Infectious and parasitic diseases grootste negatieve met -0.62
 
-P[P[,2]>0.1 | P[,2] < -0.1,1:4] # Cardiovascular diseases grootste positieve voor PC2, 0.67 (Infectious and parasitic diseases heeft 0.31)
+P[P[,2]>0.1 | P[,2] < -0.1,2:4] # Cardiovascular diseases grootste positieve voor PC2, 0.67 (Infectious and parasitic diseases heeft 0.31)
 P[P[,2] < -0.1,1:4] # Malignant neoplasms grootste negatieve met -0.58
 
 P[P[,3]>0.1 | P[,3] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC3, 0.53 (Collective violence and legal intervention 0.28)
 P[P[,3] < -0.1,1:4] # Malignant neoplasms en Infectious and parasitic diseases grootste negatieve met -0.47 en -0.51
 
-P[P[,4]>0.1 | P[,4] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC4, 0.76 
-P[P[,4] < -0.1,1:4] # Collective violence and legal intervention en Neurological conditions grootste negatieve met -0.34 en -0.23
+P[P[,4]>0.1 | P[,4] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC4, 0.76P[P[,4] < -0.1,1:4] # Collective violence and legal intervention en Neurological conditions grootste negatieve met -0.34 en -0.23
 
 PCHigh = diseases.pca$x > 0 # PC's zijn groot
 PCLow = diseases.pca$x < 0 # PC's zijn klein, PCLow[,1] = alle lage PC1
@@ -311,23 +310,23 @@ table(deaths$Region[PCLow[,4]])
 table(deaths$Developement[PCHigh[,1]], deaths$Region[PCHigh[,1]])
 table(deaths$Developement[PCLow[,1]], deaths$Region[PCLow[,1]])
 
-table(deaths$Developement[PCHigh[,2]])
-table(deaths$Developement[PCLow[,2]])
+table(deaths$Developement[PCHigh[,2]], deaths$Region[PCHigh[,2]])
+table(deaths$Developement[PCLow[,2]], deaths$Region[PCLow[,2]])
 
-table(deaths$Developement[PCHigh[,3]])
-table(deaths$Developement[PCLow[,3]])
+table(deaths$Developement[PCHigh[,3]], deaths$Region[PCHigh[,3]])
+table(deaths$Developement[PCLow[,3]], deaths$Region[PCLow[,3]])
 
 table(deaths$Developement[PCHigh[,4]])
 table(deaths$Developement[PCLow[,4]])
 
-PCExtrHigh = diseases.pca$x > 0.25 # PC's zijn groot
-PCExtrLow = diseases.pca$x < -0.35 # PC's zijn klein, PCLow[,1] = alle lage PC1
-row.names.data.frame(deaths)[PCExtrLow[,1]] # return de landen
-table(deaths$Region[PCExtrLow[,1]])
-row.names.data.frame(deaths)[PCExtrHigh[,1]] # return de landen
-table(deaths$Region[PCExtrHigh[,1]])
-table(deaths$Developement[PCExtrLow[,1]])
-table(deaths$Developement[PCExtrHigh[,1]])
+PCExtrHigh = diseases.pca$x > 0.09 # PC's zijn groot
+PCExtrLow = diseases.pca$x < -0.05 # PC's zijn klein, PCLow[,1] = alle lage PC1
+row.names.data.frame(deaths)[PCExtrLow[,3]] # return de landen
+table(deaths$Region[PCExtrLow[,3]])
+row.names.data.frame(deaths)[PCExtrHigh[,4]] # return de landen
+table(deaths$Region[PCExtrHigh[,4]])
+table(deaths$Developement[PCExtrLow[,3]],deaths$Region[PCExtrLow[,3]])
+table(deaths$Developement[PCExtrHigh[,3]],deaths$Region[PCExtrHigh[,3]])
 
 tapply(Y[,1],deaths$Region,mean)
 tapply(Y[,2],deaths$Region,mean)
@@ -340,9 +339,14 @@ tapply(Y[,2],deaths$Developement,mean)
 tapply(Y[,3],deaths$Developement,mean)
 tapply(Y[,4],deaths$Developement,mean)
 
+
+par(mfrow=c(1,1))
 REGION = as.factor(levels(deaths$Region)); REGION
 DEV =  as.factor(levels(deaths$Developement))
-plot(Y[,1],Y[,2],col=as.numeric(deaths$Region),pch=as.numeric(deaths$Developement))
+plot(Y[,1],Y[,2],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC2 ",xlab = "PC1",ylab="PC2",pch=as.numeric(deaths$Developement))
+plot(Y[,1],Y[,3],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC3 ",xlab = "PC1",ylab="PC3",pch=as.numeric(deaths$Developement))
+plot(Y[,1],Y[,4],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC4 ",xlab = "PC1",ylab="PC4",pch=as.numeric(deaths$Developement))
+
 legend("topleft", legend=c(levels(deaths$Region)), col=as.numeric(REGION), pch=1)
 legend("bottomleft", legend=c(levels(deaths$Developement)), pch=as.numeric(DEV), col=1)
 
