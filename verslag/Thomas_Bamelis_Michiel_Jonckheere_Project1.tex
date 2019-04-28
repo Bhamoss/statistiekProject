@@ -94,6 +94,35 @@ Over de injuries tussen de twee clusters valt niets significants te zeggen. \new
 Met dit alles samen kunnen we besluiten dat de meeste Afrikaanse landen die developing zijn een proportioneel opvallend hoger aantal  communicable, maternal, perinatal and nutritional conditions bevatten en een proportioneel lager aantal noncommunicable diseases hebben tegenover de rest van de wereld.
 
 
+\section{Principaalcomponentenanalyse}
+Voor de principaalcomponentenanalyse wordt enkel gekeken naar de niet geschaalde gegevens. Dit zagen we al in de vorige sectie dat de geschaalde gegevens voor minder goede resultaten zorgden. Om voor de principaalcomponenten toch zeker te zijn dat de niet geschaalde gegevens hiervoor ook beter zijn, werd toch eens een vergelijking gedaan. In tabel \ref{table:pcaScaledVSNot} is deze vergelijking te zien. De eerste zes principaalcomponenten van de originele data verklaren ongeveer 95\% van de variantie van de data. Bij de geschaalde gegevens verklaren de eerste zes slechts 60\% van die variantie. Om aan 95\% te komen zijn er bij de geschaalde data 23 principaalcomponenten nodig. 
+
+\begin{table}[ht]
+	\centering
+\begin{tabular}{lcccccc}
+	\hline 
+	& PC1 & PC2 & PC3 & PC4 & PC5 & PC6 \\ 
+	\hline 
+	Originiele data & 68.9\% & 81.4\% & 86.4\% & 90.4\% & 93.1\% & 95.2\% \\ 
+	%\hline 
+	Geschaalde data & 29.7\% & 40.4\% & 46.5\% & 52.3\% & 56.5\% & 60.4\%\\ 
+	\hline 
+\end{tabular} 
+\caption{De cumulatieve proportie van de variantie van de eerste zes principaalcomponenten van zowel de originele als de geschaalde data.}
+\label{table:pcaScaledVSNot}
+\end{table}
+
+We hebben besloten om hier verder te gaan met de eerste vier principaalcomponenten aangezien ze 90\% van de variantie van de data beschrijven. 
+
+\subsubsection*{PC1}
+Voor de variarbelen \textit{Malignant Neoplasms} en \textit{Cardiovascular Diseases} vinden we hoge positieve waarden, respectievelijk 0.33 en 0.66. De grootste negatieve waarde voor de eerste principaalcomponent is -0.62 van de variabele \textit{Infections and Parasitic Diseases}. Dit betekent dus bij een hogere PC1 dat er meer doodsoorzaken zijn van \textit{Malignant Neoplasms} en \textit{Cardiovascular Diseases} en minder van \textit{Infections and Parasitic Diseases}. 
+
+Als we dit bekijken voor de landen dan vinden we zeven landen met een lagere PC1 dan de rest. Deze landen zijn \textit{Angola}, \textit{Central African Republic}, \textit{Kenya}, \textit{Lesotho}, \textit{Mozambique}, \textit{South Sudan} en \textit{Zambia}. Wat hier opvalt, is dat deze landen allemaal in Afrika liggen. Als we dan kijken naar de landen met een opvallend hogere PC1 waarde, dan zien we dat merendeel in Europa gelegen is. Om in het algemeen te kijken naar alle landen vergelijken we de landen met een positieve PC1 met de landen met een negatieve. Hieruit vinden we dat er 66\% van de negatieve PC1 waarden uit Afrika komen en 93\% van de positieve waarden komen uit de andere regio's verschillend van Afrika. We kunnen dus uit PC1 Afrika gaan onderscheiden van de andere regio's.
+
+De ontwikkeling afleiden uit PC1 is deels mogelijk. Alle landen die ontwikkeld zijn of in een overgang zitten naar ontwikkeld, hebben allemaal een positieve PC1. Voor de ontwikkelingslanden heeft 50\% een positieve en 50\% een negatieve PC1. Als we dit dan koppelen aan de regio's kunnen we de ontwikkeling gaan afleiden uit de regio waar de negatieve PC1 waarden voorkomen. Dit betekent dus dat een land die in Afrika gelegen is en een negatieve PC1 waarde heeft, hoogstwaarschijnlijk een ontwikkelingsland zal zijn. Landen die in een andere regio dan Afrika liggen en een positieve PC1 hebben, zijn ofwel ontwikkelde landen ofwel overgangslanden. 
+
+
+
 \section*{Besluit}
 
 TODO

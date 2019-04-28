@@ -33,6 +33,8 @@ colSums(P^2)
 # De eerste principaalcomponent verklaart ruim 95% van alle variantie in de data.
 # Een grotere krab heeft een groter achterlijf en grotere poten grotere alles.
 # Deze veranderlijke kan dus in grote mate de vijf afmetingen vervangen in één maat "grootte"
+tapply(Y[,1],sex,mean)
+tapply(Y[,2],sp,mean)
 
 tapply(Y[,2],sex,mean)
 tapply(Y[,3],sp,mean)

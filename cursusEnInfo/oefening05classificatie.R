@@ -6,7 +6,8 @@ names(crabs)
 ### Lineaire discriminant analyse
 X = crabs[,4:8]
 y = sex
-## Voorwaarden: Multivariate normaliteit werd bestudeerd in sectie 3. Zeker in de afzonderlijke groepen lijken de gegevens normaliteit te bevestigen.
+## Voorwaarden: Multivariate normaliteit werd bestudeerd in sectie 3.
+#   Zeker in de afzonderlijke groepen lijken de gegevens normaliteit te bevestigen.
 lda.sex = lda(X,y); lda.sex
 #of lda(y~.,X) 
 #The . in the formula argument means that we use all the remaining variables in data as covariates
@@ -99,10 +100,10 @@ pairs(cbind(log10(income),logit(women),prestige,education),col=as.numeric(type))
 
 ## lda voor originele data
 #Bekijk eerst de data
-type=Prestige$type
+type=Prestige$type; type
 i = which(is.na(type)) # 4 NA-waarden in variabele type
 X = cbind(income,women,prestige,education)[-i,]#laat die 4 weg
-y = type[-i]
+y = type[-i]; y 
 orig.lda = predict(lda(X,y))$posterior
 orig.lda.CV = lda(X,y,CV=TRUE)$class
 orig.lda.AER = table(y,orig.lda.CV); orig.lda.AER

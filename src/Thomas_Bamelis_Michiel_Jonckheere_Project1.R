@@ -18,13 +18,13 @@ wd = dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(wd)
 
 # loading data, which is in csv2 format (I checked manually and the data is loaded correctly like this)
-deaths = read.csv2(file = "deaths.csv",header = TRUE)
+deaths = read.csv2(file = "deaths.csv",header = TRUE, row.names = "State")
 
 # Rescale deaths to percentage of deaths of the country
 #* TODO: chech to make sure we shouldnt use a scale method, the default scale() method doesnt work. I checked it.
-c = deaths[,6:37]
+c = deaths[,5:36]
 c = prop.table(as.matrix(c),1)
-deaths[,6:37] = c[,1:32]
+deaths[,5:36] = c[,1:32]
 
 # changing the column names to something more verbose
 # getting rid of the .. first by chaning it to one dot.
@@ -269,6 +269,88 @@ print(xtable(table(cl$clustering, deaths[,3]), type = "latex"), file = "clusteri
 ###########################################################
 ######################   PCA   ############################
 ###########################################################
+
+
+diseases = deaths[,5:36]
+diseases.pca = prcomp(diseases, scale=FALSE) #geen scaling
+plot(diseases.pca)
+summary(diseases.pca)
+attributes(diseases.pca)
+P = diseases.pca$rotation; P[,1:4] # enkel PC1-PC4 hier bekijken, want die verklaren 90% van de variantie van de data
+Y = predict(diseases.pca); head(Y)[,1:4] # idem als hierboven
+colSums(P^2)
+
+
+#analyse op de PC1 - 4
+P[P[,1]>0.1 | P[,1] < -0.2,1:4] # Malignant neoplasms en cardiovascular diseases zijn grootste positieve PC1, resp 0.33, 0.66
+P[P[,1] < -0.1,1:4] # Infectious and parasitic diseases grootste negatieve met -0.62
+
+P[P[,2]>0.1 | P[,2] < -0.1,1:4] # Cardiovascular diseases grootste positieve voor PC2, 0.67 (Infectious and parasitic diseases heeft 0.31)
+P[P[,2] < -0.1,1:4] # Malignant neoplasms grootste negatieve met -0.58
+
+P[P[,3]>0.1 | P[,3] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC3, 0.53 (Collective violence and legal intervention 0.28)
+P[P[,3] < -0.1,1:4] # Malignant neoplasms en Infectious and parasitic diseases grootste negatieve met -0.47 en -0.51
+
+P[P[,4]>0.1 | P[,4] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC4, 0.76 
+P[P[,4] < -0.1,1:4] # Collective violence and legal intervention en Neurological conditions grootste negatieve met -0.34 en -0.23
+
+PCHigh = diseases.pca$x > 0 # PC's zijn groot
+PCLow = diseases.pca$x < 0 # PC's zijn klein, PCLow[,1] = alle lage PC1
+table(deaths$Region[PCHigh[,1]])
+table(deaths$Region[PCLow[,1]])
+
+table(deaths$Region[PCHigh[,2]])
+table(deaths$Region[PCLow[,2]])
+
+table(deaths$Region[PCHigh[,3]])
+table(deaths$Region[PCLow[,3]])
+
+table(deaths$Region[PCHigh[,4]])
+table(deaths$Region[PCLow[,4]])
+
+table(deaths$Developement[PCHigh[,1]], deaths$Region[PCHigh[,1]])
+table(deaths$Developement[PCLow[,1]], deaths$Region[PCLow[,1]])
+
+table(deaths$Developement[PCHigh[,2]])
+table(deaths$Developement[PCLow[,2]])
+
+table(deaths$Developement[PCHigh[,3]])
+table(deaths$Developement[PCLow[,3]])
+
+table(deaths$Developement[PCHigh[,4]])
+table(deaths$Developement[PCLow[,4]])
+
+PCExtrHigh = diseases.pca$x > 0.25 # PC's zijn groot
+PCExtrLow = diseases.pca$x < -0.35 # PC's zijn klein, PCLow[,1] = alle lage PC1
+row.names.data.frame(deaths)[PCExtrLow[,1]] # return de landen
+table(deaths$Region[PCExtrLow[,1]])
+row.names.data.frame(deaths)[PCExtrHigh[,1]] # return de landen
+table(deaths$Region[PCExtrHigh[,1]])
+table(deaths$Developement[PCExtrLow[,1]])
+table(deaths$Developement[PCExtrHigh[,1]])
+
+tapply(Y[,1],deaths$Region,mean)
+tapply(Y[,2],deaths$Region,mean)
+tapply(Y[,3],deaths$Region,mean)
+tapply(Y[,4],deaths$Region,mean)
+
+
+tapply(Y[,1],deaths$Developement,mean)
+tapply(Y[,2],deaths$Developement,mean)
+tapply(Y[,3],deaths$Developement,mean)
+tapply(Y[,4],deaths$Developement,mean)
+
+REGION = as.factor(levels(deaths$Region)); REGION
+DEV =  as.factor(levels(deaths$Developement))
+plot(Y[,1],Y[,2],col=as.numeric(deaths$Region),pch=as.numeric(deaths$Developement))
+legend("topleft", legend=c(levels(deaths$Region)), col=as.numeric(REGION), pch=1)
+legend("bottomleft", legend=c(levels(deaths$Developement)), pch=as.numeric(DEV), col=1)
+
+plot(Y[,4],Y[,2],col=as.numeric(deaths$Region),pch=as.numeric(deaths$Developement))
+legend("topleft", legend=c(levels(deaths$Region)), col=as.numeric(REGION), pch=1)
+legend("bottomleft", legend=c(levels(deaths$Developement)), pch=as.numeric(DEV), col=1)
+
+pairs(cbind(X),col=as.numeric(deaths$Region))
 
 
 
@@ -578,6 +660,24 @@ names(deaths)
 # verklarende variabelen
 table(deaths$Region)
 table(deaths$Developement)
+X = deaths[,6:37]
+n = dim(X)[1]
+p= dim(X)[2]
+for (i in 1:p) {
+  #if (shapiro.test(X[,i])$p.value > 0.05) {
+    qqnorm(X[,i], main = (shapiro.test(X[,i])$p.value > 0.05)); qqline(X[,i])
+  #}
+}
+
+for (i in 1:p) {
+  #if (shapiro.test(logit(X[,i]))$p.value > 0.05) {
+    qqnorm(sqrt(X[,i]), main = (shapiro.test(sqrt(X[,i]))$p.value > 0.05)); qqline(sqrt(X[,i]))
+  #}
+}
+
+
+
+
 
 africa =  deaths[deaths$Region == "Africa", 6:37]
 america =  deaths[deaths$Region == "America", 6:37]
@@ -647,50 +747,50 @@ multiNormality <- function(dat, dataName)
     dat[i] = NULL
   }
   
-  
-  ### Bivariate marginalen / Paarsgeweijze plots
-  
-  for (i in 1:(ncol(dat) - 1)) {
-    for (j in (i+1):ncol(dat)) {
-
-      svg(filename=file.path(datDir, biDir , paste("BiMarg_", gsub(" ","_",names(dat)[i]),"_X_", gsub(" ","_",names(dat)[j]), ".svg",sep = "")), 
-          width=5, 
-          height=5, 
-          pointsize=12)
-      
-      plot(dat[,i],dat[,j], xlab = names(deaths)[i], ylab = names(deaths)[j], main = paste(names(deaths)[i], " versus ",names(deaths)[j] , sep = ""))
-      lines(ellipse::ellipse(cov(dat[,i],dat[,j]), centre=c(mean(dat[,i]),mean(dat[,j])), level=0.95),col='red')
-      
-      dev.off()
-    }
-  }
-  
-  
-  
-  #scatterplotMatrix(data, diagonal = "boxplot", main = "Pair-wise plots", id.n =1, id.col=4, smoother = F, regLine = F, pch = 19, cex = 1.25)
-  
-  ### Verdeling van de Mahalanobis afstanden
-  
-  svg(filename=file.path(datDir , paste("Mahalanobis", dataName,".svg",sep = "")), 
-      width=8, 
-      height=8, 
-      pointsize=12)
-  
-  tryCatch(
-    {
-      MD = mahalanobis(dat, colMeans(dat), cov(dat))
-  
-      qqplot(qchisq(ppoints(nrow(dat)),df=ncol(dat)), MD, main = "Mahalanobis chisq QQ plot")
-      abline(0,1,col='blue')
-      abline(h=qchisq(.975,ncol(dat)),col='red')
-      
-      # first one of last row
-    }, error=function(e){
-      scatterplot(c(0,1), c(0,1), main = "Mahalanobis got error")
-      abline(0,1,col='red', lwd = 20)
-      abline(1,-1,col='red', lwd = 20)
-    }
-  )
+  # 
+  # ### Bivariate marginalen / Paarsgeweijze plots
+  # 
+  # for (i in 1:(ncol(dat) - 1)) {
+  #   for (j in (i+1):ncol(dat)) {
+  # 
+  #     svg(filename=file.path(datDir, biDir , paste("BiMarg_", gsub(" ","_",names(dat)[i]),"_X_", gsub(" ","_",names(dat)[j]), ".svg",sep = "")), 
+  #         width=5, 
+  #         height=5, 
+  #         pointsize=12)
+  #     
+  #     plot(dat[,i],dat[,j], xlab = names(deaths)[i], ylab = names(deaths)[j], main = paste(names(deaths)[i], " versus ",names(deaths)[j] , sep = ""))
+  #     lines(ellipse::ellipse(cov(dat[,i],dat[,j]), centre=c(mean(dat[,i]),mean(dat[,j])), level=0.95),col='red')
+  #     
+  #     dev.off()
+  #   }
+  # }
+  # 
+  # 
+  # 
+  # #scatterplotMatrix(data, diagonal = "boxplot", main = "Pair-wise plots", id.n =1, id.col=4, smoother = F, regLine = F, pch = 19, cex = 1.25)
+  # 
+  # ### Verdeling van de Mahalanobis afstanden
+  # 
+  # svg(filename=file.path(datDir , paste("Mahalanobis", dataName,".svg",sep = "")), 
+  #     width=8, 
+  #     height=8, 
+  #     pointsize=12)
+  # 
+  # tryCatch(
+  #   {
+  #     MD = mahalanobis(dat, colMeans(dat), cov(dat))
+  # 
+  #     qqplot(qchisq(ppoints(nrow(dat)),df=ncol(dat)), MD, main = "Mahalanobis chisq QQ plot")
+  #     abline(0,1,col='blue')
+  #     abline(h=qchisq(.975,ncol(dat)),col='red')
+  #     
+  #     # first one of last row
+  #   }, error=function(e){
+  #     scatterplot(c(0,1), c(0,1), main = "Mahalanobis got error")
+  #     abline(0,1,col='red', lwd = 20)
+  #     abline(1,-1,col='red', lwd = 20)
+  #   }
+  # )
   dev.off()
 }
 
@@ -706,6 +806,7 @@ multiNormality(developed, "Developed")
 multiNormality(developing, "Developing")
 multiNormality(transition, "Transition")
 
+
 ###########################################################
 #################   Classificatie   ########################
 ###########################################################
@@ -713,6 +814,84 @@ multiNormality(transition, "Transition")
 # Ga na in hoeverre het mogelijk is om de regio van een land te identificeren aan de hand van de doods-
 # oorzaken. Doe hetzelfde voor de globale ontwikkeling. Welke methode is het meest geschikt? Beschrijf
 # de werking van het model. Welke landen worden niet correct ingedeeld en waarom?
+
+# niet multivariaat normaal, dus niet naar de aposteriori kans kijken
+
+#LDA
+region = deaths$Region; region
+i = which(is.na(region)); i # geen NA waarden
+X = cbind(deaths[,6:37])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
+y = region; y
+table(y)
+orig.lda.CV = lda(X,y,CV=TRUE)$class; orig.lda.CV
+orig.lda.AER = table(orig.lda.CV,y); orig.lda.AER
+sum(orig.lda.AER-diag(diag(orig.lda.AER)))/sum(orig.lda.AER) 
+
+#QDA kan niet worden uitgevoerd, want meer kolommen dan de smallest van de klassen
+#   kan opgelost worden door kolommen te verwijderen 
+
+#idee: ipv alle variablen te bekijken, hier enkel de groepen (communicable, non-comm en injuries)
+#   dus alles optellen 
+# werkt ook niet 
+comm = rowSums(deaths[, 6:10]); comm
+noncomm = rowSums(deaths[, 11:26]); noncomm
+inj = rowSums(deaths[, 27:37]); inj
+rowSums(cbind(comm, noncomm,inj)) # moeten allemaal 1 zijn
+deathsTogether = cbind(deaths[,1:5], comm, noncomm, inj)
+X = cbind(deathsTogether[,6:8]); X
+y = deathsTogether$Region; y
+orig.qda = predict(qda(X,y))$posterior
+# weer geen qda, omwille van te kleine groepen voor qda
+library(class)
+orig.knn5.cv = knn.cv(train=X,cl=y,k=5); orig.knn5.cv
+orig.knn5.AER = table(orig.knn5.cv,y); orig.knn5.AER
+sum(orig.knn5.AER-diag(diag(orig.knn5.AER)))/sum(orig.knn5.AER)
+
+orig.knn4.cv = knn.cv(train=X,cl=y,k=4); orig.knn4.cv
+orig.knn4.AER = table(orig.knn4.cv,y); orig.knn4.AER
+sum(orig.knn4.AER-diag(diag(orig.knn4.AER)))/sum(orig.knn4.AER)
+
+orig.knn3.cv = knn.cv(train=X,cl=y,k=3); orig.knn3.cv
+orig.knn3.AER = table(orig.knn3.cv,y); orig.knn3.AER
+sum(orig.knn3.AER-diag(diag(orig.knn3.AER)))/sum(orig.knn3.AER)
+
+orig.knn2.cv = knn.cv(train=X,cl=y,k=2); orig.knn2.cv
+orig.knn2.AER = table(orig.knn2.cv,y); orig.knn2.AER
+sum(orig.knn2.AER-diag(diag(orig.knn2.AER)))/sum(orig.knn2.AER)
+
+orig.knn1.cv = knn.cv(train=X,cl=y,k=1); orig.knn1.cv
+orig.knn1.AER = table(orig.knn1.cv,y); orig.knn1.AER
+sum(orig.knn1.AER-diag(diag(orig.knn1.AER)))/sum(orig.knn1.AER)
+
+
+#LDA
+dev = deaths$Developement; dev
+# i = which(dev == "#N/B"); i # de #N/B eruit halen
+X = cbind(deaths[,6:37])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
+y = dev; y
+table(y)
+orig.lda.CV = lda(X,y,CV=TRUE)$class; #orig.lda.CV
+orig.lda.AER = table(orig.lda.CV,y); orig.lda.AER
+sum(orig.lda.AER-diag(diag(orig.lda.AER)))/sum(orig.lda.AER) 
+
+library(class)
+orig.knn5.cv = knn.cv(train=X,cl=y,k=5); #orig.knn5.cv
+orig.knn5.AER = table(orig.knn5.cv,y); orig.knn5.AER
+sum(orig.knn5.AER-diag(diag(orig.knn5.AER)))/sum(orig.knn5.AER)
+
+orig.knn4.cv = knn.cv(train=X,cl=y,k=4); orig.knn4.cv
+orig.knn4.AER = table(orig.knn4.cv,y); orig.knn4.AER
+sum(orig.knn4.AER-diag(diag(orig.knn4.AER)))/sum(orig.knn4.AER)
+
+orig.knn3.cv = knn.cv(train=X,cl=y,k=3); #orig.knn3.cv
+orig.knn3.AER = table(orig.knn3.cv,y); orig.knn3.AER
+sum(orig.knn3.AER-diag(diag(orig.knn3.AER)))/sum(orig.knn3.AER)
+
+orig.knn2.cv = knn.cv(train=X,cl=y,k=2); #orig.knn2.cv
+orig.knn2.AER = table(orig.knn2.cv,y); orig.knn2.AER
+sum(orig.knn2.AER-diag(diag(orig.knn2.AER)))/sum(orig.knn2.AER)
+
+
 
 cla.dat = deaths[,6:37]
 cla.region = deaths[,3]
