@@ -35,17 +35,17 @@ Als eerste werd een cluster-analyse uitgevoerd op de gegevens. Eerst bespreken w
 \subsection{Zonder schalen}
 Om een idee te krijgen van hoeveel clusters er best worden genomen, werden het agglomerate nesting algoritme en divisive analysis toegepast.
 Agglomerate nesting werd gedaan met de volgende dissimilariteiten: group average, nearest neighbour en furthest neighbour, in die volgorde met daarna divisive analysis.
-Zie figuren \ref{fig:hcnd} op p\pageref{fig:hcnd} en \ref{fig:hcnb} op p\pageref{fig:hcnb} in de bijlage \ref{b}.
+Zie figuren \ref{fig:hcnd} en \ref{fig:hcnb} in de bijlage \ref{b}.
 Gegeven deze figuren lijkt het meest aannemelijk om 2, 4 en 6 klassen te proberen.
 De gebruikte clustering algoritmes zijn in volgorde k-means, partitioning around mediods en fuzzy analysis.
 De clustering ermee voor 2, 4 en 6 klassen werd geëvalueerd via een silhouette plot en een clusplot.
-Zie figuur \ref{fig:cne} op p\pageref{fig:cne}.
+Zie figuur \ref{fig:cne}.
 Hieruit blijkt dat partitioning around mediods met 2 clusters het beste presteert met een silhouette coëfficiënt van 0.50 (cluster 1 : 0.69 en cluster 2 : 0.43).
 Dit is niet bepaald goed en balanceert op het randje van een zwakke structuur.
 \subsection{Met schalen}
  We trekken hierbij dezelfde conclusies omtrent het aantal klassen, 2, 4, en 6.
- Zie figuren \ref{fig:hcd} op p\pageref{fig:hcd}en \ref{fig:hcb} op p\pageref{fig:hcb}.
- Na dezelfde clustering algoritmes toegepast te hebben (figuur \ref{fig:ce} op p\pageref{fig:ce}), is de best geobserveerde silhouette coëfficiënt 0.23.
+ Zie figuren \ref{fig:hcd} en \ref{fig:hcb}.
+ Na dezelfde clustering algoritmes toegepast te hebben (figuur \ref{fig:ce}), is de best geobserveerde silhouette coëfficiënt 0.23.
  Hieruit besluiten we dat clustering met schalen aanzienlijk slechter is dan zonder schalen.
  We besluiten dus verder te werken met het beste resultaat zonder schalen.
 \subsection{Beschrijving clusters}
@@ -87,11 +87,12 @@ Het is dus niet zo dat de eerste cluster focused op alle developing landen.
 Als we dit samen leggen met de region table, kunnen we besluiten dat de eerste cluster hoofdzakelijk Afrikaanse developing landen bevat en de tweede cluster ``de rest''. \newline
 Daarnaast kunnen we de verschillen van tussen de clusters bekijken qua doodsoorzaken.
 We plotten daarom de marginale gemiddelden van de eerste cluster, afgetrokken met de marginale gemiddelden van de tweede cluster.
-Zie figuur \ref{fig:dm} op p\pageref{fig:dm}.
+Zie figuur \ref{fig:dm}.
 Als we de drie hoofdcategoriën van doodsoorzaken bekijken (de verschillende kleuren), blijkt dat communicable, maternal, perinatal and nutritional conditions meer voorkomen bij de eerste cluster dan bij de tweede.
 We zien ook dat twee noncommunicable diseases aanzienlijk meer voorkomen in de tweede cluster, met nog eens 5 van die doodsoorzaken licht meer voorkomen in de tweede cluster.
 Over de injuries tussen de twee clusters valt niets significants te zeggen. \newline
 Met dit alles samen kunnen we besluiten dat de meeste Afrikaanse landen die developing zijn een proportioneel opvallend hoger aantal  communicable, maternal, perinatal and nutritional conditions bevatten en een proportioneel lager aantal noncommunicable diseases hebben tegenover de rest van de wereld.
+
 
 
 \section{Principaalcomponentenanalyse}
@@ -101,14 +102,14 @@ Voor de principaalcomponentenanalyse wordt enkel gekeken naar de geschaalde gege
 
 \begin{table}[ht]
 	\centering
-\begin{tabular}{cccccc}
-	\hline 
-	PC1 & PC2 & PC3 & PC4 & PC5 & PC6 \\ 
-	29.7\% & 40.4\% & 46.5\% & 52.3\% & 56.5\% & 60.4\%\\ 
-	\hline 
-\end{tabular} 
-\caption{De cumulatieve proportie van de variantie van de eerste zes principaalcomponenten van de geschaalde data.}
-\label{table:pca}
+	\begin{tabular}{cccccc}
+		\hline 
+		PC1 & PC2 & PC3 & PC4 & PC5 & PC6 \\ 
+		29.7\% & 40.4\% & 46.5\% & 52.3\% & 56.5\% & 60.4\%\\ 
+		\hline 
+	\end{tabular} 
+	\caption{De cumulatieve proportie van de variantie van de eerste zes principaalcomponenten van de geschaalde data.}
+	\label{table:pca}
 \end{table}
 
 
@@ -171,10 +172,14 @@ Om de ontwikkeling van de landen na te gaan met behulp van de doodsoorzaken, ver
 
 In de data zit er \'e\'en speciaal land (Congo) waarvan de ontwikkeling niet gekend is. Dit land wordt ingedeeld als een ontwikkelingsland. Aangezien Congo in Afrika ligt en we uit de gegeven data konden opmerken dat alle landen uit Afrika ontwikkelingslanden zijn, kunnen we hier wel concluderen dat Congo een ontwikkelingsland is. 
 
-
 \section*{Besluit}
 
-
+Omdat clustering en pca opvallend beter werken voor Afrikaanse landen, kunnen we besluiten dat Afrika in doodsoorzaken relatief veel verschilt tegenover de andere regio's.
+Meer bepaald sterven opvallend meer mensen in Afrika aan overdraagbare ziektes en minder aan niet-overdraagbare ziektes dan in de rest van de wereld. 
+Ook werkte pca en classificatie beter voor Europa.
+De analyse voor de andere regio's verliep moeilijker.
+De andere regio's verschilden intern sterk qua ontwikkeling, terwijl Afrika en Europa nagenoeg allemaal developing of developed landen zijn.
+Dit zou kunnen verklaren waardoor deze analyse beter werkte voor Afrika en Europa.
 
 \begin{thebibliography}{9}
 	
