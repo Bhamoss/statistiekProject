@@ -882,8 +882,8 @@ table(orig.knn4.cv,orig.lda.CV)
 #LDA
 dev = deaths$Developement; dev
 # i = which(dev == "#N/B"); i # de #N/B eruit halen
-X = cbind(deaths[,5:36])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
-y = dev; y
+X = cbind(deaths[,5:36])[-c(38),-(c(12,20))] # constanten eruit smijten, 12 en 20
+y = droplevels(dev[-c(38)]); y
 table(y)
 orig.lda.CV = lda(X,y,CV=TRUE)$class; #orig.lda.CV
 orig.lda.AER = table(orig.lda.CV,y); orig.lda.AER

@@ -95,6 +95,8 @@ Met dit alles samen kunnen we besluiten dat de meeste Afrikaanse landen die deve
 
 
 \section{Principaalcomponentenanalyse}
+%todo herschrijven, enkel naar geschaalde data kijken
+
 Voor de principaalcomponentenanalyse wordt enkel gekeken naar de niet geschaalde gegevens. Dit zagen we al in de vorige sectie dat de geschaalde gegevens voor minder goede resultaten zorgden. Om voor de principaalcomponenten toch zeker te zijn dat de niet geschaalde gegevens hiervoor ook beter zijn, werd toch eens een vergelijking gedaan. In tabel \ref{table:pcaScaledVSNot} is deze vergelijking te zien. De eerste zes principaalcomponenten van de originele data verklaren ongeveer 95\% van de variantie van de data. Bij de geschaalde gegevens verklaren de eerste zes slechts 60\% van die variantie. Om aan 95\% te komen zijn er bij de geschaalde data 23 principaalcomponenten nodig. 
 
 \begin{table}[ht]
@@ -147,14 +149,15 @@ In figuur \ref{fig:vglPC} staan de plots van de PC1 waarden t.o.v. de PC2, PC3 e
 \section{Multivariate Normaliteit}
 Om de multivariate normaliteit van de data na te gaan moeten we eerst en vooral kijken of alle variabelen wel univariaat normaal verdeeld zijn. De univariate testen tonen aan dat alle variabelen niet univariaat normaal verdeeld zijn. Hierdoor kan de data ook geen multivariate normaliteit hebben. Ook na het toepassen van de \textit{logit} transformatie was geen enkele variabele normaal verdeeld. 
 
-We kunnen hieruit dus besluiten dat de gegevens niet multivariaat normaal verdeeld zijn en we in de volgende sectie over classificatie geen methodes moeten toepassen waarvoor deze eigenschap vereist is. 
+We kunnen hieruit dus besluiten dat de gegevens niet multivariaat normaal verdeeld zijn en we in de volgende sectie over classificatie geen methodes moeten toepassen waarvoor deze eigenschap vereist is. %TODO neit naar a posteriori kansen kijken
+
 
 
 \section{Classificatie}
-Bij de classificatie gaan we na in hoeverre het mogelijk is om de regio en ontwikkeling van een land te identificeren a.d.h.v. de doodsoorzaken. Er wordt gebruik gemaakt van de lineaire discriminantmethode en \textit{k-nearest neighbours} methode. Het was niet mogelijk van de kwadratische discriminantmethode toe te passen op de data omdat sommige groepen te klein zijn en er niet genoeg data over is. KLOPT DIT???????
+Bij de classificatie gaan we na in hoeverre het mogelijk is om de regio en ontwikkeling van een land te identificeren a.d.h.v. de doodsoorzaken. Er wordt gebruik gemaakt van de lineaire discriminantmethode en \textit{k-nearest neighbours} methode. Het was niet mogelijk van de kwadratische discriminantmethode toe te passen op de data omdat sommige groepen te klein zijn en er niet genoeg data over is.
 
-\subsection{Regio}
-Om classificatie toe te passen op de regio van landen, zien we dat bij elke methode de \textit{actual error rate} vrij groot is (tussen de 25\% en 30\%). Dit betekent dat het moeilijk is om effectief de regio te bepalen van een land als de doodsoorzaken gegeven zijn. 46 van de 183 landen worden verkeerd ingedeeld bij de lineaire discriminantmethode. Als we dan kijken naar de \textit{k-nearest neighbours} methode, dan zien we dat deze \textit{AER} iets groter is dan bij de LDA. Er werd gekeken naar k = $\{2,3,4,5\}$. De beste methode voor het classificeren volgens de regio's is de lineaire discriminantmethode. 
+\subsection{Regio} %TODO percentages bij lda en knn bijzetten ter verduidelijking
+Om classificatie toe te passen op de regio van landen, zien we dat bij elke methode de \textit{actual error rate} vrij groot is (tussen de 25\% en 30\%). Dit betekent dat het moeilijk is om effectief de regio te bepalen van een land als de doodsoorzaken gegeven zijn. 46 van de 183 landen worden verkeerd ingedeeld bij de lineaire discriminantmethode. Als we dan kijken naar de \textit{k-nearest neighbours} methode, dan zien we dat deze \textit{AER} iets groter is dan bij de LDA. Er werd gekeken naar \textit{k} = $\{2,3,4,5\}$. De beste methode voor het classificeren volgens de regio's is de lineaire discriminantmethode. 
 
 Het is opmerkelijk dat alle Europese landen juist ingedeeld worden als een Europees land. Er zijn wel relatief veel landen uit andere regio's die ook als Europees land worden ingedeeld. 
 
@@ -162,11 +165,10 @@ Het is opmerkelijk dat alle Europese landen juist ingedeeld worden als een Europ
 Om de ontwikkeling van de landen na te gaan met behulp van de doodsoorzaken, verkregen we betere error ratio's. Deze lagen allemaal dicht bij elkaar rond de 12\%. De beste \textit{AER} verkregen we bij de \textit{8-nearest neighbours} methode. Hierbij werden 21 van de 183 landen verkeerd ingedeeld volgens hun ontwikkeling. Deze landen komen voornamelijk uit Europa, Azi\"e en Amerika. De meeste landen die verkeerd ingedeeld worden zijn ontwikkelingslanden of overgangslanden en worden als ontwikkeld land geclassificeerd. Ontwikkelde landen die verkeerd zijn ingedeeld worden als een overgangsland ingedeeld. 
 
 In de data zit er \'e\'en speciaal land (Congo) waarvan de ontwikkeling niet gekend is. Dit land wordt ingedeeld als een ontwikkelingsland. Aangezien Congo in Afrika ligt en we uit de gegeven data konden opmerken dat alle landen uit Afrika ontwikkelingslanden zijn, kunnen we hier wel concluderen dat Congo een ontwikkelingsland is. 
-%TODO kijken welke oorzaken er doorslaggevend zijn bij beiden, partimat met thomas bekijken
+
 
 \section*{Besluit}
 
-%TODO BESLUIT SCHRIJVEN
 
 
 \begin{thebibliography}{9}
