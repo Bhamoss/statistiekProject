@@ -97,67 +97,72 @@ Met dit alles samen kunnen we besluiten dat de meeste Afrikaanse landen die deve
 \section{Principaalcomponentenanalyse}
 %todo herschrijven, enkel naar geschaalde data kijken
 
-Voor de principaalcomponentenanalyse wordt enkel gekeken naar de niet geschaalde gegevens. Dit zagen we al in de vorige sectie dat de geschaalde gegevens voor minder goede resultaten zorgden. Om voor de principaalcomponenten toch zeker te zijn dat de niet geschaalde gegevens hiervoor ook beter zijn, werd toch eens een vergelijking gedaan. In tabel \ref{table:pcaScaledVSNot} is deze vergelijking te zien. De eerste zes principaalcomponenten van de originele data verklaren ongeveer 95\% van de variantie van de data. Bij de geschaalde gegevens verklaren de eerste zes slechts 60\% van die variantie. Om aan 95\% te komen zijn er bij de geschaalde data 23 principaalcomponenten nodig. 
+Voor de principaalcomponentenanalyse wordt enkel gekeken naar de geschaalde gegevens. De eerste vier principaalcomponenten verklaren ongeveer 52\% van de variantie van de geschaalde data. Vanaf de vijfde principaalcomponent zijn de verschillen van de cumulatieve proporties van de variantie tussen de opeenvolgende principaalcomponenten kleiner. Dit is ook te zien in tabel \ref{table:pca} Daarom gaan we hier verder met enkel de vier eerste principaal componenten.
 
 \begin{table}[ht]
 	\centering
-\begin{tabular}{lcccccc}
+\begin{tabular}{cccccc}
 	\hline 
-	& PC1 & PC2 & PC3 & PC4 & PC5 & PC6 \\ 
-	\hline 
-	Originiele data & 68.9\% & 81.4\% & 86.4\% & 90.4\% & 93.1\% & 95.2\% \\ 
-	%\hline 
-	Geschaalde data & 29.7\% & 40.4\% & 46.5\% & 52.3\% & 56.5\% & 60.4\%\\ 
+	PC1 & PC2 & PC3 & PC4 & PC5 & PC6 \\ 
+	29.7\% & 40.4\% & 46.5\% & 52.3\% & 56.5\% & 60.4\%\\ 
 	\hline 
 \end{tabular} 
-\caption{De cumulatieve proportie van de variantie van de eerste zes principaalcomponenten van zowel de originele als de geschaalde data.}
-\label{table:pcaScaledVSNot}
+\caption{De cumulatieve proportie van de variantie van de eerste zes principaalcomponenten van de geschaalde data.}
+\label{table:pca}
 \end{table}
 
-We hebben besloten om hier verder te gaan met de eerste vier principaalcomponenten aangezien ze 90\% van de variantie van de data beschrijven. 
 
 \subsection{PC1}
-Voor de variarbelen \textit{Malignant Neoplasms} en \textit{Cardiovascular Diseases} vinden we hoge positieve waarden, respectievelijk 0.33 en 0.66. De grootste negatieve waarde voor de eerste principaalcomponent is -0.62 van de variabele \textit{Infections and Parasitic Diseases}. Dit betekent dus bij een hogere PC1 dat er meer doodsoorzaken zijn van \textit{Malignant Neoplasms} en \textit{Cardiovascular Diseases} en minder van \textit{Infections and Parasitic Diseases}. 
+Voor de \textit{Communicable, maternal, perinatal and nutritional conditions}, de meeste \textit{Unintentional Injuries}, \textit{Congenital Anomalies} en \textit{Sudden Infant Death Syndrome} vinden we de meest negatieve waarden tussen -0.2 en -0.3. De grootste positieve waarden vinden we voor de variabelen \textit{Malignant Neoplasms} en \textit{Cardiovascular Diseases} vinden we hoge positieve waarden, respectievelijk 0.28 en 0.23. Bij hogere PC1 waarden zullen er meer doden vallen door \textit{Malignant Neoplasms} en \textit{Cardiovascular Diseases}.
 
-Als we dit bekijken voor de landen dan vinden we zeven landen met een lagere PC1 dan de rest. Deze landen zijn \textit{Angola}, \textit{Central African Republic}, \textit{Kenya}, \textit{Lesotho}, \textit{Mozambique}, \textit{South Sudan} en \textit{Zambia}. Wat hier opvalt, is dat deze landen allemaal in Afrika liggen. Als we dan kijken naar de landen met een opvallend hogere PC1 waarde, dan zien we dat merendeel in Europa gelegen is. Om in het algemeen te kijken naar alle landen vergelijken we de landen met een positieve PC1 met de landen met een negatieve. Hieruit vinden we dat er 66\% van de negatieve PC1 waarden uit Afrika komen en 93\% van de positieve waarden komen uit de andere regio's verschillend van Afrika. We kunnen dus uit PC1 Afrika gaan onderscheiden van de andere regio's.
+Als we dit bekijken voor de landen dan vinden we dat alle Europese landen de meest positieve PC1 waarden hebben en de meeste Afrikaanse landen de meest negatieve PC1 waarden. Dit is te zien in figuur \ref{fig:vglPC}. Uit deze figuur kunnen we ook afleiden dat Amerikaanse landen voornamelijk een positieve PC1 waarde hebben. Voor de volgende besprekingen van PC2, PC3 en PC4 kan figuur \ref{fig:vglPC} ook steeds worden gebruikt ter verduidelijking. We kunnen besluiten dat landen met een sterk negatieve PC1 waarde uit de regio Afrika komen. Bij een sterk positieve PC1 waarde is de kans het grootst dat het land in Europa gelegen is. 
 
-De ontwikkeling afleiden uit PC1 is deels mogelijk. Alle landen die ontwikkeld zijn of in een overgang zitten naar ontwikkeld, hebben allemaal een positieve PC1. Voor de ontwikkelingslanden heeft 50\% een positieve en 50\% een negatieve PC1. Als we dit dan koppelen aan de regio's kunnen we de ontwikkeling gaan afleiden uit de regio waar de negatieve PC1 waarden voorkomen. Dit betekent dus dat een land die in Afrika gelegen is en een negatieve PC1 waarde heeft, hoogstwaarschijnlijk een ontwikkelingsland zal zijn. Landen die in een andere regio dan Afrika liggen en een positieve PC1 hebben, zijn ofwel ontwikkelde landen ofwel overgangslanden. We merken ook op dat de landen in Azi\"e bijna allemaal ontwikkelingslanden zijn. 
+Bij het kijken naar de ontwikkeling, zien we dat de ontwikkelingslanden overal verspreid zitten. De overgangs- en ontwikkelde landen hebben een grote positieve waarde. Dit hangt natuurlijk ook samen met het feit dat de meeste overgangs- en ontwikkelde landen in Europa liggen. We kunnen hier een vrij gelijkaardig besluit trekken als hierboven namelijk: bij een sterk negatieve PC1 waarde zal het land een ontwikkelingsland zijn en bij een sterk positieve PC1 waarde zal het land waarschijnlijk een ontwikkeld of overgangsland zijn.
+
+
 
 \subsection{PC2}
-De meest positieve waarden voor PC2 zijn voor de variabelen \textit{Cardiovascular Diseases} en \textit{Infectious and Parasitic Diseases}, met de respectievelijke waarden 0.66 en 0.31. De meest negatieve waarde -0.58 hoort bij de variabele \textit{Malignant Neoplasms}. Dit betekent bij een hogere PC2 waarde dat er minder doden door \textit{Malignant Neoplasms} zijn en juist meer door  \textit{Cardiovascular Diseases} en \textit{Infectious and Parasitic Diseases}. 
+De meest positieve waarden voor PC2 zijn voor de variabelen \textit{Diabetes Mellitus} en \textit{Cardiovascular Diseases}, met de respectievelijke waarden 0.16 en 0.18. Voor de variabelen \textit{Other Neoplasms}, \textit{Musculoskeletal Diseases}, \textit{Falls} en \textit{Other Unintentional Injuries} vinden we de meest negatieve PC2 waarden. Deze waarden zijn respectievelijk -0.31, -0.37, -0.29 en -0.31. 
 
-Het grootste deel van de landen die een positieve PC2 waarde hebben, zijn landen die in Azi\"e en Afrika liggen. Daar zijn er dus meer doden door \textit{Cardiovascular Diseases} en \textit{Infectious and Parasitic Diseases}. Over de negatieve PC2 waarden zijn er niet echt regio's uit af te leiden. Voornamelijk Amerikaanse en Europese landen hebben het grootste aandeel bij de negatieve waarden en minder opvallend bij de positieve. Wat er ook duidelijk te zien is, is dat er maar een paar Afrikaanse landen een negatieve waarde hebben. Om betere conclusies te trekken, zouden we naar de extremere positieve en negatieve waarden kunnen kijken, maar daarbij valt er nog altijd niets beters te concluderen. 
+De PC2 waarden per regio zijn redelijk verspreid en is er niet direct een conclusie uit te trekken dat in de ene regio opmerkelijk veel landen met hoge of lage PC2 waarden zijn. De enige bemerking die hier kan gemaakt worden is dat Amerikaanse en Europese landen vooral negatieve PC2 waarden hebben. Landen uit Oceani\"e hebben posieve PC2 waarden. 
 
-Voor de ontwikkeling van de landen zien we dat bij een positieve PC2 het grootste deel bij de ontwikkelingslanden zit. Ontwikkelde landen hebben hebben bijna allemaal een negatieve PC2, maar ook 33\% van de ontwikkelingslanden hebben een negatieve PC2. 
+Bij ontwikkeling is vooral te zien dat de overgangslanden positieve PC2 waarden hebben en de ontwikkelde landen voornamelijk negatieve PC2 waarden. De waarden van de ontwikkelingslanden liggen nogal verspreid.
 
-We besluiten hieruit dat de positieve PC2 waarden hoogstwaarschijnlijk landen die in Azi\"e of Afrika liggen en ontwikkelingslanden zijn. Bij een negatieve PC2 waarde is de kans het grootst dat het een Amerikaans ontwikkelingsland of een Europees ontwikkeld land is. Als het een Aziatisch land is, dan is dat land een ontwikkelingsland bij een negatieve PC2 waarde.
+
+
+
+
 
 \subsection{PC3}
-Bij PC3 waarden vinden we voor volgende drie verandelijken de meest in het oog springende waarden: \textit{Malignant Neoplasms}, \textit{Infectious and Parasitic Diseases} en \textit{Diabetes Mellitus}. De waarden zijn respectievelijk -0.47, -0.51 en 0.53. Deze principaalcomponent kijk dus naar het verschil tussen de eerste twee en de laatst genoemde variabelen. 
+Voor de derde principaalcomponent zijn de grootste waarden 0.31 en 0.34 voor de variabelen \textit{Mental and Substance Use Disorder} en \textit{Self Harm}. Deze twee variabele zijn wel met elkaar in verband te brengen aangezien de doodsoorzaak \textit{Self Harm} vaak gepaard zal gaan met psychische stoornissen en verslavingen. De meest negatieve PC3 waarde is van de variabele \textit{Endocrine Blood Immune Disorder} met als waarde -0.30.
 
-Als we naar de regio's kijken van de landen, zien we dat de lagere PC3 waarden voornamelijk uit de regio's Europa en Afrika komen. De opvallend positieve waarden komen uit de regio's Amerika, Azi\" en Oceani\"e. Voor de ontwikkeling hebben alle ontwikkelde landen een negatieve PC3 waarde, voor de andere waarden is dit wat meer verdeeld en komen extremen in beide gevallen voor. 
+Bij deze principaalcomponent is het enkel opvallend dat alle landen uit Oceani\"e een negatieve PC3 waarde hebben. Bij Aziatische landen komen voornamelijk positieve waarden voor, ook de meest positieve waarden komen van landen uit Azi\"e. Landen uit de andere regio's hebben PC3 waarden die zowel positief als negatief zijn. 
+
+
+Overgangslanden hebben hier hoge PC3 waarden, over de andere ontwikkelingen van landen valt er verder niets te vertellen.
+
 
 \subsection{PC4}
-De vierde principaalcomponent vergelijkt de variabele \textit{Diabetes Mellitus} met \textit{Collective Violence and Legal Intervention} en \textit{Neurological Conditions}. De PC4 waarden van deze drie variabelen zijn respectievelijk 0.76, -0.34 en -0.23. 
+De vierde principaalcomponent vergelijkt de variabele \textit{Interpersonal Violence} met \textit{Neurological Conditions} en \textit{Falls}. De PC4 waarden van deze drie variabelen zijn respectievelijk -0.48, 0.22 en 0.26. Hoe hoger de PC4 waarde, hoe meer \textit{Interpersonal Violence} er is in dat land. 
 
-Bij het kijken naar de regio's en ontwikkeling zien we dat deze over het algemeen rond 0 hangen, al zijn er een paar ontwikkelingslanden die toch relatief grote PC4 waarden hebben. Deze landen zijn twee landen uit Oceani\"e en drie Amerikaanse, nl.  Micronesia en Tonga (eilanden van Oceani\"e) en Antigue en Barbuda, Grenada en Saint Vincent and the Grenadines (allemaal eilanden in de buurt van de Caribische Zee). Op deze eilanden is de PC4 het hoogst en zijn er daar meer doden door \textit{Diabetes Mellitus} en minder door \textit{Collective Violence and Legal Intervention} en \textit{Neurological Conditions}.\\
 
-In figuur \ref{fig:vglPC} staan de plots van de PC1 waarden t.o.v. de PC2, PC3 en PC4 waarden. Hieruit zijn de meest getrokken conclusies ook zichtbaar adhv de kleurtjes en figuurtjes gebruikt voor de verschillende regio's en ontwikkelingen. 
-%TODO herbekijken van die figuren en telkens bij elk subsection hierover extra uitleg geven
-%TODO IS DIT NODIG?????????????????????????
+De meeste Europese en Afrikaanse landen hebben een positieve PC4 waarde en de meeste Amerikaanse landen hebben een negatieve PC4 waarde. 
+
+Ontwikkelde en overgangslanden hebben bijna allemaal een positieve PC4 waarde. Er is 1 ontwikkeld land die geen positieve PC4 waarde heeft en dat is Isra\"el. Dit is te verklaren omdat Isra\"el een geweldadiger land is dan de rest van de ontwikkelde landen. 
+
+
 
 \section{Multivariate Normaliteit}
 Om de multivariate normaliteit van de data na te gaan moeten we eerst en vooral kijken of alle variabelen wel univariaat normaal verdeeld zijn. De univariate testen tonen aan dat alle variabelen niet univariaat normaal verdeeld zijn. Hierdoor kan de data ook geen multivariate normaliteit hebben. Ook na het toepassen van de \textit{logit} transformatie was geen enkele variabele normaal verdeeld. 
 
-We kunnen hieruit dus besluiten dat de gegevens niet multivariaat normaal verdeeld zijn en we in de volgende sectie over classificatie geen methodes moeten toepassen waarvoor deze eigenschap vereist is. %TODO neit naar a posteriori kansen kijken
-
+We kunnen hieruit dus besluiten dat de gegevens niet multivariaat normaal verdeeld zijn en we in de volgende sectie over classificatie geen methodes moeten toepassen waarvoor deze eigenschap vereist is. Het zal dus nutteloos zijn van naar de a posteriori-kansen te kijken. 
 
 
 \section{Classificatie}
 Bij de classificatie gaan we na in hoeverre het mogelijk is om de regio en ontwikkeling van een land te identificeren a.d.h.v. de doodsoorzaken. Er wordt gebruik gemaakt van de lineaire discriminantmethode en \textit{k-nearest neighbours} methode. Het was niet mogelijk van de kwadratische discriminantmethode toe te passen op de data omdat sommige groepen te klein zijn en er niet genoeg data over is.
 
 \subsection{Regio} %TODO percentages bij lda en knn bijzetten ter verduidelijking
-Om classificatie toe te passen op de regio van landen, zien we dat bij elke methode de \textit{actual error rate} vrij groot is (tussen de 25\% en 30\%). Dit betekent dat het moeilijk is om effectief de regio te bepalen van een land als de doodsoorzaken gegeven zijn. 46 van de 183 landen worden verkeerd ingedeeld bij de lineaire discriminantmethode. Als we dan kijken naar de \textit{k-nearest neighbours} methode, dan zien we dat deze \textit{AER} iets groter is dan bij de LDA. Er werd gekeken naar \textit{k} = $\{2,3,4,5\}$. De beste methode voor het classificeren volgens de regio's is de lineaire discriminantmethode. 
+Om classificatie toe te passen op de regio van landen, zien we dat bij elke methode de \textit{actual error rate} vrij groot is (tussen de 25\% en 30\%). Dit betekent dat het moeilijk is om effectief de regio te bepalen van een land als de doodsoorzaken gegeven zijn. 46 van de 183 landen worden verkeerd ingedeeld bij de lineaire discriminantmethode. Als we dan kijken naar de \textit{k-nearest neighbours} methode, dan zien we dat deze \textit{AER} (30\%) iets groter is dan bij de LDA (25\%). Er werd gekeken naar \textit{k} = $\{2,3,4,5\}$. De beste methode voor het classificeren volgens de regio's is de lineaire discriminantmethode. 
 
 Het is opmerkelijk dat alle Europese landen juist ingedeeld worden als een Europees land. Er zijn wel relatief veel landen uit andere regio's die ook als Europees land worden ingedeeld. 
 

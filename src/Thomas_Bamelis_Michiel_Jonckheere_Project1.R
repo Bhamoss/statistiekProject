@@ -11,8 +11,7 @@
 ###############   Load and format data   ##################
 ###########################################################
 
-# TODO: remove comments starting with #* to #* because they are for team communication and clarification
- 
+
 # set wd
 wd = dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(wd)
@@ -21,7 +20,6 @@ setwd(wd)
 deaths = read.csv2(file = "deaths.csv",header = TRUE, row.names = "State")
 
 # Rescale deaths to percentage of deaths of the country
-#* TODO: chech to make sure we shouldnt use a scale method, the default scale() method doesnt work. I checked it.
 c = deaths[,5:36]
 c = prop.table(as.matrix(c),1)
 deaths[,5:36] = c[,1:32]
@@ -39,28 +37,6 @@ library(car)
 library(class)
 library(klaR)
 
-#*
-# making sure the sum of the rows for the desease is 1
-#isOne = TRUE
-#for (i in 1:nrow(deaths)) {
-#  print(sum(deaths[i,6:ncol(deaths)]))
-#  if (abs( sum(deaths[i,6:ncol(deaths)]) - 1) > 0.0000001)
-#  {
-#    isOne = FALSE
-#  }
-#}
-#isOne
-#sum(deaths[,5:36])
-#
-# prop.table rescales the row to proportions, which is exactly as we want. I checked if it did what we want/need with the following code
-#prop.table(as.matrix(c[1,]),1)
-#c[1,] / sum(c[1,])
-#prop.table(as.matrix(c[1,]),1) * sum(c[1,])
-#sum(prop.table(as.matrix(c[1,]),1))
-#prop.table(c(50,25,25))
-#sum(c[1,])
-#typeof(prop.table(as.matrix(c),1))
-#*
 
 
 
@@ -71,7 +47,6 @@ library(klaR)
 
 library(cluster)
 
-#* pca before clustering?
 
 
 
@@ -80,10 +55,6 @@ library(cluster)
 clusteringAnalysis <- function(clustFeatures, name)
 {
 
-#*
-#clustFeatures
-#sum(clustFeatures[1,])
-#*
 
 # estimating how many clusters are needed
 
@@ -104,7 +75,6 @@ cl.diana = diana(clustFeatures)
 
 
 # plotting dendogram and  and saving the plot
-#* drawing very wide to be able to read the country codes on the figure
 svg(filename=paste("hierachicalClustering", name ,".svg", sep = ""),
     width=30, 
     height=5*4, 
@@ -130,7 +100,6 @@ dev.off()
 
 par(mfrow=c(1,1))
 
-#* Looking at the returned figure, 4 or 5 classes seem like a reasonable choice
 
 # clustering algorithms
 #kmeans
@@ -163,7 +132,6 @@ cl.f3 = fanny(x = clustFeatures, k3)
 
 
 # plotting silhouette and clusplots and  and saving the plot
-#* drawing very wide to be able to read the country codes on the figure
 svg(filename=paste("clusteringEvaluation", name ,".svg", sep = ""), 
     width=30, 
     height=5*9, 
@@ -173,7 +141,6 @@ svg(filename=paste("clusteringEvaluation", name ,".svg", sep = ""),
 # prepare to combine the plots
 par(mfrow=c(9,2))
 
-#* apparently, you cannot make silhouette or clusplots from kmeans
 
 plot(silhouette(cl.k1$cluster, daisy(clustFeatures)))
 clusplot( clustFeatures , cl.k1$cluster , main = paste("Clusplot kmeans with k =",toString( length(unique(cl.k1$cluster))),sep = " "))
@@ -244,7 +211,6 @@ text(28,0.25, labels = c("Communicable, maternal,\n perinatal and nutritional co
 text(28,0.21, labels = c("Noncommunicable diseases"), col = 3)
 text(28,0.18, labels = c("Injuries"), col = 4)
 
-#* swerelds lelijkste figuur
 
 dev.off()
 # this figure shows class 1 has higher Communicable, maternal, perinatal and nutritional conditions then class 2
@@ -272,26 +238,26 @@ print(xtable(table(cl$clustering, deaths[,3]), type = "latex"), file = "clusteri
 
 
 diseases = deaths[,5:36]
-diseases.pca = prcomp(diseases, scale=FALSE) #geen scaling
+diseases.pca = prcomp(diseases, scale = TRUE) # scaling
 plot(diseases.pca)
 summary(diseases.pca)
 attributes(diseases.pca)
-P = diseases.pca$rotation; P[,1:4] # enkel PC1-PC4 hier bekijken, want die verklaren 90% van de variantie van de data
+P = diseases.pca$rotation; P[,1:4] # enkel PC1-PC4 hier bekijken, want die verklaren 52% van de variantie van de data, vanaf dan minder grote verschillen tussen de cumulatieve prop var
 Y = predict(diseases.pca); Y[,1:4] # idem als hierboven
 colSums(P^2)
 
 
 #analyse op de PC1 - 4
-P[P[,1]>0.1 | P[,1] < -0.2,1:4] # Malignant neoplasms en cardiovascular diseases zijn grootste positieve PC1, resp 0.33, 0.66
-P[P[,1] < -0.1,1:4] # Infectious and parasitic diseases grootste negatieve met -0.62
+P[P[,1]>0.2 | P[,1] < -0.3,1:4] 
+P[P[,1] < -0.1,1:4] 
 
-P[P[,2]>0.1 | P[,2] < -0.1,2:4] # Cardiovascular diseases grootste positieve voor PC2, 0.67 (Infectious and parasitic diseases heeft 0.31)
-P[P[,2] < -0.1,1:4] # Malignant neoplasms grootste negatieve met -0.58
+P[P[,2]>0.1 | P[,2] < -0.27,2:4]
+P[P[,2] < -0.1,1:4] 
 
-P[P[,3]>0.1 | P[,3] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC3, 0.53 (Collective violence and legal intervention 0.28)
-P[P[,3] < -0.1,1:4] # Malignant neoplasms en Infectious and parasitic diseases grootste negatieve met -0.47 en -0.51
+P[P[,3]>0.30 | P[,3] < -0.25,3:5]
+P[P[,3] < -0.1,1:4] 
 
-P[P[,4]>0.1 | P[,4] < -0.1,1:4] # Diabetes mellitus grootste positieve voor PC4, 0.76P[P[,4] < -0.1,1:4] # Collective violence and legal intervention en Neurological conditions grootste negatieve met -0.34 en -0.23
+P[P[,4]>0.2 | P[,4] < -0.4,4:6] 
 
 PCHigh = diseases.pca$x > 0 # PC's zijn groot
 PCLow = diseases.pca$x < 0 # PC's zijn klein, PCLow[,1] = alle lage PC1
@@ -318,15 +284,16 @@ table(deaths$Developement[PCLow[,3]], deaths$Region[PCLow[,3]])
 
 table(deaths$Developement[PCHigh[,4]])
 table(deaths$Developement[PCLow[,4]])
-
-PCExtrHigh = diseases.pca$x > 0.09 # PC's zijn groot
-PCExtrLow = diseases.pca$x < -0.05 # PC's zijn klein, PCLow[,1] = alle lage PC1
-row.names.data.frame(deaths)[PCExtrLow[,3]] # return de landen
-table(deaths$Region[PCExtrLow[,3]])
-row.names.data.frame(deaths)[PCExtrHigh[,4]] # return de landen
-table(deaths$Region[PCExtrHigh[,4]])
-table(deaths$Developement[PCExtrLow[,3]],deaths$Region[PCExtrLow[,3]])
-table(deaths$Developement[PCExtrHigh[,3]],deaths$Region[PCExtrHigh[,3]])
+i = 4
+PCExtrHigh = diseases.pca$x > 2 # PC's zijn groot
+PCExtrLow = diseases.pca$x < -2 # PC's zijn klein, PCLow[,1] = alle lage PC1
+row.names.data.frame(deaths)[PCExtrLow[,i]] # return de landen
+table(deaths$Region[PCExtrLow[,i]])
+row.names.data.frame(deaths)[PCExtrHigh[,i]] # return de landen
+table(deaths$Region[PCExtrHigh[,i]])
+table(deaths$Developement[PCExtrLow[,i]],deaths$Region[PCExtrLow[,i]])
+table(deaths$Developement[PCExtrHigh[,i]],deaths$Region[PCExtrHigh[,i]])
+row.names.data.frame(deaths)[80]
 
 tapply(Y[,1],deaths$Region,mean)
 tapply(Y[,2],deaths$Region,mean)
@@ -343,12 +310,12 @@ tapply(Y[,4],deaths$Developement,mean)
 par(mfrow=c(1,1))
 REGION = as.factor(levels(deaths$Region)); REGION
 DEV =  as.factor(levels(deaths$Developement))
-plot(Y[,1],Y[,2],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC2 ",xlab = "PC1",ylab="PC2",pch=as.numeric(deaths$Developement))
+plot(Y[,1],Y[,2],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC2 ",xlab = "PC4",ylab="PC1",pch=as.numeric(deaths$Developement))
 plot(Y[,1],Y[,3],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC3 ",xlab = "PC1",ylab="PC3",pch=as.numeric(deaths$Developement))
 plot(Y[,1],Y[,4],col=as.numeric(deaths$Region),main="PC1 t.o.v. PC4 ",xlab = "PC1",ylab="PC4",pch=as.numeric(deaths$Developement))
 
-legend("topleft", legend=c(levels(deaths$Region)), col=as.numeric(REGION), pch=1)
-legend("bottomleft", legend=c(levels(deaths$Developement)), pch=as.numeric(DEV), col=1)
+legend("bottomleft", legend=c(levels(deaths$Region)), col=as.numeric(REGION), pch=1)
+legend("bottomright", legend=c(levels(deaths$Developement)), pch=as.numeric(DEV), col=1)
 
 plot(Y[,4],Y[,2],col=as.numeric(deaths$Region),pch=as.numeric(deaths$Developement))
 legend("topleft", legend=c(levels(deaths$Region)), col=as.numeric(REGION), pch=1)
