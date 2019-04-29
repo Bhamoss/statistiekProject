@@ -142,6 +142,7 @@ Bij het kijken naar de regio's en ontwikkeling zien we dat deze over het algemee
 
 In figuur \ref{fig:vglPC} staan de plots van de PC1 waarden t.o.v. de PC2, PC3 en PC4 waarden. Hieruit zijn de meest getrokken conclusies ook zichtbaar adhv de kleurtjes en figuurtjes gebruikt voor de verschillende regio's en ontwikkelingen. 
 %TODO herbekijken van die figuren en telkens bij elk subsection hierover extra uitleg geven
+%TODO IS DIT NODIG?????????????????????????
 
 \section{Multivariate Normaliteit}
 Om de multivariate normaliteit van de data na te gaan moeten we eerst en vooral kijken of alle variabelen wel univariaat normaal verdeeld zijn. De univariate testen tonen aan dat alle variabelen niet univariaat normaal verdeeld zijn. Hierdoor kan de data ook geen multivariate normaliteit hebben. Ook na het toepassen van de \textit{logit} transformatie was geen enkele variabele normaal verdeeld. 
@@ -150,10 +151,22 @@ We kunnen hieruit dus besluiten dat de gegevens niet multivariaat normaal verdee
 
 
 \section{Classificatie}
+Bij de classificatie gaan we na in hoeverre het mogelijk is om de regio en ontwikkeling van een land te identificeren a.d.h.v. de doodsoorzaken. Er wordt gebruik gemaakt van de lineaire discriminantmethode en \textit{k-nearest neighbours} methode. Het was niet mogelijk van de kwadratische discriminantmethode toe te passen op de data omdat sommige groepen te klein zijn en er niet genoeg data over is. KLOPT DIT???????
+
+\subsection{Regio}
+Om classificatie toe te passen op de regio van landen, zien we dat bij elke methode de \textit{actual error rate} vrij groot is (tussen de 25\% en 30\%). Dit betekent dat het moeilijk is om effectief de regio te bepalen van een land als de doodsoorzaken gegeven zijn. 46 van de 183 landen worden verkeerd ingedeeld bij de lineaire discriminantmethode. Als we dan kijken naar de \textit{k-nearest neighbours} methode, dan zien we dat deze \textit{AER} iets groter is dan bij de LDA. Er werd gekeken naar k = $\{2,3,4,5\}$. De beste methode voor het classificeren volgens de regio's is de lineaire discriminantmethode. 
+
+Het is opmerkelijk dat alle Europese landen juist ingedeeld worden als een Europees land. Er zijn wel relatief veel landen uit andere regio's die ook als Europees land worden ingedeeld. 
+
+\subsection{Ontwikkeling}
+Om de ontwikkeling van de landen na te gaan met behulp van de doodsoorzaken, verkregen we betere error ratio's. Deze lagen allemaal dicht bij elkaar rond de 12\%. De beste \textit{AER} verkregen we bij de \textit{8-nearest neighbours} methode. Hierbij werden 21 van de 183 landen verkeerd ingedeeld volgens hun ontwikkeling. Deze landen komen voornamelijk uit Europa, Azi\"e en Amerika. De meeste landen die verkeerd ingedeeld worden zijn ontwikkelingslanden of overgangslanden en worden als ontwikkeld land geclassificeerd. Ontwikkelde landen die verkeerd zijn ingedeeld worden als een overgangsland ingedeeld. 
+
+In de data zit er \'e\'en speciaal land (Congo) waarvan de ontwikkeling niet gekend is. Dit land wordt ingedeeld als een ontwikkelingsland. Aangezien Congo in Afrika ligt en we uit de gegeven data konden opmerken dat alle landen uit Afrika ontwikkelingslanden zijn, kunnen we hier wel concluderen dat Congo een ontwikkelingsland is. 
+%TODO kijken welke oorzaken er doorslaggevend zijn bij beiden, partimat met thomas bekijken
 
 \section*{Besluit}
 
-TODO
+%TODO BESLUIT SCHRIJVEN
 
 
 \begin{thebibliography}{9}

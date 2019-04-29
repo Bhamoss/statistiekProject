@@ -50,7 +50,7 @@ library(klaR)
 #  }
 #}
 #isOne
-#sum(deaths[,6:37])
+#sum(deaths[,5:36])
 #
 # prop.table rescales the row to proportions, which is exactly as we want. I checked if it did what we want/need with the following code
 #prop.table(as.matrix(c[1,]),1)
@@ -358,8 +358,8 @@ pairs(cbind(X),col=as.numeric(deaths$Region))
 
 
 
-diseases = deaths[,6:37]
-pca.pc = prcomp(scale(deaths[,6:37]))
+diseases = deaths[,5:36]
+pca.pc = prcomp(scale(deaths[,5:36]))
 pca.su = summary(pca.pc)
 pca.var = pca.pc$sdev^2/sum(pca.pc$sdev^2)
 pca.cum = 1:32
@@ -407,40 +407,40 @@ svg(filename="pcaTop4.svg",
 par(mfrow=c(4,2))
 
 i = sort(abs(pca.pc$rotation[1,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
-print(names(deaths[,6:37])[i])
+print(names(deaths[,5:36])[i])
 barplot(pca.pc$rotation[1,], main = "Weights of PC1", xlab = "Diseases", ylab = "Coefficients")
-text(i[1:5]*1.15, pca.pc$rotation[1,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, pca.pc$rotation[1,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, pca.pc$rotation[1,i[1:5]]*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[1,i[6:10]]*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 barplot( abs(pca.pc$rotation[1,]),  main = "Absolut weights of PC1", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[1,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[1,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[1,i[1:5]])*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[1,i[6:10]])*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 
 i = sort(abs(pca.pc$rotation[2,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
-print(names(deaths[,6:37])[i])
+print(names(deaths[,5:36])[i])
 barplot(pca.pc$rotation[2,], main = "Weights of PC2", xlab = "Diseases", ylab = "Coefficients")
-text(i[1:5]*1.15, pca.pc$rotation[2,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, pca.pc$rotation[2,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, pca.pc$rotation[2,i[1:5]]*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[2,i[6:10]]*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 barplot(abs(pca.pc$rotation[2,]),  main = "Absolut weights of PC2", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[2,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[2,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[2,i[1:5]])*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[2,i[6:10]])*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 
 i = sort(abs(pca.pc$rotation[3,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
-print(names(deaths[,6:37])[i])
+print(names(deaths[,5:36])[i])
 barplot(pca.pc$rotation[3,], main = "Weights of PC3", xlab = "Diseases", ylab = "Coefficients")
-text(i[1:5]*1.15, pca.pc$rotation[3,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, pca.pc$rotation[3,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, pca.pc$rotation[3,i[1:5]]*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[3,i[6:10]]*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 barplot(abs(pca.pc$rotation[3,]),  main = "Absolut weights of PC3", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[3,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[3,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[3,i[1:5]])*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[3,i[6:10]])*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 
 i = sort(abs(pca.pc$rotation[4,]), index.return=TRUE, decreasing = TRUE)$ix[1:10]
-print(names(deaths[,6:37])[i])
+print(names(deaths[,5:36])[i])
 barplot(pca.pc$rotation[4,], main = "Weights of PC4", xlab = "Diseases", ylab = "Coefficients")
-text(i[1:5]*1.15, pca.pc$rotation[4,i[1:5]]*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, pca.pc$rotation[4,i[6:10]]*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, pca.pc$rotation[4,i[1:5]]*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, pca.pc$rotation[4,i[6:10]]*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 barplot(abs(pca.pc$rotation[4,]),  main = "Absolut weights of PC4", xlab = "Diseases", ylab = "Absolute value of coefficients")
-text(i[1:5]*1.15, abs(pca.pc$rotation[4,i[1:5]])*0.95, labels = substr( names(deaths[,6:37])[i[1:5]],1,3), col = "red")
-text(i[6:10]*1.15, abs(pca.pc$rotation[4,i[6:10]])*0.95, labels = substr( names(deaths[,6:37])[i[6:10]],1,3), col = "blue")
+text(i[1:5]*1.15, abs(pca.pc$rotation[4,i[1:5]])*0.95, labels = substr( names(deaths[,5:36])[i[1:5]],1,3), col = "red")
+text(i[6:10]*1.15, abs(pca.pc$rotation[4,i[6:10]])*0.95, labels = substr( names(deaths[,5:36])[i[6:10]],1,3), col = "blue")
 
 dev.off()
 
@@ -675,7 +675,7 @@ for (i in 1:p) {
 
 for (i in 1:p) {
   #if (shapiro.test(logit(X[,i]))$p.value > 0.05) {
-    qqnorm(sqrt(X[,i]), main = (shapiro.test(sqrt(X[,i]))$p.value > 0.05)); qqline(sqrt(X[,i]))
+    qqnorm(logit(X[,i]), main = (shapiro.test(logit(X[,i]))$p.value > 0.05)); qqline(logit(X[,i]))
   #}
 }
 
@@ -824,27 +824,37 @@ multiNormality(transition, "Transition")
 #LDA
 region = deaths$Region; region
 i = which(is.na(region)); i # geen NA waarden
-X = cbind(deaths[,6:37])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
+X = cbind(deaths[,5:36])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
 y = region; y
 table(y)
 orig.lda.CV = lda(X,y,CV=TRUE)$class; orig.lda.CV
 orig.lda.AER = table(orig.lda.CV,y); orig.lda.AER
 sum(orig.lda.AER-diag(diag(orig.lda.AER)))/sum(orig.lda.AER) 
-
+dim(deaths)[1]
+row.names.data.frame(deaths)[deaths$Region != "Europe" & orig.lda.CV == "Europe"] # return de landen
+table(deaths$Developement[deaths$Region != "Europe" & orig.lda.CV == "Europe"])
+#1+2+4+8+7+3+5+10+2+1+3
 #QDA kan niet worden uitgevoerd, want meer kolommen dan de smallest van de klassen
 #   kan opgelost worden door kolommen te verwijderen 
+
+X = deaths[deaths$Region != "Oceania",]
+X = droplevels(X)
+y = X$Region
+table(y)
+levels(y); 
+orig.qda = predict(qda(X,y))$posterior
 
 #idee: ipv alle variablen te bekijken, hier enkel de groepen (communicable, non-comm en injuries)
 #   dus alles optellen 
 # werkt ook niet 
-comm = rowSums(deaths[, 6:10]); comm
-noncomm = rowSums(deaths[, 11:26]); noncomm
-inj = rowSums(deaths[, 27:37]); inj
-rowSums(cbind(comm, noncomm,inj)) # moeten allemaal 1 zijn
-deathsTogether = cbind(deaths[,1:5], comm, noncomm, inj)
-X = cbind(deathsTogether[,6:8]); X
-y = deathsTogether$Region; y
-orig.qda = predict(qda(X,y))$posterior
+# comm = rowSums(deaths[, 6:10]); comm
+# noncomm = rowSums(deaths[, 11:26]); noncomm
+# inj = rowSums(deaths[, 27:37]); inj
+# rowSums(cbind(comm, noncomm,inj)) # moeten allemaal 1 zijn
+# deathsTogether = cbind(deaths[,1:5], comm, noncomm, inj)
+# X = cbind(deathsTogether[,6:8]); X
+# y = deathsTogether$Region; y
+# orig.qda = predict(qda(X,y))$posterior
 # weer geen qda, omwille van te kleine groepen voor qda
 library(class)
 orig.knn5.cv = knn.cv(train=X,cl=y,k=5); orig.knn5.cv
@@ -867,11 +877,12 @@ orig.knn1.cv = knn.cv(train=X,cl=y,k=1); orig.knn1.cv
 orig.knn1.AER = table(orig.knn1.cv,y); orig.knn1.AER
 sum(orig.knn1.AER-diag(diag(orig.knn1.AER)))/sum(orig.knn1.AER)
 
+table(orig.knn4.cv,orig.lda.CV)
 
 #LDA
 dev = deaths$Developement; dev
 # i = which(dev == "#N/B"); i # de #N/B eruit halen
-X = cbind(deaths[,6:37])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
+X = cbind(deaths[,5:36])[,-(c(12,20))] # constanten eruit smijten, 12 en 20
 y = dev; y
 table(y)
 orig.lda.CV = lda(X,y,CV=TRUE)$class; #orig.lda.CV
@@ -879,9 +890,13 @@ orig.lda.AER = table(orig.lda.CV,y); orig.lda.AER
 sum(orig.lda.AER-diag(diag(orig.lda.AER)))/sum(orig.lda.AER) 
 
 library(class)
-orig.knn5.cv = knn.cv(train=X,cl=y,k=5); #orig.knn5.cv
+orig.knn5.cv = knn.cv(train=X,cl=y,k=8); #orig.knn5.cv
 orig.knn5.AER = table(orig.knn5.cv,y); orig.knn5.AER
 sum(orig.knn5.AER-diag(diag(orig.knn5.AER)))/sum(orig.knn5.AER)
+row.names.data.frame(deaths)[deaths$Developement != orig.knn5.cv] # return de landen
+table(deaths$Region[deaths$Developement != orig.knn5.cv])
+table(deaths$Developement[deaths$Developement != orig.knn5.cv])
+
 
 orig.knn4.cv = knn.cv(train=X,cl=y,k=4); orig.knn4.cv
 orig.knn4.AER = table(orig.knn4.cv,y); orig.knn4.AER
@@ -894,12 +909,13 @@ sum(orig.knn3.AER-diag(diag(orig.knn3.AER)))/sum(orig.knn3.AER)
 orig.knn2.cv = knn.cv(train=X,cl=y,k=2); #orig.knn2.cv
 orig.knn2.AER = table(orig.knn2.cv,y); orig.knn2.AER
 sum(orig.knn2.AER-diag(diag(orig.knn2.AER)))/sum(orig.knn2.AER)
+sum(table(orig.knn5.cv, orig.lda.CV)-diag(diag(table(orig.knn5.cv, orig.lda.CV))))/sum(table(orig.knn5.cv, orig.lda.CV))
+table(orig.knn5.cv, orig.lda.CV)
 
-
-
-cla.dat = deaths[,6:37]
-cla.region = deaths[,3]
-cla.development = deaths[,4]
+cla.dat = deaths[,5:36]
+cla.dat = cla.dat[-c(12,20)]
+cla.region = deaths$Region
+cla.development = deaths$Developement
 cla.scaledDat = scale(cla.dat)
 
 # CV= TRUE?
@@ -910,8 +926,8 @@ cla.region.scaledLda = lda(cla.scaledDat, cla.region)
 #TODO: problem some classes do not have enough samples
 cla.region.qda = qda(cla.dat, cla.region)
 cla.region.scaledQda = qda(cla.scaledDat, cla.region)
-cla.region.knn5 = knn.cv(train=cla.dat ,cl=cla.region ,k=5)
-cla.region.scaledKnn5 = knn.cv(train=cla.scaledDat ,cl=cla.region ,k=5)
+cla.region.knn8 = knn.cv(train=cla.dat ,cl=cla.region ,k=8)
+cla.region.scaledKnn8 = knn.cv(train=cla.scaledDat ,cl=cla.region ,k=8)
 cla.region.knn3 = knn.cv(train=cla.dat ,cl=cla.region ,k=3)
 cla.region.scaledKnn3 = knn.cv(train=cla.scaledDat ,cl=cla.region ,k=3)
 cla.region.knn1 = knn.cv(train=cla.dat ,cl=cla.region ,k=1)
@@ -921,14 +937,29 @@ cla.development.lda = lda(cla.dat, cla.development)
 cla.development.scaledLda = lda(cla.scaledDat, cla.development)
 cla.development.qda = qda(cla.dat, cla.development)
 cla.development.scaledQda = qda(cla.scaledDat, cla.development)
-cla.development.knn5 = knn.cv(train=cla.dat ,cl=cla.development ,k=5)
+cla.development.knn8 = knn.cv(train=cla.dat ,cl=cla.development ,k=8)
 cla.development.scaledKnn5 = knn.cv(train=cla.scaledDat ,cl=cla.development ,k=5)
 cla.development.knn3 = knn.cv(train=cla.dat ,cl=cla.development ,k=3)
 cla.development.scaledKnn3 = knn.cv(train=cla.scaledDat ,cl=cla.development ,k=3)
 cla.development.knn1 = knn.cv(train=cla.dat ,cl=cla.development ,k=1)
 cla.development.scaledKnn1 = knn.cv(train=cla.scaledDat ,cl=cla.development ,k=1)
+X11(width=15, height=15)
+svg(filename=paste("partimatRegion.svg", sep = ""),
+    width=100, 
+    height=100, 
+    pointsize=12)
 
-partimat(cla.dat, cla.region, method='lda', imageplot=FALSE)
+partimat(cla.dat, cla.region, method='lda', imageplot=FALSE,mar=c(2,2,2,2))
+dev.off()
+svg(filename=paste("partimatDev.svg", sep = ""),
+    width=100, 
+    height=100, 
+    pointsize=12)
+
+partimat(deaths, deaths$Developement,method='sknn', imageplot=FALSE,mar=c(2,2,2,2))
+dev.off()
+
+
 partimat(cla.dat, cla.region, method='qda', imageplot=FALSE)
 # sknn is for knn
 partimat(cla.dat, cla.region, method='sknn', imageplot=FALSE)
