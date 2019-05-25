@@ -56,16 +56,19 @@ airbnb$date_compiled = as.Date("2019-04-13")
 datum = as.Date("2019-04-13");
 airbnb$date_compiled[airbnb$city == "Brussel"] = as.Date(datum)
 
+
 # last_review aanpassen Gent
-datum = as.Date("2019-04-16")
+datum = "2019-04-16"
 airbnb$date_compiled[airbnb$city == "Gent"] = as.Date(datum)
 
 # last_review aanpassen Antwerpen
-datum = as.Date("2019-04-20");
+datum = "2019-04-20";
 airbnb$date_compiled[airbnb$city == "Antwerpen"] = as.Date(datum)
+
 
 airbnb$last_review =  as.integer(airbnb$date_compiled) - as.integer(airbnb$last_review)
 # airbnb$last_review[is.na(airbnb$last_review)] = 
+
 
 attach(airbnb)
 
