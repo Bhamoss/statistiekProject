@@ -263,21 +263,143 @@ boxplot(log10(price[log10(price) <2.5])~room_type[log10(price)<2.5])
 # COnclusie, rekendehouden met de niet voldane veronderstellingen besluiten we dat het room_type inderdaad een siginificante invloed heeft op de
 # prijs en de prijzen ondeling significant verschillen
 
-# cities
+
+
+
+
+# ############     cities
 
 table(airbnb$city) # bevat geen NA's
 barplot(table(city))
 boxplot(price~city)
 boxplot(price[price <155]~city[price<155])
 
-TukeyHSD(aov(price~city))
-# Antwerpen verschilt sterk van de rest, Gent en brussel niet verworpen
-model.tables(aov(price~city), type="means")
-model.tables(aov(price~city), type="effects")
+cit.lmn = lm(price~city)
+qqnorm(cit.lmn$residuals)
+qqline(cit.lmn$residuals)
+
+summary(powerTransform(cit.lmn$residuals - min(cit.lmn$residuals) + 0.0001))
+# indicates a log transformation is in place
+
+cit.lms = lm(sqrt(price)~city)
+qqnorm(cit.lms$residuals)
+qqline(cit.lms$residuals)
+
+cit.lml = lm(log10(price[!is.na(price)])~city[!is.na(price)])
+qqnorm(cit.lml$residuals)
+qqline(cit.lml$residuals)
+# not normal, but is de meest gepaste geziene transformatie
 
 
-TukeyHSD(aov(price~neighbourhood))
+
+
+e = residuals(cit.lml)
+es = stdres(cit.lml)
+qqnorm(es,ylab="Standardized residuals")
+qqline(es)
+
+plot(e,xlab="Index",ylab="Residuals")
+# there does not seem to be correlation in time, wel meer outliers met positieve waarde
+
+
+plot(cit.lml$fitted.values,e)
+# ziet er redelijk aanvaardbaar uit, zelfs de variantie, behalve de outliers van de ereste
+
+# plot of residuals vs variables not possible because categorical regressor
+
+plot(es,xlab="Index",ylab="Standardized Residuals")
+abline(h=-2.5,lty=2)
+abline(h=2.5,lty=2)
+# 3 very heavy outliers
+# considerably more outliers on the uppper side
+
+summary(cit.lml)
+cit.aov = aov(log10(price[!is.na(price)])~city[!is.na(price)])
+summary(cit.aov)
+
+leveneTest(cit.aov)
+leveneTest(cit.lml)
+
+# verschillende variantie...
+e=cit.lml$residuals
+yhat=cit.lml$fitted.values
+e.lm = lm(abs(e)~yhat); summary(e.lm)
+w = 1/e.lm$fitted.values**2
+
+rt.lm2 = lm(log10(price[!is.na(price)])~city[!is.na(price)], weights=w); summary(rt.lm2)
+leveneTest(rt.lm2)
+# geen verbetering
+
+# verder doen met niet normaliteit
+
+TukeyHSD(cit.aov)
+# ze verschillen al van elkaar, behalve antwerpen en gent waar het wat zwakker is maar nog altijd significant
+model.tables(cit.aov, type="means")
+model.tables(cit.aov, type="effects")
+
+
+ne.lm = lm(log10(price[!is.na(price)])~neighbourhood[!is.na(price)])
+ne.aov = aov(log10(price[!is.na(price)])~neighbourhood[!is.na(price)])
+
+summary(ne.lm)
+summary(ne.aov)
+
+nes.lm = lm(log10(price[!is.na(price)])~city[!is.na(price)] + neighbourhood[!is.na(price)])
+nes.aov = aov(log10(price[!is.na(price)])~city[!is.na(price)] + neighbourhood[!is.na(price)])
+
+summary(nes.lm)
+summary(nes.aov)
+
+
+pvals = summary(nes.lm)$coefficients[,4]
+length(pvals[pvals<0.05])
+pvals = summary(ne.lm)$coefficients[,4]
+length(pvals[pvals<0.05])
+
+# Brussel en antwerpen zijn nog steeds significant als je de neighboorhood er bijvoegd
+# maar gent helemaal niet meer. 
+# dit kan erop wijzen dat per wijk in gent er zeer veel verschil is, omdat als je de wijk weet het er niet ote doet dat het gent is
+# door het aantal mogelijkheden zijn ze natuurlijk niet allemaal significant maar wel ongeveer de helft.
+# 4 keer grotere R waarde dan enkel city
+TukeyHSD(ne.aov)
 # bijna allemaal niet significant
+TukeyHSD(nes.aov)
+
+
+head(sort(mean(price~neighbourhood)))
+mean(price~neighbourhood)
+
+
+neig = neighbourhood[!is.na(price)]
+l = c()
+k = unique(neig)
+for (i in 1:length(unique(neig))) {
+  l = c(l, mean(priceNoNa[neig == (k[i])]))
+}
+plot(l)
+
+x = tail(sort(l, index.return=T)$ix)
+k[x]
+l[x]
+mean(l)
+
+for (i in 1:length(k[x])) {
+  print(unique(city[neighbourhood == k[x[i]]]))
+  print(k[x[i]])
+}
+
+# dus hoogste is in brussel, 2de hoogste in Gent, en de rest van de top 5 in Antwerpen
+# vooral de top3 zijn veel hoger dan de rest
+
+pl = T
+for (i in 1:length(neighbourhood)) {
+  if(is.na(neighbourhood[i])){
+    pl = F
+  }
+}
+pl
+
+# dus hoogste is in brussel, 2de hoogste in Gent, en de rest van de top 5 in Antwerpen
 
 summary(lm(price~neighbourhood))
 # heel veel die niet belangrijk zijn
@@ -287,6 +409,8 @@ summary(aov(price~neighbourhood))
 # het lijkt erop dat dit niet er toe doet, en city meer dan genoeg is qua opsplitsing
 # maar de vraagstelling wijst erop dat het waarschijnlijk wel zo is, help...
 
-summary(lm(price~neighbourhood + room_type))
-summary(aov(price~neighbourhood + room_type))
-summary(aov(price~room_type + neighbourhood))
+summary(lm(log10(price)~neighbourhood + room_type))
+summary(aov(log10(price)~neighbourhood + room_type))
+summary(aov(log10(price)~room_type + neighbourhood))
+
+# de aov zegt dat het er nog toe doet
