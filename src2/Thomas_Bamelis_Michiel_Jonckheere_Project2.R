@@ -4,7 +4,19 @@
 
 
 library(car)
+library(MASS)
 
+# De veronderstellingen van een general lineair model:
+# 1) het gemiddelde van de fouten/residuals is gelijk aan 0
+# 2) de residuals hebben een constante variantie, ze liggen ongeveer overal in hetzelfde gebied rond het model
+# 3) de residuals zijn niet gecorreleerd, ze liggen bijvoorbeeld niet allemaal onde de curve links en erboven rechts of een bananevorm
+
+# de residuals mogen ook niet gecorelleerd zijn met de x'en
+
+# voor alles wat we gezien hebben van regressie, zijn deze veronderstellingen gebruikt. Dus gelijk welke metriek je wil gebruiken moet
+# je dit checken.
+
+# eenmaal je aan inferentie begint doen, moet je ook checken of de residuals normaal verdeeld zijn
 
 
 ###########################################################
@@ -147,8 +159,9 @@ qqnorm(price)
 # price helemaal niet normaal
 qqnorm(log10(price))
 qqline(log10(price))
-
-
+qqnorm(log10(log10(price)))
+qqline(log10(log10(price)))
+# dit valt al wat mee maar toch
 
 leveneTest(price~room_type)
 #verschil in varianties
@@ -166,22 +179,96 @@ summary(rt.lm)
 # entire home = 88,544
 # private = 52.921
 # shared = 48.895
-qqnorm(rt.lm$residuals)
-qqnorm(lm(log10(price)~room_type)$residuals)
+mean(rt.lm$residuals)
+# very small/ almost zere mean for residuals, maar dit is altijd zo voor LSE blijkbaar
+# de normale quantile plot van de residuals maak je altijd van de gestandardiseerde waarden
+e = residuals(rt.lm)
+es = stdres(rt.lm)
+qqnorm(es,ylab="Standardized residuals")
+qqline(es)
+# very heavy right tail, not normal in its current form, skewed right
+# TODO: hoe moet je dit oplossen
+qqnorm(residuals(lm(sqrt(price)~room_type)))
+qqline(residuals(lm(sqrt(price)~room_type)))
+qqnorm(residuals(lm(log10(price)~room_type)))
+qqline(residuals(lm(log10(price)~room_type)))
+qqnorm(residuals(lm(log10(log10(price))~room_type)))
+qqline(residuals(lm(log10(log10(price))~room_type)))
+summary(powerTransform(e - min(e) + 0.0000001))
 
-rt.an = aov(price~room_type)
+lambda = 0.09
+qqnorm(residuals(lm(((price**lambda - 1)/lambda)~room_type)))
+qqline(residuals(lm(((price**lambda - 1)/lambda)~room_type)))
+
+# log 10 transformation shows best results
+rt.lm = lm(log10(price)~room_type)
+summary(rt.lm)
+# 3th var more relevant
+e = residuals(rt.lm)
+es = stdres(rt.lm)
+qqnorm(es,ylab="Standardized residuals")
+qqline(es)
+
+plot(e,xlab="Index",ylab="Residuals")
+# there does not seem to be correlation in time, some heavy outliners though 
+
+
+plot(rt.lm$fitted.values,e)
+# why do we only have 3 fitted values?
+# ah, probably because we regres the means out of the room_type
+# should not show any correlation
+# it does not really show any, excpet for the first mean, but this is because it has fewer samples which makes it less black  e bit higher
+# there seems to be a difference in variance though
+
+# plot of residuals vs variables not possible because categorical regressor
+
+plot(es,xlab="Index",ylab="Standardized Residuals")
+abline(h=-2.5,lty=2)
+abline(h=2.5,lty=2)
+# 3 very heavy outliers
+# considerably more outliers on the uppper side
+
+leveneTest(log10(price)~room_type)
+leveneTest(rt.lm)
+
+# TODO: probleem: heteroscedasticiteit
+e=rt.lm$residuals
+yhat=rt.lm$fitted.values
+e.lm = lm(abs(e)~yhat); summary(e.lm)
+w = 1/e.lm$fitted.values**2
+
+rt.lm2 = lm(price[!is.na(price)]~room_type[!is.na(price)], weights=w); summary(rt.lm2)
+leveneTest(rt.lm2)
+# geen verbetering
+
+# dus niet normaal (zware rechtste staart) en heteroscidasticiteit die we niet kunnen verhelpen
+
+qqnorm(rt.lm$residuals)
+
+rt.an = aov(log10(price)~room_type)
 summary(rt.an)
 # iets aan rt is zeker signigicant
 
+# we will perform the inference analysis with these problems, so they have to be taken with a grain of salt
+
 TukeyHSD(rt.an)
-# significant verschill russen home/apt en de andere twee, maar geen significant verschil tussen private en shared
+# significant verschill russen alles
+
+boxplot((price~room_type))
+boxplot(price[price <155]~room_type[price<155])
+boxplot((log10(price)~room_type))
+boxplot(log10(price[log10(price) <2.5])~room_type[log10(price)<2.5])
+
+
+# COnclusie, rekendehouden met de niet voldane veronderstellingen besluiten we dat het room_type inderdaad een siginificante invloed heeft op de
+# prijs en de prijzen ondeling significant verschillen
 
 # cities
 
 table(airbnb$city) # bevat geen NA's
 barplot(table(city))
 boxplot(price~city)
-boxplot(price[price <200]~city[price<200])
+boxplot(price[price <155]~city[price<155])
 
 TukeyHSD(aov(price~city))
 # Antwerpen verschilt sterk van de rest, Gent en brussel niet verworpen
