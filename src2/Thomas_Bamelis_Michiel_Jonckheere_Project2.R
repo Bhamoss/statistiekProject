@@ -63,7 +63,6 @@ airbnb$full[airbnb$availability_365 == 0] = TRUE
 airbnb$last_review[airbnb$last_review == ""] = NA
 airbnb$last_review = as.Date(airbnb$last_review)
 
-# TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # last_review aanpassen brussel
 airbnb$date_compiled = as.Date("2019-04-13")
 
@@ -409,8 +408,52 @@ summary(aov(price~neighbourhood))
 # het lijkt erop dat dit niet er toe doet, en city meer dan genoeg is qua opsplitsing
 # maar de vraagstelling wijst erop dat het waarschijnlijk wel zo is, help...
 
+
 summary(lm(log10(price)~neighbourhood + room_type))
 summary(aov(log10(price)~neighbourhood + room_type))
 summary(aov(log10(price)~room_type + neighbourhood))
 
 # de aov zegt dat het er nog toe doet
+
+
+###########################################################
+###############   Model voor de huurprijs   ###############
+###########################################################
+
+attributes(airbnb)$names
+# relevante gegevens:
+#   room_type:                      Entire home, Private room, Shared room
+#   minimum_nights:                 minimum aantal nachten dat je moet boeken
+#   number_of_reviews:              aantal reviews die de airbnb al kreeg
+#   last_review:                    aantal dagen sinds de laatste review
+#   reviews_per_month:              aantal review per maand
+#   calculated_host_listings_count: 
+#   availability_365:               hoeveel dagen vrij op een jaar
+#   city:                           Brussel, Gent, Antwerpen
+#   full:                           True or False
+
+# eerst enkel de numerieke waarden bekijken, daarna eventueel kijken om city, full of room_type toe te voegn
+detach(data)
+attach(airbnb)
+data = as.data.frame(cbind(price, minimum_nights,number_of_reviews,last_review,reviews_per_month,
+                calculated_host_listings_count))
+removeNA <- function(data, desiredCols) {
+  completeVec <- complete.cases(data[, desiredCols])
+  return(data[completeVec, ])
+}
+data = removeNA(data, names(data))
+detach(airbnb)
+attach(data)
+data.numeric = data[,0:6]
+model.null = lm(price~1,data=data.numeric)
+model.full = lm(price~., data=data.numeric)
+stepAIC(model.null, direction = "forward",scope=list(upper=model.full,lower=model.null))
+stepAIC(model.full, direction = "backward")
+stepAIC(model.null, direction = "both",scope=list(upper=model.full,lower=model.null))
+price.step = stepAIC(model.full)
+summary(price.step) # summary geeft dus de klassieke tabel bij dit model
+anova(price.step)   # analoog geeft anovamodel van onderliggende modellen
+price.step$anova    # $anova-attribuut geeft anovatabel van doorlopen modellen
+
+
+
