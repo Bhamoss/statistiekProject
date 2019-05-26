@@ -457,3 +457,9 @@ price.step$anova    # $anova-attribuut geeft anovatabel van doorlopen modellen
 
 
 
+###########################################################
+###############   beschikbaarheid van een bedrijf   #######
+###########################################################
+
+# DIt moet met logistische regressie, dat dient voor binaire responsvariabelen.
+# DUs doe alles aan de hand van dat laatste hoofdstuk over logistische regressie
