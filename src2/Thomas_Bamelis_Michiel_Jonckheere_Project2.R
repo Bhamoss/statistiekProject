@@ -424,42 +424,130 @@ attributes(airbnb)$names
 # relevante gegevens:
 #   room_type:                      Entire home, Private room, Shared room
 #   minimum_nights:                 minimum aantal nachten dat je moet boeken
-#   number_of_reviews:              aantal reviews die de airbnb al kreeg
-#   last_review:                    aantal dagen sinds de laatste review
-#   reviews_per_month:              aantal review per maand
-#   calculated_host_listings_count: 
-#   availability_365:               hoeveel dagen vrij op een jaar
 #   city:                           Brussel, Gent, Antwerpen
 #   full:                           True or False
 
-# eerst enkel de numerieke waarden bekijken, daarna eventueel kijken om city, full of room_type toe te voegn
-detach(data)
-attach(airbnb)
-data = as.data.frame(cbind(price, minimum_nights,number_of_reviews,last_review,reviews_per_month,
-                calculated_host_listings_count))
-removeNA <- function(data, desiredCols) {
-  completeVec <- complete.cases(data[, desiredCols])
-  return(data[completeVec, ])
+# eerst kijken welke transformatie toegepast moeten worden
+plotBoxQQHist = function(X) {
+  boxplot(X)
+  qqnorm(X); qqline(X)
+  hist(X)
 }
-data = removeNA(data, names(data))
-detach(airbnb)
-attach(data)
-data.numeric = data[,0:6]
-model.null = lm(price~1,data=data.numeric)
-model.full = lm(price~., data=data.numeric)
-stepAIC(model.null, direction = "forward",scope=list(upper=model.full,lower=model.null))
-stepAIC(model.full, direction = "backward")
-stepAIC(model.null, direction = "both",scope=list(upper=model.full,lower=model.null))
-price.step = stepAIC(model.full)
-summary(price.step) # summary geeft dus de klassieke tabel bij dit model
-anova(price.step)   # analoog geeft anovamodel van onderliggende modellen
-price.step$anova    # $anova-attribuut geeft anovatabel van doorlopen modellen
+summary(powerTransform(price))
+testTransform(powerTransform(price), -1/4)
+par(mfrow=c(2,3))
+plotBoxQQHist(price)
+plotBoxQQHist((price)**(-1/4)) # veel beter
 
+summary(powerTransform(minimum_nights))
+par(mfrow=c(2,3)) # Hoofdwet van de statistiek: kijk naar de data
+plotBoxQQHist(minimum_nights)
+plotBoxQQHist(log10(minimum_nights)) # geen verbetering
+testTransform(powerTransform(minimum_nights), -2/3)
+plotBoxQQHist(minimum_nights)
+plotBoxQQHist((minimum_nights)**(-2/3)) # iets beter dan de identieke of log10
+
+par(mfrow=c(1,1))
+
+# summary:
+#   VARIABLE                        TRANSFORMATION
+#   price:                          lambda = -1/4
+#   minimum_nights:                 lambda = -2/3
+
+
+
+# eerst enkel de numerieke waarden bekijken, daarna eventueel kijken om city, full of room_type toe te voegn
+
+# selecteer enkel de numerieke relevante waarden van airbnb
+?na.omit
+airbnb = na.omit(airbnb)
+
+
+data <- airbnb[,-(1:7)]; #View(data)
+data<- data[,-(4:8)]; #View(data)
+data$city = as.factor(data$city)
+data$full = as.factor(data$full)
+detach(airbnb)
+# eerst kijken naar het regressie model zonder de bovenstaande transformaties
+attach(data)
+model.null = lm(price~1, data=data)
+model.full = lm(price~., data=data)
+stepAIC(model.full,direction="backward")
+stepAIC(model.full,direction="both")
+stepAIC(model.null,direction="forward",scope=list(upper=model.full,lower=model.null))
+price.step = stepAIC(model.full)
+summary(price.step) # zeer lage Rsquared, geen nuttige regressie dus, 0.02366 
+anova(price.step)
+
+
+detach(data)
+
+# pas hierop de transformaties toe van hierboven
+data$price = data$price**(-1/4)
+data$minimum_nights = data$minimum_nights**(-2/3)
+#View(data)
+
+attach(data)
+model.null = lm(price~1, data=data)
+model.full = lm(price~., data=data)
+stepAIC(model.full,direction="backward")
+stepAIC(model.full,direction="both")
+stepAIC(model.null,direction="forward",scope=list(upper=model.full,lower=model.null))
+price.step = stepAIC(model.full)
+summary(price.step) # groot verschil in Rsq met vorig model, maar nog altijd niet super, 0.3529 
+anova(price.step)
+
+
+library(leaps); ?regsubsets
+price.all = regsubsets(price~., data=data) # vergelijkt meer regressies van stepAIC, die met kleinste BIC is beste
+plot(price.all) # zie je welke variabelen het meest doorslaggevend zijn
+summary(price.all)
+summary(price.all)$outmat
+summary(price.all)$which
+
+which.min(summary(price.all)$bic)
+p = rowSums(summary(price.all)$which)
+bic = summary(price.all)$bic
+plot(p, bic)
+summary(price.all)$which[which.min(bic),]
+coef(price.all, which.min(bic)) # coef van de beste regressie
+summary(price.all)$adjr2[which.min(bic)] # adjsq van beste regressie, 0.3529302, basicly zelfde uitkomst als vorig model
+detach(data)
+# ik heb ook nog het model model.full = lm(price~.^2, data=data) bekeken (waar hij ook bv X1*X2 zal gaan toevoegen)
+#   dit kwam iets ingewikkelder uit, met eenzelfde Rsq, dus ik zou voor het normale model gaan
+#   
+# In het verslag: misschien met die categorische variabelen een table maken bv als city=Gent dan is het dit model
+#   zoals op pg 235 in de cursus
+#   als we het niet zo doen, weet ik niet goed hoe we best dit model voorstellen, ik vind dit moeilijk te zien met de categorische
 
 
 ###########################################################
 ###############   beschikbaarheid van een bedrijf   #######
 ###########################################################
-
+attach(airbnb)
 # DIt moet met logistische regressie, dat dient voor binaire responsvariabelen.
 # DUs doe alles aan de hand van dat laatste hoofdstuk over logistische regressie
+d.null = glm(Status~1, family=binomial)
+
+# 
+# misschien hier nog handig, eventuele transformaties
+# 
+# summary(powerTransform((number_of_reviews+1))) # plus 1 want moet strikt positief zijn
+# plotBoxQQHist(number_of_reviews+1)
+# plotBoxQQHist(log10(number_of_reviews+1)) # nog steeds rechtsscheef, maar iets beter al
+# 
+# summary(powerTransform(last_review+1))
+# plotBoxQQHist(last_review+1)
+# plotBoxQQHist(log10(last_review+1)) # ook een verbetering
+# 
+# summary(powerTransform(reviews_per_month))
+# plotBoxQQHist(reviews_per_month)
+# plotBoxQQHist(log10(reviews_per_month)) # verbetering
+# 
+# summary(powerTransform(calculated_host_listings_count))
+# plotBoxQQHist(calculated_host_listings_count)
+# plotBoxQQHist(log10(calculated_host_listings_count))
+# testTransform(powerTransform(calculated_host_listings_count), -1)
+# plotBoxQQHist(calculated_host_listings_count)
+# plotBoxQQHist(calculated_host_listings_count**-1) # ongeveer hetzelfde als log10, enige grote verschil is dat van rechtsscheef naar linksscheef gegaan wordt, dit is te verklaren door de negatieve exponent
+# # log10 beste hier dus
