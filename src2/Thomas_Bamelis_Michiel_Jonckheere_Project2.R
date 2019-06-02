@@ -536,6 +536,11 @@ attributes(airbnb)$names
 #   reviews_per_month
 #   city --> als multiplicatieve variabele mss
 
+# TODO: waarom price, de andere 2 reviews, listings, minimum nights, neighbourhood niet?
+
+#TODO: waarom kijk je hier transormaties van de variabelen? Dat is niet nodig want dat moet niet normaal zijn
+# en het maakt het enkel onmogelijk om de coefficienten te interpreteren
+
 # eventuele transformqties bekijken
 summary(powerTransform((number_of_reviews+1))) # plus 1 want moet strikt positief zijn
 plotBoxQQHist(number_of_reviews+1)
@@ -567,7 +572,7 @@ full.glm = glm(full~(log10(last_review+1)+log10(number_of_reviews+1)+log10(revie
 summary(full.glm)
 anova(full.glm, test="LRT")
 
-mooiFiguurtje(full.glm)
+
 
 # toont grafisch hoe goed het model is, mbv predicted values
 mooiFiguurtje = function(X) {
@@ -581,4 +586,4 @@ mooiFiguurtje = function(X) {
     xlab("Index") +
     ylab("predicted prob")
 }
-
+mooiFiguurtje(full.glm)
