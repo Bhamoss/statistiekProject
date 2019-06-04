@@ -541,6 +541,58 @@ attributes(airbnb)$names
 #TODO: waarom kijk je hier transormaties van de variabelen? Dat is niet nodig want dat moet niet normaal zijn
 # en het maakt het enkel onmogelijk om de coefficienten te interpreteren
 
+# id achterwege gelaten, net zoals de naam en de hostnaam omdat deze te uniek zijn.
+# host_id achterwege omdat idd bepaalde hosts bepaalde soort apartementen verkopen,
+# maar aangezien deze volledig los staat van de id van de host zal dit gewoon random zijn.
+# dit verduidelijk ik hieronder
+n = c()
+p = c()
+for (i in 1:length(host_id)) {
+  k = full[host_id == host_id[i]]
+  k = k[k == F]
+  n = c(n, length(k))
+  k = full[host_id == host_id[i]]
+  k = k[k == T]
+  p = c(p, length(k))
+}
+barplot(n)
+barplot(p)
+# alhoewel er wel een positief verband lijkt te zijn
+
+# latitude en longtitude laten we weg omdat city en neigbourhood al voldoende specifiek zijn
+cor(last_review,reviews_per_month)
+cor(last_review, number_of_reviews)
+cor(reviews_per_month, number_of_reviews)
+boxplot(full, reviews_per_month)
+boxplot(full, last_review)
+boxplot(full, number_of_reviews)
+plot(reviews_per_month, last_review)
+plot(reviews_per_month, number_of_reviews)
+# omdat deze 3 variabelen alle 3 over reviews gaan, zijn ze natuurlijk sterk gecoreleerd.
+# als we de correlatie bekijken, dan geeft reviews per month een correlatie van -0.4 en 0.64 tot de andere 2.
+# om multicollineariteit te vermijden, nemen we enkel deze variabele mee omdat die ook het meeste van de andere verteld
+
+boxplot(full, calculated_host_listings_count)
+# calculated host listings count lijkt toch verschillend te zijn voor het al dan niet volzitten van het ding, dus nemen we het mee
+
+boxplot(full, minimum_nights)
+mean(minimum_nights[full])
+mean(minimum_nights[!full])
+# zelfde in mindere mate voor minimum nachten
+
+# availabiltiy nemen we natuurlijk niet mee omdat daar letterlijk het antwoord in zit
+
+f.st = glm(full~price + reviews_per_month + room_type +   minimum_nights +  calculated_host_listings_count + as.factor(city), family = binomial)
+summary(f.st) # wald test test of de coef 0 is
+anova(f.st,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
+attributes(f.st)
+plot(residuals(f.st), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
+airbnb[residuals(f.st)>8,] # een full prive room in brussel
+
+################################################################################################################
+#####################################        Michiel
+################################################################################################################
+
 # eventuele transformqties bekijken
 summary(powerTransform((number_of_reviews+1))) # plus 1 want moet strikt positief zijn
 plotBoxQQHist(number_of_reviews+1)
