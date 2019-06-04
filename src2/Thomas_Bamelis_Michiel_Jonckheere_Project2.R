@@ -460,10 +460,10 @@ par(mfrow=c(1,1))
 
 # selecteer enkel de numerieke relevante waarden van airbnb
 ?na.omit
-airbnb = na.omit(airbnb)
+data = na.omit(airbnb)
 
 
-data <- airbnb[,-(1:7)]; #View(data)
+data <- data[,-(1:7)]; #View(data)
 data<- data[,-(4:8)]; #View(data)
 data$city = as.factor(data$city)
 data$full = as.factor(data$full)
@@ -524,7 +524,17 @@ detach(data)
 ###########################################################
 ###############   beschikbaarheid van een bedrijf   #######
 ###########################################################
+detach(airbnb)
 attach(airbnb)
+nrow(na.omit(airbnb))
+table(airbnb$city)
+table(na.omit(airbnb)$city)
+table(airbnb$full)
+table(na.omit(airbnb)$full)
+# evenredige verwijdering, dus we doen hier verder zonder omits
+ab = na.omit(airbnb)
+detach(airbnb)
+attach(ab)
 # DIt moet met logistische regressie, dat dient voor binaire responsvariabelen.
 # DUs doe alles aan de hand van dat laatste hoofdstuk over logistische regressie
 attributes(airbnb)$names
@@ -581,13 +591,25 @@ mean(minimum_nights[!full])
 # zelfde in mindere mate voor minimum nachten
 
 # availabiltiy nemen we natuurlijk niet mee omdat daar letterlijk het antwoord in zit
-
-f.st = glm(full~price + reviews_per_month + room_type +   minimum_nights +  calculated_host_listings_count + as.factor(city), family = binomial)
+f.st = glm(as.factor(full)~price + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city), family = binomial)
+# het probleem zit in price
+plot(price)
 summary(f.st) # wald test test of de coef 0 is
 anova(f.st,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
 attributes(f.st)
 plot(residuals(f.st), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
 airbnb[residuals(f.st)>8,] # een full prive room in brussel
+
+stepAIC(f.st)
+# kwaliteit
+
+# problemen
+
+# coefficienten bespreken (odds-ratio)
+
+# Cleaning
+detach(ab)
+attach(airbnb)
 
 ################################################################################################################
 #####################################        Michiel
