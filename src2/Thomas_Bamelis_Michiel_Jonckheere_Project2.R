@@ -533,6 +533,7 @@ table(airbnb$full)
 table(na.omit(airbnb)$full)
 # evenredige verwijdering, dus we doen hier verder zonder omits
 ab = na.omit(airbnb)
+ab$availability_365 = NULL
 detach(airbnb)
 attach(ab)
 # DIt moet met logistische regressie, dat dient voor binaire responsvariabelen.
@@ -590,22 +591,214 @@ mean(minimum_nights[full])
 mean(minimum_nights[!full])
 # zelfde in mindere mate voor minimum nachten
 
-# availabiltiy nemen we natuurlijk niet mee omdat daar letterlijk het antwoord in zit
-f.st = glm(as.factor(full)~price + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city), family = binomial)
-# het probleem zit in price
-plot(price)
-summary(f.st) # wald test test of de coef 0 is
-anova(f.st,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
-attributes(f.st)
-plot(residuals(f.st), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
-airbnb[residuals(f.st)>8,] # een full prive room in brussel
+# variabelen selecteren
 
-stepAIC(f.st)
+model.null =  glm(full ~ 1, family = binomial)
+model.full =  glm(as.factor(full)~price + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
+stepAIC(model.full, list(upper = ~price + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city), lower = ~ 1) , direction="backward")
+#price + longitude + latitude + last_review + 
+#  number_of_reviews + reviews_per_month + as.factor(room_type) + 
+#  minimum_nights + calculated_host_listings_count
+stepAIC(model.full, list(upper = ~price + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city), lower = ~ 1) , direction="both")
+#price + longitude + latitude + last_review + 
+#  number_of_reviews + reviews_per_month + as.factor(room_type) + 
+#  minimum_nights + calculated_host_listings_count
+# same as above
+
+stepAIC(model.null,direction="forward",scope=list(upper=model.full,lower=model.null))
+#last_review + calculated_host_listings_count + reviews_per_month + 
+#  minimum_nights + price + number_of_reviews + as.factor(city) + 
+#  as.factor(room_type)
+# longtitude and latitude weg, last review weg, city erbij
+
+summary(model.full)
+# neighbourhood weg, long en lat weg, alle 3 de reviews significant, room type niet significant, kan door correlatie zijn
+
+# omgekeerde volgorde
+
+
+# as.factor(city) + calculated_host_listings_count + minimum_nights + as.factor(neighbourhood)  +  as.factor(room_type) + reviews_per_month +   number_of_reviews + last_review + latitude + longitude + price 
+
+model.null =  glm(full ~ 1, family = binomial)
+model.full =  glm(as.factor(full)~as.factor(city) + calculated_host_listings_count + minimum_nights + as.factor(neighbourhood)  +  as.factor(room_type) + reviews_per_month +   number_of_reviews + last_review + latitude + longitude + price ,  family = binomial)
+stepAIC(model.full, list(upper = ~as.factor(city) + calculated_host_listings_count + minimum_nights + as.factor(neighbourhood)  +  as.factor(room_type) + reviews_per_month +   number_of_reviews + last_review + latitude + longitude + price , lower = ~ 1) , direction="backward")
+#calculated_host_listings_count + minimum_nights + 
+#  as.factor(room_type) + reviews_per_month + number_of_reviews + 
+#  last_review + latitude + longitude + price
+stepAIC(model.full, list(upper = ~as.factor(city) + calculated_host_listings_count + minimum_nights + as.factor(neighbourhood)  +  as.factor(room_type) + reviews_per_month +   number_of_reviews + last_review + latitude + longitude + price , lower = ~ 1) , direction="both")
+#calculated_host_listings_count + minimum_nights + 
+#  as.factor(room_type) + reviews_per_month + number_of_reviews + 
+#  last_review + latitude + longitude + price
+
+stepAIC(model.null, list(upper = ~as.factor(city) + calculated_host_listings_count + minimum_nights + as.factor(neighbourhood)  +  as.factor(room_type) + reviews_per_month +   number_of_reviews + last_review + latitude + longitude + price , lower = ~ 1) , direction="forward")
+
+#last_review + calculated_host_listings_count + reviews_per_month + 
+#minimum_nights + price + number_of_reviews + as.factor(city) + 
+#  as.factor(room_type)
+
+summary(model.full)
+# door correlatie is dit allesbehalve ideaal, maar bevestigt wel wat we al wisten
+# longitude, latitude, city, neighbourhood zijn sterk gecoreleerd
+# reviews zijn ook gecoreleerd, maar ze kunnen niet door 1 vervangen worden
+
+# volgende zitten er altijd in:
+# price + as.factor(room_type) + 
+#  minimum_nights + calculated_host_listings_count + last_review + number of reviews + reviews_per_month
+
+# 4 longitutde, 4 latitude, 0 neighbourhood, 2 keer city
+# dus longitude en latitude vs city
+
+
+
+model.step = stepAIC(model.full)
+#steunt latitude
+#- longitude                       1   7461.5 7481.5
+#- as.factor(room_type)            2   7465.3 7483.3
+#- latitude                        1   7475.9 7495.9
+#- number_of_reviews               1   7488.4 7508.4
+#- price                           1   7527.5 7547.5
+#- reviews_per_month               1   7538.1 7558.1
+#- calculated_host_listings_count  1   7580.4 7600.4
+#- minimum_nights                  1   7591.8 7611.8
+#- last_review                     1   8687.5 8707.5
+
+model.ll = glm(as.factor(full)~price + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + minimum_nights +  calculated_host_listings_count,  family = binomial)
+model.cit = glm(as.factor(full)~price  + last_review + number_of_reviews + reviews_per_month + as.factor(room_type)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
+
+summary(model.ll) # wald test test of de coef 0 is
+# verwerpt room type en zwakke longitutde
+#aic 7475 en dev 7453
+anova(model.ll,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
+# verwerpt longitutde en room type
+1-pchisq(model.ll$deviance, model.ll$df.residual)
+plot(residuals(model.ll), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
+
+cor(longitude, latitude)
+
+summary(model.cit) # wald test test of de coef 0 is
+# verwerpt room type 
+# 7475 aic en 7453 dev
+anova(model.cit,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
+# verwerpt room type 
+1-pchisq(model.cit$deviance, model.cit$df.residual)
+plot(residuals(model.cit), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
+
+# beiden verwerpen room type
+
+# longitude en room type weglaten
+model.ll = glm(as.factor(full)~price +  latitude + last_review + number_of_reviews + reviews_per_month + minimum_nights +  calculated_host_listings_count,  family = binomial)
+model.cit = glm(as.factor(full)~price  + last_review + number_of_reviews + reviews_per_month   + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
+
+summary(model.ll) # wald test test of de coef 0 is
+#aic 7488 en dev 7472
+anova(model.ll,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
+1-pchisq(model.ll$deviance, model.ll$df.residual)
+plot(residuals(model.ll), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
+
+cor(longitude, latitude)
+
+summary(model.cit) # wald test test of de coef 0 is
+# 7483 aic en 7465 dev
+anova(model.cit,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
+1-pchisq(model.cit$deviance, model.cit$df.residual)
+plot(residuals(model.cit), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
+
+# we kiezen dus voor het eerste cit omdat de aic daar het laagst was, ookal is roomtype niet verworpen
+
+
+model.f = glm(as.factor(full)~ price  + last_review + number_of_reviews + reviews_per_month + as.factor(room_type)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
+# als je price wegdoet krijg je die warning niet
+plot(price)
+which(price > 2000)
+ab[3887,]
+ab[5419,]
+boxplot(price~full)
+# ik laat ze weg, we zien nog wat we er mee doen
+
+
+
+#TODO: michiel haalt betere AIC na transorfmaties te doen, dus we kunnen dit opnieuw doen maar met de getransformeerde shit
+
+
+model.fp = glm(as.factor(full[price < 2000])~ price[price < 2000]  + last_review[price < 2000] + number_of_reviews[price < 2000] + reviews_per_month[price < 2000] + as.factor(room_type)[price < 2000]  + minimum_nights[price < 2000] +  calculated_host_listings_count[price < 2000] + as.factor(city)[price < 2000],  family = binomial)
+# het is door die outliers, wat doe je dan?
+
 # kwaliteit
+summary(model.fp) # wald test test of de coef 0 is
+# room type nu niet verworpen lol
+# alles slaagt, dus goed, AIC van 7343.6
+anova(model.fp,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
+# alles slaagt opnieuw
+plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
+# zeer vreemde driehoek. 
+# TODO: bespreek
+
+
+bgof = function(model){
+  1-pchisq(model$null.deviance - model$deviance, model$df.null - model$df.residual)
+}
+
+bgof(model.fp)
+# goodness of fit geslaagd.
+
+
+
+
+
 
 # problemen
 
+plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
+# zeer vreemde driehoek. 
+# TODO: bespreek
+
 # coefficienten bespreken (odds-ratio)
+coef = model.fp$coefficients
+coef
+#  (Intercept)                                    -0.5378595
+#  price[price < 2000]                            -0.0122283  
+#  last_review[price < 2000]                       0.0035141  
+#  number_of_reviews[price < 2000]                -0.0068606  
+#  reviews_per_month[price < 2000]                -0.2496038 
+#  as.factor(room_type)[price < 2000]Private room -0.3347014 
+#  as.factor(room_type)[price < 2000]Shared room  -0.7143295  
+#  minimum_nights[price < 2000]                   -0.0298897 
+#  calculated_host_listings_count[price < 2000]   -0.0411858 
+#  as.factor(city)[price < 2000]Brussel            0.3947290 
+#  as.factor(city)[price < 2000]Gent               0.4652026 
+
+exp(coef)
+
+# iemand in brussel heeft
+1.4839819/0.5839970 -1
+# 54 procent meer odds dat het vol zit dan in antwerpen
+# iemand in gent  
+1.5923367/0.5839970 -1
+# 73% meer kans dat het vol zit dan in antwerpen
+
+#iemand die een private room zoekt
+0.7155517/0.5839970 -1
+# heeft 22.5 procent meer kans dat het vol zit dan bij een entrier home app
+# iemand die een shared room zoekt 
+0.4895202/0.5839970 -1
+# heeft 16.2 procent MInder kans dat het vol zit dan bij een entire home/app  
+
+exp(coef) - 1
+# dussssss (zie voorbeeld p 369)
+# TODO: zoek de juiste terminologie op tussen kans en odds
+# TODO: bespreek standard case = in Antwerpenen entire home/appartement
+# als de prijs 1 euro meer is heb je 1.2% minder kans dat het apartement vol zit
+# als de laatste review 1 dag langer geleden is dan heb je 0.35% meer kans dat het appartement vol zit
+# als er 1 review meer is (overall) dan is er 0.7% minder kans dat het appartement vol zit
+# als er 1 review meer is geweest in de laatste maand heb je 22% minder kanns dat het vol zit
+# ...
+# meer kans dat het appartement vol zit als:
+# price -     (1.2)
+# last_review  + (0.3)
+# num_rev - (0.7)
+# rev_mon - (22.1)
+#min_nights - (3)
+# cal_list - (4)
 
 # Cleaning
 detach(ab)
