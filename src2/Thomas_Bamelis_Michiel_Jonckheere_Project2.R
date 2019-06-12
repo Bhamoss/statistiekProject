@@ -142,8 +142,9 @@ library(MASS)
   priceNoNa = price[!is.na(price)]
   
   
-  
+  jpeg("prijsVis.jpg")
   hist(price[price < 200], breaks = "Sturges")
+  dev.off()
   # zeer zware rechterstaart
   summary(powerTransform(price))
   powerTransform(price)
@@ -152,23 +153,53 @@ library(MASS)
   
   table(airbnb$room_type) # bevat geen NA's
   barplot(table(room_type))
-  boxplot(price[price <200]~room_type[price<200])
   
+  
+  jpeg("boxplotPrijsCity.jpg")
+  boxplot(price[price <200]~room_type[price<200])
+  dev.off()
   #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   # Todo: bovenste figuur in verslag
   #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   boxplot(price~room_type)
-  
+  length(price)
+  length(price[price < 1500 ]) -   length(price[price < 150 ])
+  length(price[price < 150 ])
+  length(price[price > 1500 ])
   # shapiro test waardeloos omdat er teveel samples zijn, waardoor er te makkelijk
   # de null hypothese verworpen wordt
+  jpeg("qqp.jpg")
   qqnorm(price)
+  qqline(price)
+  dev.off()
+  
+  jpeg("qqlp.jpg")
+  qqnorm(log10(price))
+  qqline(log10(price))
+  dev.off()
+  
+  summary(powerTransform(price))
+  powerTransform(price)
+  jpeg("qqbp.jpg")
+  lambda = -0.25
+  qqnorm((price**lambda - 1)/lambda)
+  qqline((price**lambda - 1)/lambda)
+  dev.off()
+  
+  
+  
+  jpeg("prijsB.jpg")
+  hist((price**lambda - 1)/lambda, breaks = "Sturges")
+  dev.off()
   
   
   # price helemaal niet normaal
   qqnorm(log10(price))
   qqline(log10(price))
+  hist(log10(price))
   qqnorm(log10(log10(price)))
   qqline(log10(log10(price)))
+  hist(log10(log10(price)))
   # dit valt al wat mee maar toch
   
   leveneTest(price~room_type)
@@ -208,14 +239,32 @@ library(MASS)
   qqnorm(residuals(lm(((price**lambda - 1)/lambda)~room_type)))
   qqline(residuals(lm(((price**lambda - 1)/lambda)~room_type)))
   
-  # log 10 transformation shows best results
-  rt.lm = lm(log10(price)~room_type)
+  lambda = -0.25
+  qqnorm(residuals(lm(((price**lambda - 1)/lambda)~room_type)))
+  qqline(residuals(lm(((price**lambda - 1)/lambda)~room_type)))
+  
+  ###############################################################
+  # gedaan met spelen
+  
+  lambda = -0.25
+  boxprice = ((price**lambda - 1)/lambda)
+  shapiro.test(na.omit(boxprice))
+   # box cox -1/4 shows best results
+  rt.lm = lm(boxprice~room_type)
   summary(rt.lm)
   # 3th var more relevant
+  
+  leveneTest(aov(rt.lm))
+  
+  summary(aov(rt.lm))
+  
+  
+  jpeg("pcqq.jpeg")
   e = residuals(rt.lm)
   es = stdres(rt.lm)
   qqnorm(es,ylab="Standardized residuals")
   qqline(es)
+  dev.off()
   
   
   
@@ -233,17 +282,15 @@ library(MASS)
   # there seems to be a difference in variance though
   
   # plot of residuals vs variables not possible because categorical regressor
-  
+  jpeg("pcisr.jpeg")
   plot(es,xlab="Index",ylab="Standardized Residuals")
-  abline(h=-2.5,lty=2)
-  abline(h=2.5,lty=2)
+  abline(h=-2.5,lty=2, col = "red", lwd = 4)
+  abline(h=2.5,lty=2, col = "red", lwd = 4)
+  dev.off()
   # 3 very heavy outliers
   # considerably more outliers on the uppper side
   
-  leveneTest(log10(price)~room_type)
-  leveneTest(rt.lm)
   
-  # TODO: probleem: heteroscedasticiteit
   e=rt.lm$residuals
   yhat=rt.lm$fitted.values
   e.lm = lm(abs(e)~yhat); summary(e.lm)
@@ -257,7 +304,7 @@ library(MASS)
   
   qqnorm(rt.lm$residuals)
   
-  rt.an = aov(log10(price)~room_type)
+  rt.an = aov(boxprice~room_type)
   summary(rt.an)
   # iets aan rt is zeker signigicant
   
@@ -284,8 +331,9 @@ library(MASS)
   table(airbnb$city) # bevat geen NA's
   barplot(table(city))
   boxplot(price~city)
-  boxplot(price[price <155]~city[price<155])
-  
+  jpeg("boxprijscity.jpg")
+  boxplot(price[price <150]~city[price<150])
+  dev.off()
   #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   # Todo: bovenste figuur in verslag
   #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -306,19 +354,28 @@ library(MASS)
   qqline(cit.lml$residuals)
   # not normal, but is de meest gepaste geziene transformatie
   
+  cit.box = lm(boxprice[!is.na(price)]~city[!is.na(price)])
+  
+  qqnorm(cit.box$residuals)
+  qqline(cit.box$residuals)
   
   
-  
-  e = residuals(cit.lml)
-  es = stdres(cit.lml)
+  e = residuals(cit.box)
+  es = stdres(cit.box)
+  jpeg("qqboxcit.jpg")
   qqnorm(es,ylab="Standardized residuals")
   qqline(es)
+  dev.off()
   
-  plot(e,xlab="Index",ylab="Residuals")
+  jpeg("indc.jpg")
+  plot(es,xlab="Index",ylab="Residuals")
+  abline(h=-2.5,lty=2, col = "red", lwd = 4)
+  abline(h=2.5,lty=2, col = "red", lwd = 4)
+  dev.off()
   # there does not seem to be correlation in time, wel meer outliers met positieve waarde
   
   
-  plot(cit.lml$fitted.values,e)
+  plot(cit.box$fitted.values,e)
   # ziet er redelijk aanvaardbaar uit, zelfs de variantie, behalve de outliers van de ereste
   
   # plot of residuals vs variables not possible because categorical regressor
@@ -329,48 +386,85 @@ library(MASS)
   # 3 very heavy outliers
   # considerably more outliers on the uppper side
   
-  summary(cit.lml)
-  cit.aov = aov(log10(price[!is.na(price)])~city[!is.na(price)])
-  summary(cit.aov)
+  summary(cit.box)
+  summary(aov(cit.box))
   
-  leveneTest(cit.aov)
-  leveneTest(cit.lml)
+
+  leveneTest(cit.box)
   
-  # verschillende variantie...
-  e=cit.lml$residuals
-  yhat=cit.lml$fitted.values
-  e.lm = lm(abs(e)~yhat); summary(e.lm)
-  w = 1/e.lm$fitted.values**2
   
-  rt.lm2 = lm(log10(price[!is.na(price)])~city[!is.na(price)], weights=w); summary(rt.lm2)
-  leveneTest(rt.lm2)
-  # geen verbetering
   
   # verder doen met niet normaliteit
   
-  TukeyHSD(cit.aov)
+  TukeyHSD(aov(cit.box))
   # ze verschillen al van elkaar, behalve antwerpen en gent waar het wat zwakker is maar nog altijd significant
-  model.tables(cit.aov, type="means")
-  model.tables(cit.aov, type="effects")
+  model.tables(aov(cit.box), type="means")
+  model.tables(aov(cit.box), type="effects")
   
+  ####################### neighbourhood
   
-  ne.lm = lm(log10(price[!is.na(price)])~neighbourhood[!is.na(price)])
-  ne.aov = aov(log10(price[!is.na(price)])~neighbourhood[!is.na(price)])
+  ne.lm = lm(boxprice[!is.na(price)]~neighbourhood[!is.na(price)])
+  ne.aov = aov(ne.lm)
+  
+  jpeg("boxne.jpg")
+  boxplot(boxprice~neighbourhood)
+  dev.off()
+  
+  which(is.infinite(stdres(ne.lm)))
+  which(is.na(stdres(ne.lm)))
+  jpeg("qqne.jpg")
+  qqnorm(stdres(ne.lm)[!is.infinite(stdres(ne.lm))], ylab="Standardized residuals")
+  qqline(stdres(ne.lm))
+  dev.off()
+  
+  jpeg("stdne.jpg")
+  plot(stdres(ne.lm),xlab="Index",ylab="Standardized Residuals")
+  abline(h=-2.5,lty=2, col = "red", lwd = 4)
+  abline(h=2.5,lty=2, col = "red", lwd = 4)
+  dev.off()
   
   summary(ne.lm)
   summary(ne.aov)
+  leveneTest(ne.aov)
+  k = TukeyHSD(ne.aov)
+  length(k$`neighbourhood[!is.na(price)]`[k$`neighbourhood[!is.na(price)]` < 0.05]) / length(k$`neighbourhood[!is.na(price)]`)
   
-  nes.lm = lm(log10(price[!is.na(price)])~city[!is.na(price)] + neighbourhood[!is.na(price)])
-  nes.aov = aov(log10(price[!is.na(price)])~city[!is.na(price)] + neighbourhood[!is.na(price)])
+  
+  # city en neigborhood
+  
+  nes.lm = lm(boxprice[!is.na(price)]~city[!is.na(price)] + neighbourhood[!is.na(price)])
+  nes.aov = aov(nes.lm)
   
   summary(nes.lm)
   summary(nes.aov)
+  
+  
+  which(is.infinite(stdres(nes.lm)))
+  which(is.na(stdres(nes.lm)))
+  jpeg("qqnes.jpg")
+  qqnorm(stdres(nes.lm)[!is.infinite(stdres(nes.lm))], ylab="Standardized residuals")
+  qqline(stdres(nes.lm))
+  dev.off()
+  
+  jpeg("stdnes.jpg")
+  plot(stdres(nes.lm),xlab="Index",ylab="Standardized Residuals")
+  abline(h=-2.5,lty=2, col = "red", lwd = 4)
+  abline(h=2.5,lty=2, col = "red", lwd = 4)
+  dev.off()
+  
+  summary(nes.lm)
+  summary(nes.aov)
+  leveneTest(nes.aov)
+  k = TukeyHSD(nes.aov)
+  k
+  length(k$`neighbourhood[!is.na(price)]`[k$`neighbourhood[!is.na(price)]` < 0.05]) / length(k$`neighbourhood[!is.na(price)]`)
   
   
   pvals = summary(nes.lm)$coefficients[,4]
   length(pvals[pvals<0.05])
   length(pvals[pvals>=0.05])
   length(pvals)
+  # woluwe en zorvel zijn NA? wtf?
   pvals = summary(ne.lm)$coefficients[,4]
   length(pvals[pvals<0.05])
   length(pvals[pvals>=0.05])
@@ -396,14 +490,21 @@ library(MASS)
   for (i in 1:length(unique(neig))) {
     l = c(l, mean(priceNoNa[neig == (k[i])]))
   }
+  jpeg("pn.jpg")
   plot(l)
+  dev.off()
   
   
   #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   # Todo: bovenste figuur in verslag
   #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   
-  x = tail(sort(l, index.return=T)$ix)
+  x = head(sort(l, index.return=T)$ix)[1:5]
+  k[x]
+  l[x]
+  mean(l)
+  
+  x = tail(sort(l, index.return=T)$ix)[1:5]
   k[x]
   l[x]
   mean(l)
@@ -457,6 +558,38 @@ library(MASS)
   summary(aov(log10(price)~room_type + neighbourhood))
   
   # de aov zegt dat het er nog toe doet
+  nes.lm = lm(boxprice[!is.na(price)]~room_type[!is.na(price)] + neighbourhood[!is.na(price)])
+  nes.aov = aov(nes.lm)
+  
+  summary(nes.lm)
+  summary(nes.aov)
+  
+  
+  which(is.infinite(stdres(nes.lm)))
+  which(is.na(stdres(nes.lm)))
+  jpeg("qqnes.jpg")
+  qqnorm(stdres(nes.lm)[!is.infinite(stdres(nes.lm))], ylab="Standardized residuals")
+  qqline(stdres(nes.lm))
+  dev.off()
+  
+  jpeg("stdnes.jpg")
+  plot(stdres(nes.lm),xlab="Index",ylab="Standardized Residuals")
+  abline(h=-2.5,lty=2, col = "red", lwd = 4)
+  abline(h=2.5,lty=2, col = "red", lwd = 4)
+  dev.off()
+  
+  summary(nes.lm)
+  summary(nes.aov)
+  leveneTest(nes.aov)
+  k = TukeyHSD(nes.aov)
+  k
+  length(k$`neighbourhood[!is.na(price)]`[k$`neighbourhood[!is.na(price)]` < 0.05]) / length(k$`neighbourhood[!is.na(price)]`)
+  
+  
+  pvals = summary(nes.lm)$coefficients[,4]
+  length(pvals[pvals<0.05])
+  length(pvals[pvals>=0.05])
+  length(pvals)
 }
 
 ###########################################################
@@ -999,4 +1132,4 @@ library(MASS)
       ylab("predicted prob")
   }
   mooiFiguurtje(full.glm)
-  }
+}
