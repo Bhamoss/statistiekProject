@@ -419,13 +419,113 @@ summary(aov(log10(price)~room_type + neighbourhood))
 ###########################################################
 ###############   Model voor de huurprijs   ###############
 ###########################################################
-
+attach(airbnb)
+ab = na.omit(airbnb)
+attach(ab)
 attributes(airbnb)$names
 # relevante gegevens:
 #   room_type:                      Entire home, Private room, Shared room
 #   minimum_nights:                 minimum aantal nachten dat je moet boeken
 #   city:                           Brussel, Gent, Antwerpen
 #   full:                           True or False
+
+bc = function(x,y){
+  x = na.omit(x)
+  x = x - min(x) + 0.00001 
+  if (y == 0){
+    return(log10(x))
+  }
+  else{
+    return((x^y - 1)/ y)
+  }
+}
+
+
+# Variabelen wat normaler maken om de voorspellingen beter te maken
+
+plot(longitude)
+# geen zin om te transformeren
+plot(latitude)
+#same
+hist(last_review, breaks = "Sturges")
+hist(log10(last_review+1), breaks = "Sturges")
+hist(sqrt(last_review+1), breaks = "Sturges")
+
+last_review = log10(last_review+1)
+
+hist(number_of_reviews, breaks = "Sturges")
+hist(log10(number_of_reviews+1), breaks = "Sturges")
+hist(sqrt(number_of_reviews), breaks = "Sturges")
+
+number_of_reviews = log10(number_of_reviews+1)
+
+hist(reviews_per_month, breaks = "Sturges")
+hist(log10(reviews_per_month+1), breaks = "Sturges")
+hist(sqrt(reviews_per_month), breaks = "Sturges")
+
+reviews_per_month = sqrt(reviews_per_month)
+
+hist(minimum_nights, breaks = "Sturges")
+hist(log10(minimum_nights), breaks = 500)
+hist(log10(minimum_nights[minimum_nights > 0.1]), breaks = "Sturges")
+hist(sqrt(minimum_nights), breaks = "Sturges")
+
+minimum_nights = log10(minimum_nights)
+
+hist(calculated_host_listings_count, breaks = "Sturges")
+hist(log10(calculated_host_listings_count))
+hist(sqrt(calculated_host_listings_count))
+
+calculated_host_listings_count = log10(calculated_host_listings_count)
+
+hist(availability_365, breaks = "Sturges")
+hist((log10(availability_365)), breaks = 200)
+hist(sqrt(log10(availability_365)+ 0.00000001), breaks = 200)
+hist(sqrt(availability_365 + 0.000001))
+
+# log10(last_review+1)+log10(number_of_reviews+1)+log10(reviews_per_month)
+# zonder interactietermen
+model.null =  lm(price ~ 1)
+model.full =  lm(price~longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city)  + full + availability_365)
+stepAIC(model.full, list(upper = ~longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city) + full + availability_365, lower = ~ 1) , direction="backward")
+#price ~ longitude + latitude + reviews_per_month + as.factor(room_type) + 
+#calculated_host_listings_count + availability_365
+stepAIC(model.full, list(upper = ~longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city) + full + availability_365, lower = ~ 1) , direction="both")
+#price ~ longitude + reviews_per_month + as.factor(room_type) + 
+#calculated_host_listings_count + availability_365 + as.factor(city))
+stepAIC(model.null, list(upper = ~longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city) + full + availability_365, lower = ~ 1) , direction="forward")
+#price ~ as.factor(room_type) + availability_365 + reviews_per_month + 
+#calculated_host_listings_count + as.factor(city) + longitude
+
+# latitude en longitude weglaten voor city en neighbourhood ook weg em fi;;
+
+model.null =  lm(price ~ 1)
+model.full =  lm(price~as.factor(city) + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count  + availability_365)
+stepAIC(model.full, list(upper = ~as.factor(city) + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count  + availability_365, lower = ~ 1) , direction="backward")
+#price ~ longitude + latitude + reviews_per_month + as.factor(room_type) + 
+#calculated_host_listings_count + availability_365
+stepAIC(model.full, list(upper = ~as.factor(city)  + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + full + availability_365, lower = ~ 1) , direction="both")
+#price ~ longitude + reviews_per_month + as.factor(room_type) + 
+#calculated_host_listings_count + availability_365 + as.factor(city))
+stepAIC(model.null, list(upper = ~as.factor(city)  + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count +  full + availability_365, lower = ~ 1) , direction="forward")
+#price ~ as.factor(room_type) + availability_365 + reviews_per_month + 
+#calculated_host_listings_count + as.factor(city) + longitude
+
+# met
+model.null =  lm(price ~ 1)
+model.full =  lm(price~(longitude + latitude + last_review + number_of_reviews + reviews_per_month  + minimum_nights +  calculated_host_listings_count + availability_365)* as.factor(room_type) * as.factor(neighbourhood) * as.factor(city) * full)
+stepAIC(model.full, list(upper = ~(longitude + latitude + last_review + number_of_reviews + reviews_per_month  + minimum_nights +  calculated_host_listings_count + availability_365)* as.factor(room_type) * as.factor(neighbourhood) * as.factor(city) * full, lower = ~ 1) , direction="backward")
+stepAIC(model.full, list(upper = ~(longitude + latitude + last_review + number_of_reviews + reviews_per_month  + minimum_nights +  calculated_host_listings_count + availability_365)* as.factor(room_type) * as.factor(neighbourhood) * as.factor(city) * full, lower = ~ 1) , direction="both")
+stepAIC(model.null, list(upper = ~(longitude + latitude + last_review + number_of_reviews + reviews_per_month  + minimum_nights +  calculated_host_listings_count + availability_365)* as.factor(room_type) * as.factor(neighbourhood) * as.factor(city) * full, lower = ~ 1) , direction="forward")
+
+library(leaps)
+regsubsets(price~longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city) + full + availability_365,nvmax=100)
+regsubsets(price~(longitude + latitude + last_review + number_of_reviews + reviews_per_month  + minimum_nights +  calculated_host_listings_count + availability_365)* as.factor(room_type) * as.factor(neighbourhood) * as.factor(city) * full, nvmax=100)
+
+
+################################################################################################################
+#####################################        Michiel
+################################################################################################################
 
 # eerst kijken welke transformatie toegepast moeten worden
 plotBoxQQHist = function(X) {
