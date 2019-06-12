@@ -1,0 +1,116 @@
+\documentclass[a4paper,kulak]{kulakarticle} %options: kul or kulak (default)
+
+\usepackage[utf8]{inputenc}
+\usepackage[dutch]{babel}
+
+\date{Academiejaar 2018 -- 2019}
+\address{
+  Informatica \\
+  Statistische modellen en data-analyse \\
+  Prof. Van Aelst, Stijn Rebry}
+\title{Opdracht 2}
+\author{Thomas Bamelis, Michiel Jonckheere}
+
+
+\begin{document}
+
+\maketitle
+
+\section*{Inleiding}
+%TODO inleiding schrijven
+
+\section{Ligging en type verblijf}
+% todo kleine inleiding vd opdracht
+\subsection{type verblijf vs price}
+als we de boxplot bekijken eum zonder de outliers is er te zien dat er wel degelijk een verschil blijkt te zijn tussen de roomtypes en dan vooral tussen Entire home en de rest. \\
+
+qqplot van price lijkt totaal niet normaal verdeeld door de enorm zware outliers en de knik in de curve. \\
+
+Een log transformatie lijkt dit grotendeels op te lossen. \\
+
+levene test toont aan dat de variantie van de klassen verschillend is, das nie goe \\
+
+niet alle veronderstelling zijn daarmee voldaan, onze bevindingen moeten daarom met een korrel zout genomen worden. \\
+
+Na de redisuals bekeken te hebben van de modellen waarbij transformaties van de prijs voorspeld worden aan de hand van de room\_type, vonden we dat de log10 transformatie er als beste transformatie uitkwam. De andere transformaties die we gebruikten, waren sqrt, log10(log10) en een powertransform.\\
+
+Dat model verwierp de f-test en t-test voor alle dummy(?)-variabelen. De RSqrt was echter maar 0.234.
+bovenstaande figuur toont dat er geen afhankelijkheid in tijd bestaat tussen de residuals. \\
+
+De levene test verwerpt opnieuw, want de varianties verschillen, maar verwerpt veel minder sterk.\\
+
+weighted least square methode toonde geen verbeteringen. \\
+
+De anova methode toon opnieuw aan dat de room\_type effecitef significant is voor de prijs.\\
+
+De tukey-test toont verder aan dat de verschillende soorten kamers onderling ook genoeg verschillen van elkaar. \\
+
+
+\subsection{city vs price}
+De boxplot toont aan dat er niet veel verschil is in de gemiddelde prijs per stad. Antwerpen en Gent zijn nagenoeg het zelfde, enkel de prijzen in Brussel liggen wat lager. \\
+
+We stellen opnieuw vast dat een log10 transformatie op de prijs veel betere resultaten zal opleveren. De residuals in het begin goed, naar het einde toe niet\\
+
+Zoals hierboven besproken is de prijs dus niet afhankelijk van de tijd. \\
+
+Het model verwerpt de f-test en t-test voor alle variabelen, maar Gent is beduidend minder sterk verworpen dan de andere twee. Er moet rekening meegehouden worden dat Antwerpen als eerste variabele werkt, en de gelijkenissen tussen Antwerpen en Gent dit kunnen verklaren. En het dus niet perse Gent die slechter is dan de andere twee. Het kleine verschil in de coefficienten bevestigd dat.\\
+
+Anova zegt dat de stad er toedoet voor de prijs. \\
+
+levene-test zegt opnieuw dat er heteroscedasticiteit.\\
+
+rsqrt is 0.023.
+
+de weighted least square toont geen verbetering.
+
+de tukeytest verwerpt sterk dat er geen verschil zou zijn tussen Brussel en de andere twee steden. Maar Gent en Antwerpen worden zwak verworpen (pwaarde=0.035), wat opnieuw onze vermoedens bevestigd. \\
+
+Het effect van Brussel is veel sterker dan die van Antwerpen en Gent. \\
+
+Conclusie: Alle steden blijken significant, maar er is wel een grote gelijkenis tussen Antwerpen en Gent. tis opt randje van blub het zelfde te zijn bij dedie, maar toch verworpen in de turkey test.\\
+
+\subsection{stadswijken}
+Door de bevinding in de vorige sectie werken we van de eerste keer met de log10 transformatie voor de prijs. \\
+
+Het model waarbij we enkel neighbourhood meenemen, verwerpt de f-test, maar een groot deel van de neighbourhoods worden niet verworpen door de t-test. (42) \\
+
+de anova toont weer aan dat neighbourhood significant is.\\
+
+Het model met neighbourhood en city verwerpt de f-test ook, maar een nog groter deel wordt niet verworpen door de t-test (53). Meer bepaald is de pwaarde van Gent zeer hoog (0.95) terwijl Antwerpen en Brussel nog steeds verworpen worden (Antwerpen omdat die de eerste variabele is). Heiruit blijkt dus dat door de nieghbourhood toe te voegen, het significant verschil tussen Antwerpen en Gent verdwijnt. \\
+
+
+
+AOV verwerpt ook 
+
+Tukey test voor enkel neighbourhoods toont aan dat het overgrote merendeel van de neighbourhoods niet significant verschillen van elkaar. Dit geldt ook voor het model waar city in zit en tevens worden de citys wel onderling significant bevonden. 
+
+???Zijn er wijken met duidelijk een hogere of lagere huurprijzen??? -> Zeer zeker, er is zelfs een mooi plotjes die erbij past, zou ik er wel in steken ja. 5 neighbourhoods waar de prijzen er beduidend hoger zijn. Dit zijn devolgende: zoek op\\
+
+\subsection{4de deel vraag}
+Modellen met neighbourhood en roomtype, de aov zegt ervan dat beide nog significant zijn. 
+
+
+
+
+\section{Model voor de huurprijs}
+% todo kleine inleiding vd opdracht
+commentaar thomas:\\
+variabelen selectie: teveel variabelen laten vallen in het begin, nu deze variabelen gebruiken: roomtype, price, minimumnights, nbreviews, lastreviez, reviewpermonth, calchost, city, availability \\
+transformaties\\
+interactietermen\\
+
+model evalueren:\\
+checken op multicolineariteit checken\\
+waar liggen de outliers\\
+inferenties\\
+5plots (pg216, residualplots)
+
+\section{Beschikbaarheid van een verblijf}
+% todo kleine inleiding vd opdracht
+
+
+\section*{Besluit}
+
+Afsluitende tekst.
+
+\end{document}

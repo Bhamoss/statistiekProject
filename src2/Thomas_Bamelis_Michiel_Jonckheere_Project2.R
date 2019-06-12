@@ -140,6 +140,8 @@ par(mfrow=c(1,1))
 ###########################################################
 priceNoNa = price[!is.na(price)]
 
+
+
 hist(price[price < 200], breaks = "Sturges")
 # zeer zware rechterstaart
 summary(powerTransform(price))
@@ -150,11 +152,17 @@ powerTransform(price)
 table(airbnb$room_type) # bevat geen NA's
 barplot(table(room_type))
 boxplot(price[price <200]~room_type[price<200])
+
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# Todo: bovenste figuur in verslag
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 boxplot(price~room_type)
 
 # shapiro test waardeloos omdat er teveel samples zijn, waardoor er te makkelijk
 # de null hypothese verworpen wordt
 qqnorm(price)
+
+
 # price helemaal niet normaal
 qqnorm(log10(price))
 qqline(log10(price))
@@ -208,9 +216,13 @@ es = stdres(rt.lm)
 qqnorm(es,ylab="Standardized residuals")
 qqline(es)
 
+
+
 plot(e,xlab="Index",ylab="Residuals")
 # there does not seem to be correlation in time, some heavy outliners though 
-
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# Todo: bovenste figuur in verslag
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 plot(rt.lm$fitted.values,e)
 # why do we only have 3 fitted values?
@@ -272,6 +284,10 @@ table(airbnb$city) # bevat geen NA's
 barplot(table(city))
 boxplot(price~city)
 boxplot(price[price <155]~city[price<155])
+
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# Todo: bovenste figuur in verslag
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 cit.lmn = lm(price~city)
 qqnorm(cit.lmn$residuals)
@@ -352,8 +368,12 @@ summary(nes.aov)
 
 pvals = summary(nes.lm)$coefficients[,4]
 length(pvals[pvals<0.05])
+length(pvals[pvals>=0.05])
+length(pvals)
 pvals = summary(ne.lm)$coefficients[,4]
 length(pvals[pvals<0.05])
+length(pvals[pvals>=0.05])
+length(pvals)
 
 # Brussel en antwerpen zijn nog steeds significant als je de neighboorhood er bijvoegd
 # maar gent helemaal niet meer. 
@@ -377,10 +397,31 @@ for (i in 1:length(unique(neig))) {
 }
 plot(l)
 
+
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# Todo: bovenste figuur in verslag
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 x = tail(sort(l, index.return=T)$ix)
 k[x]
 l[x]
 mean(l)
+
+
+#[1] Woluwe-Saint-Pierre Sint Denijs Westrem Oud - Berchem       Eilandje            Polder              Stadspark          
+#96 Levels: Binnenstad Bloemekenswijk Brugse Poort - Rooigem Dampoort Drongen Elisabethbegijnhof - Papegaai Gentbrugge Ledeberg ... Woluwe-Saint-Pierre
+#> l[x]
+#[1] 103.1416 127.3333 146.8571 200.8485 217.5000 239.7847
+#> mean(l)
+#[1] 72.20993
+
+# dus hoogste is in brussel, 2de hoogste in Gent, en de rest van de top 5 in Antwerpen
+# vooral de top3 zijn veel hoger dan de rest
+
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# Todo: bovenste data in verslag voor top 5
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 
 for (i in 1:length(k[x])) {
   print(unique(city[neighbourhood == k[x[i]]]))
@@ -399,6 +440,7 @@ for (i in 1:length(neighbourhood)) {
 pl
 
 # dus hoogste is in brussel, 2de hoogste in Gent, en de rest van de top 5 in Antwerpen
+
 
 summary(lm(price~neighbourhood))
 # heel veel die niet belangrijk zijn
