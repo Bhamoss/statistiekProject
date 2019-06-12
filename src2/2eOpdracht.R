@@ -160,12 +160,13 @@ plotBoxQQHist = function(X) {
   qqnorm(X); qqline(X)
   hist(X, breaks="Sturges")
 }
-
 summary(powerTransform(price))
-testTransform(powerTransform(price), -1/5)
+testTransform(powerTransform(price), -1/4)
 par(mfrow=c(2,3))
 plotBoxQQHist(price)
-plotBoxQQHist((price)**(-1/5)) # veel beter
+plotBoxQQHist(log10(price))
+plotBoxQQHist(((price)**(-1/4)-1)/(-1/4)) # veel beter
+
 
 summary(powerTransform(minimum_nights))
 par(mfrow=c(2,3)) # Hoofdwet van de statistiek: kijk naar de data
@@ -173,7 +174,10 @@ plotBoxQQHist(minimum_nights)
 plotBoxQQHist(log10(minimum_nights)) # geen verbetering
 testTransform(powerTransform(minimum_nights), -2/3)
 plotBoxQQHist(minimum_nights)
-plotBoxQQHist((minimum_nights)**(-2/3)) # iets beter dan de identieke of log10
+plotBoxQQHist(((minimum_nights)**(-2/3)-1)/(-2/3))  # iets beter dan de identieke of log10
+
+
+
 
 summary(powerTransform(number_of_reviews))
 plotBoxQQHist(number_of_reviews)
@@ -205,7 +209,7 @@ par(mfrow=c(1,1))
 
 # conclusie:
 # variabele           transformatie
-# price               **(-1/5)
+# price               **(-1/4)
 # minimum_nights      **(-2/3)
 # number_of_reviews   log10
 # (last_review + 1)   log10
@@ -226,8 +230,8 @@ par(mfrow=c(1,1))
   data2 = data[,-c(4,5)] # zelfde data zonder number_of_reviews en last_review
   
   data.transformed = data
-  data.transformed$price = (data.transformed$price)**(-1/5)
-  data.transformed$minimum_nights = (data.transformed$minimum_nights)**(-2/3)
+  data.transformed$price = ((data.transformed$price)**(-1/4)-1)/(-1/4)
+  data.transformed$minimum_nights = ((data.transformed$minimum_nights)**(-2/3)-1)/(-2/3)
   data.transformed$last_review = log10(data.transformed$last_review + 1)
   data.transformed$number_of_reviews = log10(data.transformed$number_of_reviews)
   data.transformed$reviews_per_month = log10(data.transformed$reviews_per_month)
@@ -402,7 +406,7 @@ vif(model2)
   model4.null = lm(price~1, data=data2.transformed)
   model4.full = lm(price~., data=data2.transformed)
   model4.step = stepAIC(model4.full)
-  summary(model4.step) # direct al een veel betere Rsquared (0.36) dan de niet-getransformeerde data
+  summary(model4.step) # direct al een veel betere Rsquared (0.37) dan de niet-getransformeerde data
   anova(model4.step)
   #verschil met model2 is dat hier last_review er niet bij zit, Rsq is niet significant veranderd
   
@@ -417,7 +421,7 @@ vif(model2)
   attributes(summary(model4.all))
   summary(model4.all)$which[which.min(bic),]
   coef(model4.all,which.min(bic)) # coefficienten van het beste model
-  summary(model4.all)$rsq[which.min(bic)] # 0.36
+  summary(model4.all)$rsq[which.min(bic)] # 0.37
   
   model4 = model4.step
   
@@ -438,7 +442,7 @@ vif(model2)
   summary(model4.all2)$rsq[which.min(bic)] # Rsq 0.37
   summary(model4.all2)$which[which.min(bic),]
   coef(model4.all2,which.min(bic)) 
-  # beiden minder goede Rsquare, niet mogelijk van zowel city als room_type samen te doen
+  # beiden zelfde Rsquare, niet mogelijk van zowel city als room_type samen te doen
   
   model4.2 = model4.step2
   summary(model4.2)
@@ -466,7 +470,7 @@ rbind(
 cov(model1$coefficients, model1.lts$coefficients)
 # significant verschil tussen de coefficienten
 
-model4
+summary(model4)
 model4.lts = ltsReg(price ~ room_type + minimum_nights + reviews_per_month + 
                       calculated_host_listings_count + availability_365 + city, 
                     data = data2.transformed)
@@ -477,3 +481,8 @@ coeff4 = rbind(
 )
 cov(model4$coefficients, model4.lts$coefficients)
 # geen significant verschil tussen de coefficienten.
+
+par(mfrow=c(2,2))
+plot(model1)
+plot(model4)
+plot(model1.lts)
