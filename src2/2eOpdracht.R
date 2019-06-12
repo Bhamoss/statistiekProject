@@ -212,3 +212,9 @@ par(mfrow=c(1,1))
 # reviews_per_month   log10
 # calc_host_list      **(-1)
 # availability_365    Identieke
+
+#TODO model maken van variabelen zonder transformaties, met en zonder alle reviews
+#     model maken van variabelen met transformaties, met en zonder alle reviews
+#     multicolineariteit checken, vif command, oefneing12
+#     outliers checken
+#     plots pg 216 maken en het vergelijken van de modellen
