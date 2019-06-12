@@ -848,7 +848,6 @@ library(MASS)
   barplot(p)
   # alhoewel er wel een positief verband lijkt te zijn
   
-  # latitude en longtitude laten we weg omdat city en neigbourhood al voldoende specifiek zijn
   cor(last_review,reviews_per_month)
   cor(last_review, number_of_reviews)
   cor(reviews_per_month, number_of_reviews)
@@ -857,10 +856,7 @@ library(MASS)
   boxplot(full, number_of_reviews)
   plot(reviews_per_month, last_review)
   plot(reviews_per_month, number_of_reviews)
-  # omdat deze 3 variabelen alle 3 over reviews gaan, zijn ze natuurlijk sterk gecoreleerd.
-  # als we de correlatie bekijken, dan geeft reviews per month een correlatie van -0.4 en 0.64 tot de andere 2.
-  # om multicollineariteit te vermijden, nemen we enkel deze variabele mee omdat die ook het meeste van de andere verteld
-  
+
   boxplot(full, calculated_host_listings_count)
   # calculated host listings count lijkt toch verschillend te zijn voor het al dan niet volzitten van het ding, dus nemen we het mee
   
@@ -869,7 +865,15 @@ library(MASS)
   mean(minimum_nights[!full])
   # zelfde in mindere mate voor minimum nachten
   
-  # variabelen selecteren
+  
+  
+  
+  
+  
+  
+  
+  
+   # variabelen selecteren
   
   model.null =  glm(full ~ 1, family = binomial)
   model.full =  glm(as.factor(full)~price + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + as.factor(neighbourhood)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
@@ -921,12 +925,13 @@ library(MASS)
   
   # volgende zitten er altijd in:
   # price + as.factor(room_type) + 
-  #  minimum_nights + calculated_host_listings_count + last_review + number of reviews + reviews_per_month
+  #  minimum_nights + calculated_host_listings_count 
+  # + last_review + number of reviews + reviews_per_month
   
   # 4 longitutde, 4 latitude, 0 neighbourhood, 2 keer city
   # dus longitude en latitude vs city
   
-  
+  #TODO: interactietermen en regsubsets
   
   model.step = stepAIC(model.full)
   #steunt latitude
@@ -949,6 +954,9 @@ library(MASS)
   anova(model.ll,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
   # verwerpt longitutde en room type
   1-pchisq(model.ll$deviance, model.ll$df.residual)
+  1-pchisq(
+    model.ll$null.deviance-model.ll$deviance,
+    model.ll$df.null-model.ll$df.residual)
   plot(residuals(model.ll), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
   
   cor(longitude, latitude)
@@ -959,6 +967,9 @@ library(MASS)
   anova(model.cit,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
   # verwerpt room type 
   1-pchisq(model.cit$deviance, model.cit$df.residual)
+  1-pchisq(
+    model.cit$null.deviance-model.cit$deviance,
+    model.cit$df.null-model.cit$df.residual)
   plot(residuals(model.cit), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
   
   # beiden verwerpen room type
@@ -983,6 +994,14 @@ library(MASS)
   
   # we kiezen dus voor het eerste cit omdat de aic daar het laagst was, ookal is roomtype niet verworpen
   
+  data = ab[,6:16]
+  library(leaps)
+  model.regs = regsubsets(full~., data=data, nvmax=12)
+  plot(model.regs)
+  summary(model.regs)
+  # latitude en longitude eerder geselecteerd dan steden :/
+  
+  
   
   model.f = glm(as.factor(full)~ price  + last_review + number_of_reviews + reviews_per_month + as.factor(room_type)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
   # als je price wegdoet krijg je die warning niet
@@ -998,6 +1017,19 @@ library(MASS)
   #TODO: michiel haalt betere AIC na transorfmaties te doen, dus we kunnen dit opnieuw doen maar met de getransformeerde shit
   
   
+  
+    ab$price = ((ab$price)**(-1/4)-1)/(-1/4)
+    ab$minimum_nights = ((ab$minimum_nights)**(-2/3)-1)/(-2/3)
+    ab$last_review = log10(ab$last_review + 1)
+    ab$number_of_reviews = log10(ab$number_of_reviews)
+    ab$reviews_per_month = log10(ab$reviews_per_month)
+    ab$calculated_host_listings_count = ((ab$calculated_host_listings_count)**(-1)/(-1)) # TODO juiste boxcox transformatie
+  
+
+  attach(ab)
+  
+    #commentaar is van voor transformatie
+    # de price selecteerd nu ook alles door de transformatie
   model.fp = glm(as.factor(full[price < 2000])~ price[price < 2000]  + last_review[price < 2000] + number_of_reviews[price < 2000] + reviews_per_month[price < 2000] + as.factor(room_type)[price < 2000]  + minimum_nights[price < 2000] +  calculated_host_listings_count[price < 2000] + as.factor(city)[price < 2000],  family = binomial)
   # het is door die outliers, wat doe je dan?
   
@@ -1030,6 +1062,10 @@ library(MASS)
   # zeer vreemde driehoek. 
   # TODO: bespreek
   
+  #########################################
+  # de commentaar was de waarde van de coefficienten zonder transformaties
+  # dus neem dit van het model zonder om te kunnen reproduceren
+  
   # coefficienten bespreken (odds-ratio)
   coef = model.fp$coefficients
   coef
@@ -1046,6 +1082,8 @@ library(MASS)
   #  as.factor(city)[price < 2000]Gent               0.4652026 
   
   exp(coef)
+  
+  
   
   # iemand in brussel heeft
   1.4839819/0.5839970 -1
