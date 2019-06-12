@@ -104,6 +104,19 @@ ab=na.omit(airbnb)
 detach(airbnb)
 attach(ab)
 # 1. variabele selectie
+
+
+plot(price~longitude)
+ab$tmp[latitude<50.95] = "<50.95"
+ab$tmp[latitude>50.95 & latitude<51.13] = "<51.13"
+ab$tmp[latitude>51.13] = ">51.1"
+boxplot(price~ab$tmp, outline=FALSE)
+# duidelijke dat latitude en city zelfde data weergeven
+# longitude zondert Gent af van Brussel en Antwerpen
+ab$tmp = NULL
+
+
+
 boxplot(price~room_type)
 boxplot(price~room_type, outline = FALSE)
 # room_type is een relevante variabele voor het model
@@ -235,7 +248,7 @@ par(mfrow=c(1,1))
   data.transformed$last_review = log10(data.transformed$last_review + 1)
   data.transformed$number_of_reviews = log10(data.transformed$number_of_reviews)
   data.transformed$reviews_per_month = log10(data.transformed$reviews_per_month)
-  data.transformed$calculated_host_listings_count = (data.transformed$calculated_host_listings_count)**(-1)
+  data.transformed$calculated_host_listings_count = (data.transformed$calculated_host_listings_count)**(-1) # TODO juiste boxcox transformatie
   data2.transformed = data.transformed[,-c(4,5)]
 }
 detach(ab)
@@ -486,3 +499,6 @@ par(mfrow=c(2,2))
 plot(model1)
 plot(model4)
 plot(model1.lts)
+
+plot(model4$fitted.values, model4$residuals)
+plot(model1$fitted.values[model1$residuals<1500], model1$residuals[model1$residuals<1500])
