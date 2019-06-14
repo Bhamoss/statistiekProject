@@ -594,7 +594,8 @@ library(MASS)
 ###########################################################
 ###############   Model voor de huurprijs   ###############
 ###########################################################
-{  ab=na.omit(airbnb)
+{  
+  ab=na.omit(airbnb)
   detach(airbnb)
   attach(ab)
   # 1. variabele selectie
@@ -970,8 +971,8 @@ library(MASS)
   # outliers eens eruit filteren voor model1 en model4
   model1
   attach(data)
-  model1.lts = ltsReg(price ~ reviews_per_month + calculated_host_listings_count + 
-                        availability_365+city+room_type, data = data, alpha=0.75 )
+  model1.lts = ltsReg(price ~ room_type + reviews_per_month + calculated_host_listings_count + 
+                        availability_365+city, data = data)
   summary(model1.lts) # rsq 0.45
   qqnorm(model1.lts$residuals)
   rbind(
@@ -983,32 +984,28 @@ library(MASS)
   # significant verschil tussen de coefficienten
   
   y = scale(model1.lts$residuals)
-  Mr = covMcd(model1.lts$model[,-c(1,5,6)], alpha = 1)$center; Mr
-  Cr = covMcd(model1.lts$model[,-c(1,5,6)], alpha = 1)$cov; Cr
-  x = mahalanobis(model1.lts$model[,-c(1,5,6)], Mr, Cr)
-  plot(x,y, xlab="Mahanalobis afstand", ylab="Standardized LTS residuals")
+  Mr = covMcd(model1.lts$model[,-c(1,2,6)], alpha = 1)$center; Mr
+  Cr = covMcd(model1.lts$model[,-c(1,2,6)], alpha = 1)$cov; Cr
+  x = mahalanobis(model1.lts$model[,-c(1,2,6)], Mr, Cr)
   y0=qnorm(.975)
+  x0=qchisq(.975,2)
+  z = rep(1,nrow(y))
+  z[which(abs(y)>20)] = 4
+  z[which(x>x0 & abs(y)>y0)] = 2
+  plot(x,y, xlab="Mahanalobis distance", ylab="Standardized LTS residuals", col=z, pch=rep(1,nrow(y))[which(x>x0 & abs(y)>y0)])
+  
   abline(h=c(-y0,y0),col='red') # geen echte outliers, behalve het verwachte aantal overschrijdingen
   data$price[abs(y)>y0] # high residual points
-  x0=qchisq(.975,2) 
   abline(v=x0,col='red') # behoorlijk wat punten met hoge leverage
+
   data$price[x>x0 & abs(y)>y0] # high leverage points
+  table(ab$calc[x>100])
   bad = ab[which(x>x0 & abs(y)>y0),]; bad 
   nrow(ab[which(abs(y)>y0),]) # 77
   nrow(ab[which(x>x0 & abs(y)>y0),]) # 9
   nrow(ab[which(x>x0),]) # 1079
   ab[which(abs(y)>20),]
   
-  y = scale(model1.lts$residuals[scale(model1.lts$residuals)<20])
-  Mr = covMcd(model1.lts$model[scale(model1.lts$residuals)<20,-c(1,5,6)], alpha = 1)$center; Mr
-  Cr = covMcd(model1.lts$model[scale(model1.lts$residuals)<20,-c(1,5,6)], alpha = 1)$cov; Cr
-  x = mahalanobis(model1.lts$model[scale(model1.lts$residuals)<20,-c(1,5,6)], Mr, Cr)
-  plot(x,y, xlab="Mahanalobis afstand", ylab="Standardized LTS residuals")
-  y0=qnorm(.975)
-  abline(h=c(-y0,y0),col='red') # geen echte outliers, behalve het verwachte aantal overschrijdingen
-  data$price[abs(y)>y0] # high residual points
-  x0=qchisq(.975,2) # 2.5% dus bij chikwadraatverdeling: 2 a 3-tal elementen buiten deze grenzen  
-  abline(v=x0,col='red') # behoorlijk wat punten met hoge leverage
   
   summary(model4)
   model4.lts = ltsReg(price ~ room_type + minimum_nights + reviews_per_month + 

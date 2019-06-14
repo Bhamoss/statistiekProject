@@ -67,7 +67,15 @@ De prijs lijkt aan de hand van figuur \ref{fig:pv} (zonder outliers) een redelij
 De prijs lijkt niet normaal verdeeld door outliers en de knik in de curve (qqplot \ref*{fig:qqp}). 
 Een schatting van de lambda voor een Box-Cox transformatie raad -0.2549 (afgerond $-\frac{1}{4}$) aan als lambda.
 Figuur \ref{fig:qqbp} toont een verbetering qua normaliteit.
-Deze transformatie gaf de beste verbetering van alle geteste transformaties (log10, sqrt, log10(log10)).
+Deze transformatie gaf de beste verbetering van alle geteste transformaties (log10, sqrt, log10(log10)).\\
+
+De Box-Cox transformatie komt er als beste uit als we residuals analyseren van een model met de verschillende transformaties (figuur \ref{fig:pcqq}).
+We nemen voor de rest van deze sectie die transformatie voor de prijs.
+De Levene test toont aan dat er heteroscedasticiteit is, wat aannemelijk lijkt gegeven figuur \ref{fig:bpc}.
+Kwantielplot \ref{fig:pcqq} toont dat de residuals niet normaal verdeeld zijn.
+Het aantal samples is te groot om een Shapiro test op uit te voeren.
+Een plot tegenover de index \ref{fig:pcisr} toont geen afhankelijkheid ``in de tijd''.
+Niet alle modelveronderstellingen voor de relevante testen zijn voldaan, onze bevindingen moeten daarom met een korrel zout genomen worden.\\
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[b]{0.23\textwidth}
@@ -92,24 +100,19 @@ Deze transformatie gaf de beste verbetering van alle geteste transformaties (log
 	%(or a blank line to force the subfigure onto a new line)
 	\begin{subfigure}[b]{0.23\textwidth}
 		\includegraphics[width=\textwidth]{qqbp.jpg}
-		\caption{Kwantielplot Box-Cox -1/4 prijs}
+		\caption{Kwantielplot Box-Cox $-\frac{1}{4}$ prijs}
 		\label{fig:qqbp}
 	\end{subfigure}
 \end{figure}
 
+~\\
 
-De Box-Cox transformatie komt er als beste uit als we residuals analyseren van een model met de verschillende transformaties (figuur \ref{fig:pcqq}).
-We nemen voor de rest van deze sectie die transformatie voor de prijs.
-De Levene test toont aan dat er heteroscedasticiteit is, wat aannemelijk lijkt gegeven figuur \ref{fig:bpc}.
-Kwantielplot \ref{fig:pcqq} toont dat de residuals niet normaal verdeeld zijn.
-Het aantal samples is te groot om een Shapiro test op uit te voeren.
-Een plot tegenover de index \ref{fig:pcisr} toont geen afhankelijkheid ``in de tijd''.
-Niet alle modelveronderstellingen voor de relevante testen zijn voldaan, onze bevindingen moeten daarom met een korrel zout genomen worden.\\
 Het model verwierp de f-test en t-test voor alle variabelen. 
 De R-squared en adjusted R-squared  waren echter maar 0.268.
 De weighted least square methode toonde geen verbeteringen op het model na 1 iteratie. 
 De aov methode (partiële F-test met Bonferroni correctie) toont alsook aan dat het type verblijf effectief significant is voor de prijs.
 De tukey-test toont aan dat de verschillende soorten kamers onderling ook genoeg verschillen van elkaar. \\
+
 Conclusie: het type verblijf is significant voor de prijs en de types verschillen onderling allemaal in prijs. Volgens de coëfficiënten van het model is de prijs als volgt gerangschikt: 
 volledig huis app. > privé kamer > gedeelde kamer.
 Deze bevindingen stroken met de vermoedens van de realiteit.
@@ -133,6 +136,7 @@ Deze bevindingen stroken met de vermoedens van de realiteit.
 \subsection{stad vs huurprijs}
 \label{sec:stadvsprijs}
 De boxplot zonder outliers (figuur \ref{fig:bpcit}) suggereert  dat er niet veel verschil is in de gemiddelde prijs per stad. Antwerpen en Gent zijn nagenoeg het zelfde, enkel de prijzen in Brussel liggen wat lager. \\
+
 We zien dat de residuals niet normaal verdeeld zijn (figuur \ref{fig:qqboxcit}), waardoor onze bevindingen opnieuw niet steenhard mogen genomen worden. De Levene test kan echter niet verwerpen dat er homoscedasticiteit.\\
 Het model verwerpt de f-test en t-test voor de variabelen van Antwerpen (= het intercept) en Brussel, maar Gent is niet verworpen  met een p-waarde van 0.068. 
 Antwerpen krijgt ``voorrang'' aangezien het het intercept is, en de gelijkenissen tussen Antwerpen en Gent uit figuur \ref*{fig:bpcit} dit kunnen verklaren. 
@@ -311,23 +315,29 @@ In deze sectie bekijken we of er transformaties zijn die ervoor kunnen zorgen da
 \subsection{Modellen}
 Om een goed model te vinden zijn we als volgt te werk gegaan: ons eerste model ontstond van uit alle relevante niet-getransformeerde variabelen het beste model te nemen. Met een R-squared van 0.032 vonden we dit model zeer slecht en dus gingen we verder naar het model met de getransformeerde variabelen. Hierbij merkten we direct een grote verbetering in de R-squared (= 0.37). In het derde en vierde model dat we bekeken, lieten we de variabelen laatste review en aantal reviews weg. Hier keken we weer naar de modellen met niet-getransformeerde en getransformeerde variabelen. Het derde model bleek gelijk te zijn aan het eerste model, dit is te verklaren omdat bij het opstellen van het eerste model de twee review variabelen uiteindelijk ook weggelaten werden. Tot slot hebben we nog het vierde model, dit model is zo goed als gelijk aan het tweede model met het enige verschil dat de getransformeerde variabele laatste review hier niet in meegenomen is. \\
 
-Voor de twee beste modellen van hierboven hebben we ook gekeken of er een verbetering was als we met interactietermen werkten. Hierbij zagen we dat die modellen niet beter waren dan de modellen die we al hadden. Bij het kijken naar de multicollineariteit van de modellen zonder en met interactietermen, zagen we dat die zonder interactietermen een veel kleinere multicollineariteit hadden dan die met interactietermen. Hieruit concluderen we dus dat het tweede en vierde model van hierboven beter zijn. \\
+Voor de twee beste modellen van hierboven hebben we ook gekeken of er een verbetering was als we met interactietermen werkten. Hierbij zagen we dat die modellen niet beter waren dan de modellen die we al hadden. Bij het kijken naar de multicollineariteit van de modellen zonder en met interactietermen, zagen we dat die zonder interactietermen veel minder multicollineariteit hadden dan die met interactietermen. Hieruit concluderen we dus dat het tweede en vierde model van hierboven beter zijn. Beide modellen hebben geen last van multicollineariteit.\\
 
 Aangezien het tweede en vierde model enkel verschilde in het al dan niet opnemen van de getransformeerde variabele laatste review, keken we ook eens naar hoe significant de bijdrage was van deze variabele. Hieruit bleek dat deze bijdrage niet significant was en besluiten we dat het vierde model het beste was. De co\"effici\"enten van beide modellen zijn ook zo goed als gelijk.\\
 
-We weten dat de prijsvariabele extreme outliers heeft, dit is dan ook de verklaring waarom de twee modellen zonder getransformeerde variabelen zeer slecht waren. Als we keken naar het eerste en vierde model die niet be\"invloed werden door de outliers, dan bleek dat het eerste model ongeveer een even goede voorspelling geeft voor de prijs als het vierde model (respectievelijk is de R-squared 0.45 en 0.43). Voor het vierde model zonder outliers was er niet zo'n groot verschil te merken in de co\"effici\"enten met het initi\"ele vierde model, dit komt omdat door de transformatie er al veel outliers onderdrukt zijn.\\
-%TODO: checken op multicolllineariteit (bvb gent en antwerpen)
+
+We weten dat de prijsvariabele extreme outliers heeft, dit is dan ook de verklaring waarom de twee modellen zonder getransformeerde variabelen zeer slecht waren. Als we keken naar het eerste en vierde model die niet be\"invloed werden door de outliers (met behulp van de LTS regressie), dan bleek dat het eerste model ongeveer een even goede voorspelling geeft voor de prijs als het vierde model (respectievelijk is de R-squared 0.45 en 0.43). Voor het vierde model zonder outliers was er niet zo'n groot verschil te merken in de co\"effici\"enten met het initi\"ele vierde model, dit komt omdat door de transformatie er al veel outliers onderdrukt zijn.\\
 % en bespreken van de modelproblemen. bvb outliers zijn bad leverage points en doe een diagnostic plot (p337)
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{diagnosticPlot2eVr.jpeg}
+	\end{center}
+	\caption{Diagnostische plot van het eerste model, geconstrueerd met LTS. de blauwe punten zijn extreme verticale outliers, de rode punten zijn de bad leverage points.}
+	\label{fig:diagnPlot}
+\end{figure}
+In figuur \ref{fig:diagnPlot} is de diagnostische plot van het eerste model zonder invloed van outliers te zien. Hierbij merken we eerst op dat er twee extreme verticale outliers zijn. Dit zijn de twee duurste verblijven uit onze dataset. Ook zien we twee bad leverage punten. Als we deze punten onderzochten, vonden we dat er eigenlijk negen bad leverage punten zijn, waarvan er acht samenvallen. Deze acht zijn van dezelfde uitbater, uit dezelfde stad en de prijs van deze verblijven is allemaal \euro999. Tot slot is het ook opmerkelijk dat er zeer veel good leverage points zijn. De punten met een mahanalobis afstand groter dan 100 zijn allemaal verblijven uit Brussel en dit zijn 361 verblijven. Deze 361 verblijven zijn verdeeld over zes uitbaters. We kunnen besluiten uit deze diagnostische plot dat de meeste reguliere observaties degene zijn van uitbaters die een klein aantal verblijven hebben en een normale prijs vragen. 
+
+
 \subsection{Conclusie}
 We concluderen dat het eerste model het beste model is als de outliers onderdrukt worden. Dit is het gevonden model:
 \begin{multline}
-price = 62.18 - 26.05\cdot R_{private}  - 44.06\cdot R_{shared}  - 0.30\cdot RevMonth + \\1.09\cdot CHLC + 0.025 \cdot Av - 3.04\cdot C_{Brussel} + 6.04\cdot C_{Gent}
+price = 62.18 - 26.05\cdot R_{private}  - 44.06\cdot R_{shared}  - 3.04\cdot C_{Brussel} + 6.04\cdot C_{Gent} \\ - 0.30\cdot RevMonth + 1.09\cdot CHLC + 0.025 \cdot Av 
 \end{multline}
-Eerst en vooral zien we hier dat de gemiddelde prijs voor het huren van een volledig huis/appartement, in Antwerpen, die altijd verhuurd is, geen reviews per maand heeft en de uitbater maar 1 verblijf heeft, ongeveer \euro  63.27 bedraagd. Daarnaast daalt de voorspelling van de prijs een stuk als er sprake is van een priv\'e of gedeelde kamer. Zoals we in sectie \ref{sec:stadvsprijs} al zagen, is hier ook duidelijk dat de prijzen in Gent iets hoger liggen dan in Antwerpen en dat de prijzen in Brussel lager zijn dan in Antwerpen en Gent.\\
-
-De andere drie variabelen hebben minder significante co\"effici\"enten. We kunnen afleiden uit dit model dat het aantal verblijven van de uitbater een kleine rol speelt in het voorspellen van de prijs. 
-\textbf{Het volgende mag je niet zeggen, omdat er correlatie is tussen de x'en, herrinner je van stat 1, ik doe dit omdat hij het zelf zo zegt van die kansen, maar van een gewoon regressiemodel mag je dat niet zeggen}
-Ook merken we dat er elke de 40 dagen dat het verblijf niet verhuurd wordt, de prijs een euro stijgt. 
+Eerst en vooral zien we hier dat de gemiddelde prijs voor het huren van een volledig huis/appartement, in Antwerpen, die altijd verhuurd is, geen reviews per maand heeft en de uitbater maar 1 verblijf heeft, ongeveer \euro  63.27 bedraagd. Daarnaast daalt de voorspelling van de prijs een stuk als er sprake is van een priv\'e of gedeelde kamer. Zoals we in sectie \ref{sec:stadvsprijs} al zagen, is hier ook duidelijk dat de prijzen in Gent iets hoger liggen dan in Antwerpen en dat de prijzen in Brussel lager zijn dan in Antwerpen en Gent. De andere drie co\"effici\"enten zijn moeilijker te interpreteren.
 
 \section{Beschikbaarheid van een verblijf}
 In deze sectie proberen we logistische regressie toe te passen om te voorspellen of een verblijf al dan niet wordt vast verhuurd in plaats van enkel voor korte periodes.
@@ -354,7 +364,8 @@ Voor de interpretatie hanteren we echter een model zonder transformaties om ons 
 
 De Wald test verwerpt het niet significant zijn van de enkele variabelen allemaal  met voldoende marge.
 De behaalde deviance is 6305.7 en de AIC 6327.7.
-Dit is een daling van ongeveer 1000 tegenover het model zonder transformaties.
+Dit is een daling van ongeveer 1000 tegenover het model zonder transformaties.\\
+
 \begin{wrapfigure}{r}{0.4\textwidth}
 	\begin{center}
 		\includegraphics[width=0.35\textwidth]{Rplot.png}
