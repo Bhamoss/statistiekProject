@@ -987,8 +987,8 @@ library(MASS)
   Mr = covMcd(model1.lts$model[,-c(1,2,6)], alpha = 1)$center; Mr
   Cr = covMcd(model1.lts$model[,-c(1,2,6)], alpha = 1)$cov; Cr
   x = mahalanobis(model1.lts$model[,-c(1,2,6)], Mr, Cr)
-  y0=qnorm(.975)
-  x0=qchisq(.975,2)
+  y0=2.5
+  x0=qchisq(.975,5)
   z = rep(1,nrow(y))
   z[which(abs(y)>20)] = 4
   z[which(x>x0 & abs(y)>y0)] = 2
