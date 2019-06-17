@@ -1194,6 +1194,19 @@ library(MASS)
   #- minimum_nights                  1   7591.8 7611.8
   #- last_review                     1   8687.5 8707.5
   
+  aba = ab[,6:16]
+  library(leaps)
+  r= regsubsets(full~.,nvmax = 10, data=aba, really.big = T)
+  plot(r)
+  plot(summary(r)$bic)
+  # stelt er 7 voor
+  coef(r,which.min(summary(r)$bic))
+  r= regsubsets(full~.,nvmax = 10, data=aba, really.big = T, nbest = 5)
+  plot(r)
+  plot(summary(r)$bic)
+  coef(r,which.min(summary(r)$bic))
+  summary(r)
+  
   model.ll = glm(as.factor(full)~price + longitude + latitude + last_review + number_of_reviews + reviews_per_month + as.factor(room_type) + minimum_nights +  calculated_host_listings_count,  family = binomial)
   model.cit = glm(as.factor(full)~price  + last_review + number_of_reviews + reviews_per_month + as.factor(room_type)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
   
@@ -1207,8 +1220,8 @@ library(MASS)
     model.ll$null.deviance-model.ll$deviance,
     model.ll$df.null-model.ll$df.residual)
   plot(residuals(model.ll), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
-  
   cor(longitude, latitude)
+  vif(model.ll)
   
   summary(model.cit) # wald test test of de coef 0 is
   # verwerpt room type 
@@ -1220,6 +1233,7 @@ library(MASS)
     model.cit$null.deviance-model.cit$deviance,
     model.cit$df.null-model.cit$df.residual)
   plot(residuals(model.cit), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
+  vif(model.cit)
   
   # beiden verwerpen room type
   
@@ -1232,28 +1246,27 @@ library(MASS)
   anova(model.ll,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
   1-pchisq(model.ll$deviance, model.ll$df.residual)
   plot(residuals(model.ll), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
-  
-  cor(longitude, latitude)
+  vif(model.ll)
+
   
   summary(model.cit) # wald test test of de coef 0 is
   # 7483 aic en 7465 dev
   anova(model.cit,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
   1-pchisq(model.cit$deviance, model.cit$df.residual)
   plot(residuals(model.cit), ylab="Deviance residuals ipv andere") # 1 hele zware oultier
-  
+  vif(model.cit)
   # we kiezen dus voor het eerste cit omdat de aic daar het laagst was, ookal is roomtype niet verworpen
   
-  data = ab[,6:16]
-  library(leaps)
-  model.regs = regsubsets(full~., data=data, nvmax=12)
-  plot(model.regs)
-  summary(model.regs)
-  # latitude en longitude eerder geselecteerd dan steden :/
   
   
+  # roomtype weg
   
-  model.f = glm(as.factor(full)~ price  + last_review + number_of_reviews + reviews_per_month + as.factor(room_type)  + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
-  # als je price wegdoet krijg je die warning niet
+  model.f = glm(as.factor(full)~ price  + last_review + number_of_reviews + reviews_per_month   + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
+  # als je price wegdoet krijg je die warning niet, die outliers fucken alles op
+  model.f2d = glm(as.factor(full[price < 2000])~ price[price < 2000]  + last_review[price < 2000] + number_of_reviews[price < 2000] + reviews_per_month[price < 2000]   + minimum_nights[price < 2000] +  calculated_host_listings_count[price < 2000] + as.factor(city)[price < 2000],  family = binomial)
+  # groot verschil in coef, dus fuck die outliers
+  model.f2h = glm(as.factor(full[price < 200])~ price[price < 200]  + last_review[price < 200] + number_of_reviews[price < 200] + reviews_per_month[price < 200]   + minimum_nights[price < 200] +  calculated_host_listings_count[price < 200] + as.factor(city)[price < 200],  family = binomial)
+  # 
   plot(price)
   which(price > 2000)
   ab[3887,]
@@ -1279,7 +1292,7 @@ library(MASS)
   
     #commentaar is van voor transformatie
     # de price selecteerd nu ook alles door de transformatie
-  model.fp = glm(as.factor(full[price < 2000])~ price[price < 2000]  + last_review[price < 2000] + number_of_reviews[price < 2000] + reviews_per_month[price < 2000] + as.factor(room_type)[price < 2000]  + minimum_nights[price < 2000] +  calculated_host_listings_count[price < 2000] + as.factor(city)[price < 2000],  family = binomial)
+  model.fp = glm(as.factor(full)~ price  + last_review + number_of_reviews + reviews_per_month   + minimum_nights +  calculated_host_listings_count + as.factor(city),  family = binomial)
   # het is door die outliers, wat doe je dan?
   
   # kwaliteit
@@ -1290,7 +1303,7 @@ library(MASS)
   # alles slaagt opnieuw
   plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
   # zeer vreemde driehoek. 
-  # TODO: bespreek
+  # geen grote speciale outliers
   
   
   bgof = function(model){
@@ -1299,6 +1312,8 @@ library(MASS)
   
   bgof(model.fp)
   # goodness of fit geslaagd.
+  vif(model.fp)
+  # niet extreem groot, enkel reviews per month wat
   
   
   
@@ -1307,17 +1322,26 @@ library(MASS)
   
   # problemen
   
-  plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
-  # zeer vreemde driehoek. 
-  # TODO: bespreek
+  coef = model.fp$coefficients
+  coef
+  
+  exp(coef)
   
   #########################################
   # de commentaar was de waarde van de coefficienten zonder transformaties
   # dus neem dit van het model zonder om te kunnen reproduceren
   
   # coefficienten bespreken (odds-ratio)
-  coef = model.fp$coefficients
+  
+  rbind(model.f$coefficients,model.f2d$coefficients,model.f2h$coefficients)
+  # we interpreteren zonder die 2 gigantische prijs outliers, want ze verschuiven heel het model
+  # die van 200 laat er teveel weg, maar proportioneel minder verandering vergeleken bij die 2 wegdoen
+  
+  coef = model.f2d$coefficients
   coef
+  
+  #old
+  
   #  (Intercept)                                    -0.5378595
   #  price[price < 2000]                            -0.0122283  
   #  last_review[price < 2000]                       0.0035141  
@@ -1330,28 +1354,28 @@ library(MASS)
   #  as.factor(city)[price < 2000]Brussel            0.3947290 
   #  as.factor(city)[price < 2000]Gent               0.4652026 
   
+ 
+  
   exp(coef)
+  exp(coef) -1
   
   
   
-  # iemand in brussel heeft
-  1.4839819/0.5839970 -1
-  # 54 procent meer odds dat het vol zit dan in antwerpen
-  # iemand in gent  
-  1.5923367/0.5839970 -1
-  # 73% meer kans dat het vol zit dan in antwerpen
+  as.matrix(cor(model.f2d$model[,2:7]))
+  # hier en daar sterke correlaties
+  vif(model.f2d)
+  # maar dus niet sterk genoeg ^^
+  #(Intercept)                          price[price < 2000]                    last_review[price < 2000] 
+  #-0.54919281                                  -0.00990957                                   0.00350878 
+  #number_of_reviews[price < 2000]              reviews_per_month[price < 2000]                 minimum_nights[price < 2000] 
+  #-0.00684964                                  -0.21784098                                  -0.02768844 
+  #calculated_host_listings_count[price < 2000]         as.factor(city)[price < 2000]Brussel            as.factor(city)[price < 2000]Gent 
+  #-0.04162484                                   0.47147150                                   0.52652566 
+
   
-  #iemand die een private room zoekt
-  0.7155517/0.5839970 -1
-  # heeft 22.5 procent meer kans dat het vol zit dan bij een entrier home app
-  # iemand die een shared room zoekt 
-  0.4895202/0.5839970 -1
-  # heeft 16.2 procent MInder kans dat het vol zit dan bij een entire home/app  
-  
-  exp(coef) - 1
-  # dussssss (zie voorbeeld p 369)
-  # TODO: zoek de juiste terminologie op tussen kans en odds
-  # TODO: bespreek standard case = in Antwerpenen entire home/appartement
+  # OUDE DATA
+    # dussssss (zie voorbeeld p 369)
+
   # als de prijs 1 euro meer is heb je 1.2% minder kans dat het apartement vol zit
   # als de laatste review 1 dag langer geleden is dan heb je 0.35% meer kans dat het appartement vol zit
   # als er 1 review meer is (overall) dan is er 0.7% minder kans dat het appartement vol zit
