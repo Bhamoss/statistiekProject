@@ -1313,9 +1313,20 @@ library(MASS)
   # alles slaagt, dus goed, AIC van 7343.6
   anova(model.fp,test="LRT") # Lrt heeft als 0 hypothese dat een groep coef 0 zijn.
   # alles slaagt opnieuw
+  jpeg("devres.jpg")
   plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
+  dev.off()
   # zeer vreemde driehoek. 
   # geen grote speciale outliers
+  
+  plot(residuals(model.fp),price, ylab="Deviance residuals ipv andere") 
+  plot(residuals(model.fp),last_review, ylab="Deviance residuals ipv andere") 
+  plot(residuals(model.fp),number_of_reviews, ylab="Deviance residuals ipv andere") 
+  plot(residuals(model.fp),reviews_per_month, ylab="Deviance residuals ipv andere") 
+  plot(residuals(model.fp),minimum_nights, ylab="Deviance residuals ipv andere") 
+  plot(residuals(model.fp),calculated_host_listings_count, ylab="Deviance residuals ipv andere") 
+  boxplot(residuals(model.fp)~city)
+  # crap, we hebben geen tijd meer om dit op te lossen
   
   # toont grafisch hoe goed het model is, mbv predicted values
   mooiFiguurtje = function(X) {
@@ -1329,8 +1340,9 @@ library(MASS)
       xlab("Index") +
       ylab("predicted prob")
   }
+  jpeg("kunst.jpg")
   mooiFiguurtje(model.fp)
-  
+  dev.off()
   
   bgof = function(model){
     1-pchisq(model$null.deviance - model$deviance, model$df.null - model$df.residual)
@@ -1418,4 +1430,4 @@ library(MASS)
   # Cleaning
   detach(ab)
   attach(airbnb)
-  
+}
