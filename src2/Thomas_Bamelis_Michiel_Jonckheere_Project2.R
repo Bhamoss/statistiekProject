@@ -962,6 +962,13 @@ library(MASS)
   vif(model4.2)
   # meer multicollineariteit in model4.2 dan in model4
   # model4 is hier die de beste
+  data2.transformed[,c(2,3,4,5,6)] = scale(data2.transformed[,c(2,3,4,5,6)], scale=FALSE)
+  model4.full2 = lm(price~(minimum_nights+reviews_per_month+calculated_host_listings_count+availability_365)*city*room_type, data=data2.transformed)
+  model4.step2 = stepAIC(model4.full2)
+  vif(model4.2) # na centreren nog steeds redelijk veel invloed van multicoll
+  # gemiddelde vif (met df in rekening gebracht) is hier 2.5 wat toch groter is dan 1
+  mean(vif(model4.2)[,3])
+  mean(vif(model4)[,3]) # bij model4 is het gemiddelde 1
   
   anova(model4,model2) # last_review heeft geen significante bijdrage
   anova(model2, model1)
