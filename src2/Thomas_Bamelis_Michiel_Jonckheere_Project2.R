@@ -2,6 +2,11 @@
 #################   Project src   #########################
 ###########################################################
 
+###############
+# AANDACHT: wegens tijdsgebrek zijn bepaalde cijfers of
+# bevindingen in de commentaar niet up to date en kunnen
+# veranderd zijn
+###############
 
 library(car)
 library(MASS)

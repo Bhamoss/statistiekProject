@@ -136,16 +136,15 @@ Deze bevindingen stroken met de vermoedens van de realiteit.
 \subsection{stad vs huurprijs}
 \label{sec:stadvsprijs}
 De boxplot zonder outliers (figuur \ref{fig:bpcit}) suggereert  dat er niet veel verschil is in de gemiddelde prijs per stad. Antwerpen en Gent zijn nagenoeg het zelfde, enkel de prijzen in Brussel liggen wat lager. \\
-
-We zien dat de residuals niet normaal verdeeld zijn (figuur \ref{fig:qqboxcit}), waardoor onze bevindingen opnieuw niet steenhard mogen genomen worden. De Levene test kan echter niet verwerpen dat er homoscedasticiteit.\\
+We zien dat de residuals niet normaal verdeeld zijn (figuur \ref{fig:qqboxcit}), waardoor onze bevindingen opnieuw niet steenhard mogen genomen worden. De Levene test kan echter niet verwerpen dat er homoscedasticiteit. is\\
 Het model verwerpt de f-test en t-test voor de variabelen van Antwerpen (= het intercept) en Brussel, maar Gent is niet verworpen  met een p-waarde van 0.068. 
 Antwerpen krijgt ``voorrang'' aangezien het het intercept is, en de gelijkenissen tussen Antwerpen en Gent uit figuur \ref*{fig:bpcit} dit kunnen verklaren. 
 De reden dat Gent dus niet verworpen is, is omdat hij heel sterk op Antwerpen lijkt, wat dus betekent dat beiden niet significant verschillen qua prijs.
-Het kleine verschil in de coëfficiënten bevestigd dat.
+Het kleine verschil in de coëfficiënten bevestigt dat.
 Aov zegt dat de stad significant is voor de prijs. 
 De residuals zijn niet afhankelijk van de tijd/index (figuur \ref{fig:indc}).
 De R-squared van dit model is 0.0226 en de adjusted is 0.0224, wat dus opnieuw niet goed is.
-De Tukey-test verwerpt sterk dat er geen verschil zou zijn tussen Brussel en de andere twee steden. Maar Gent en Antwerpen worden niet verworpen  met een p-waarde van 0.162, wat opnieuw onze vermoedens bevestigd. 
+De Tukey-test verwerpt sterk dat er geen verschil zou zijn tussen Brussel en de andere twee steden. Maar Gent en Antwerpen worden niet verworpen  met een p-waarde van 0.162, wat opnieuw onze vermoedens bevestigt. 
 Het effect van Brussel is ook veel sterker dan die van Antwerpen en Gent. 
 Conclusie: de stad is significant voor de prijs. Er is een prijsverschil tussen Brussel en de andere 2 steden, maar er is geen significant prijsverschil tussen Antwerpen en Gent.
 De coëfficiënten van het model vertellen dat Brussel goedkoper is dan de andere 2 steden, wat strookt met de boxplot op figuur \ref{fig:bpcit}.
@@ -181,7 +180,7 @@ Aov toont aan dat de buurt significant.
 De TukeyTest verteld dat 47,6\% van de combinaties van buurten  niet significant verschillen.
 De R-squared is 0.099 en adjusted 0.091, wat opnieuw aan de lage kant is.
 Alleen lijkt dus dat de buurt significant is in het algemeen, maar zeer veel buurten onderling te weinig verschillen.
-Dit doet suggereren dat de opdeling per buurt te verfijnt is.
+Dit doet suggereren dat de opdeling per buurt te verfijnd is.
 
 
 \begin{figure}[H]
@@ -207,7 +206,7 @@ Dit doet suggereren dat de opdeling per buurt te verfijnt is.
 \end{figure}
 
 \subsection{Buurten en stad}
-Het model met de buurt en de stad verwerpt de f-test ook met, maar een nog groter deel van  wordt niet verworpen door de t-test (54). Meer bepaald is de pwaarde van Gent zeer hoog (0.9) terwijl Antwerpen en Brussel nog steeds verworpen worden. 
+Het model met de buurt en de stad verwerpt de f-test ook net, maar een nog groter deel van  wordt niet verworpen door de t-test (54). Meer bepaald is de pwaarde van Gent zeer hoog (0.9) terwijl Antwerpen en Brussel nog steeds verworpen worden. 
 De R-squared is 0.099 en adjusted 0.091 (onveranderd). Dit doet vermoeden dat beide dus sterk verbonden zijn aangezien hun gecombineerd model even slecht is als hun afzonderlijke.
 Aov verwerpt echter voor beide variabelen.
 De Tukey test kan nu nog 44,6\% van de combinaties verwerpen.
@@ -236,14 +235,15 @@ Deze bevindingen suggereren dat door de buurt en de stad beiden op te nemen, de 
 	\caption{Gemiddelde prijs per buurt.}
 	\label{fig:pn}
 \end{wrapfigure}
+
 Figuur \ref{fig:pn} toont dat er een ongeveer 5 buurten zijn die een opvallend hogere prijs hebben dan de rest.
 De gemiddelde huurprijs is 72,2 euro.
 Woluwe-Saint-Pierre steekt hier sterk boven met een gemiddelde huurprijs van 240 euro.
 Daarna volgt Sint Denijs Westrem met 217,5 en Oud-Berchem met 201.
-Deze drie zijn significant hoger dan de rest in liggen in Brussel, Gent en Antwerpen. Niet in een bepaalde stad dus.
+Deze drie zijn significant hoger dan de rest en liggen in Brussel, Gent en Antwerpen. Niet in een bepaalde stad dus.
 Dan zijn er nog 2 minder extreem prijzige gemeenten, namelijk Eilandje met 147 en Polder met 127 (beiden liggen in Antwerpen). De eerste opeenvolgende is nog maar 103.
 Daarnaast zijn er nog 5 Antwerpse buurten waar de prijs ietwat lager ligt dan de rest met prijzen tussen 23,5 en 35 euro.
-Deze zijn echter minder een stuk minder ver verwijdert van het gemiddelde in vergelijking met de extreem prijzige outliers.
+Deze zijn echter een stuk minder ver verwijdert van het gemiddelde in vergelijking met de extreem prijzige outliers.
 
 \subsection{Buurten en type verblijf}
 Opnieuw werd de f-test verworpen en 42 t-testen faalden.
@@ -272,7 +272,7 @@ De naam van de host (of hun categorische id) zou in principe kunnen meegenomen w
 
 De variabele "'latitude"' blijkt wel een in vloed te hebben op de prijs. Als we kijken naar de waarden van de breedtegraden dan zien we dat we deze kunnen indelen in de drie steden. We gaan in plaats van de breedtegraad in ons model te gebruiken, gebruik maken van de variabele "'city"'. "'Longitude"' wordt om dezelfde reden niet gebruikt in het model, deze variabele deelt de data op in twee delen namelijk als eerste deel Gent en als tweede deel Brussel en Antwerpen. Vervolgens zien we ook dat variabelen "'room\_type"', "'minimum\_nights"', "'number\_of\_reviews"', "'last\_review"', "'reviews\_per\_month"', "'availability\_365"' en "'calculated\_host\_listings\_count"' relevant kunnen zijn voor ons model. \\
 
-Voor de variabelen die iets zeggen over de reviews hebben ook eens gekeken naar de correlatie tussen deze variabelen. We vonden dat er een sterke correlatie bestaat tussen "'reviews\_per\_month"' en "'number\_of\_reviews"', ook is er een correlatie tussen "'reviews\_per\_month"' en "'last\_review"'. Om deze reden gaan we zeker al twee verschillende modellen opstellen waarbij enerzijds gewerkt wordt met alle drie de variabelen en anderzijds enkel met de variabele "'reviews\_per\_month"'.\\
+Voor de variabelen die iets zeggen over de reviews hebben we ook eens gekeken naar de correlatie tussen deze variabelen. We vonden dat er een sterke correlatie bestaat tussen "'reviews\_per\_month"' en "'number\_of\_reviews"', ook is er een correlatie tussen "'reviews\_per\_month"' en "'last\_review"'. Om deze reden gaan we zeker al twee verschillende modellen opstellen waarbij enerzijds gewerkt wordt met alle drie de variabelen en anderzijds enkel met de variabele "'reviews\_per\_month"'.\\
 
 In tabel \ref{tab:transformaties} is een samenvatting te zien van de relevante gegevens die we zullen gebruiken voor ons model op te stellen.
 \begin{table}[!h]
@@ -343,6 +343,7 @@ Eerst en vooral zien we hier dat de gemiddelde prijs voor het huren van een voll
 In deze sectie proberen we logistische regressie toe te passen om te voorspellen of een verblijf al dan niet wordt vast verhuurd in plaats van enkel voor korte periodes.
 We proberen een model te vinden, dit te evalueren en te interpreteren.
 \subsection{Model selectie}
+Opnieuw laten we samples met ontbrekende waarden achterwege.
 De proporties van categorische veranderlijken worden hierdoor niet significant aangepast.
 Het aantal beschikbare dagen wordt natuurlijk niet opgenomen als regressor omdat het al dan niet permanent verhuurd zijn direct hieruit is afgeleid. Ook hier laten we de id's en namen achterwege.
 
@@ -351,54 +352,67 @@ We pasten AIC gebaseerde voorwaartse, achterwaartse en stapsgewijze regressie to
 Dit deden we 2 maal, de 2e keer met de variabelen in de omgekeerde volgorde.
 Hierbij werden de prijs, het type, het minimum aantal nachten, het aantal zoekertjes per host, de datum van de laatste review, het aantal reviews per maand en het aantal reviews van het afgelopen jaar telkens geselecteerd.
 De buurt werd nooit geselecteerd, de stad 2 keer en de latitude en longitude 4 keer. Stad werd enkel geselecteerd als latitude en longitude niet geselecteerd werden en omgekeerd, wat dus suggereert dat ze dezelfde informatie toevoegen aan het model, wat ook strookt met de realiteit van de soort variabelen (zie sectie \ref{sec:huurprijsSelectie}).
+Subset regressie bevestigde deze bevindigen en stelde een model voor met 7 variabelen, we moeten dus inderdaad een keuze maken tussen stad en longitude/latitude.
+Het suggereert ook dat er misschien nog een variabele teveel geselecteerd werd door de stapsgewijze selectie.
 Stad is de nette classificatie van latitude en longitude, daarom vergelijken we een model met latitude en longitude tegenover een model met de stad in de plaats.
 De buurt laten we achterwege.
 De bekomen modellen hebben dezelfde AIC en deviance waarden en resulteren in hetzelfde voor de likelihood ratio test en de goodness of fit test, behalve dat latitude maar zwak verworpen wordt in hun eigen model.
 Omdat de stad de significantie van latitude en longitude mooi samenvat gaan we verder met de stad en laten we latitude en longitude vallen.  
+Ze tonen ook aan dat het type verblijf niet significant is door middel van een Wald test en een likelihood ratio test, waardoor we type verblijf achterwege laten.
 % kga het laten staan omdat het over een andere variabele gaat, ma je hebt wel gelijk, ma tstaat er nu en de sectie over vraag 3 is niet lang
-In de testen wordt echter niet verworpen dat het type er niet toe doet.
-Omdat deze echter altijd in de geselecteerde modellen zat en het bijna verworpen was nemen we het toch mee in ons model.
 Omdat normaliteit van de regressoren de kwaliteit van een model sterk beinvloeden gebruiken we dezelfde transformaties als in sectie \ref{sec:mh}.
 Voor de interpretatie hanteren we echter een model zonder transformaties om ons meer zinvol te kunnen uitspreken over het model. 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.37\textwidth}
+		\includegraphics[width=\textwidth]{devres.jpg}
+		\caption{Deviance residuals.}
+		\label{fig:rpn}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{kunst.jpg}
+		\caption{Voorspelde kans vs effectief vol of niet}
+		\label{fig:kunst}
+	\end{subfigure}
+\end{figure}
 \subsection{Model evaluatie}
 
 De Wald test verwerpt het niet significant zijn van de enkele variabelen allemaal  met voldoende marge.
-De behaalde deviance is 6305.7 en de AIC 6327.7.
+De behaalde deviance is 6357.6 en de AIC 6375.6.
 Dit is een daling van ongeveer 1000 tegenover het model zonder transformaties.\\
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-	\begin{center}
-		\includegraphics[width=0.35\textwidth]{Rplot.png}
-	\end{center}
-	\caption{Deviance residuals.}
-	\label{fig:rpn}
-\end{wrapfigure}
+
 De likelihood ratio test verwerpt ook voor alle regressoren dat ze niet significant zouden zijn met voldoende marge.
 De deviance residuals (figuur \ref{fig:rpn}) vertonen niets zorgbarends, behalve dat er een opslitsing te zien is tussen de steden, mede veroorzaakt omdat ze aan elkaar geplakt zijn en dus gegroepeerd in de data.
 De goodness of fit test verwerpt ook sterk.
 Qua problemen is er de duidelijke opsplitsing van de deviance residuals, maar de oorzaak is bekend en geeft geen verdere problemen.
-Doordat de residuals niet normaal verdeeld zijn bij logistische regressie kan er ook niet sterk gecontroleerd worden op problemen met normaliteit of modelveronderstelling om problemen te vinden.
+\subsection{Model problemen}
+De geplotte deviance waarden vertonen niets zorgbarend, behalve dat door de data van de steden aan elkaar te plakken, deze scheidingen wel te zien zijn.
+De correlatie tussen bepaalde regressoren lag eerder aan de hoge kant.
+De vif waarden waren echter niet zorgbarend, dus gaan we er niet van uit dat er multicollineariteit is.
+Het enige probleem van het model is dat de deviance residuals vreemde correlaties vertonen met de afzonderlijke regressoren.
 \subsection{Model interpretatie}
+We hanteren nu een ongetransformeerd model om met meer duidelijkheid te kunnen spreken over de coëfficiënten (zonder alles te inverteren).
+We lieten daarbij 3 outliers van prijs weg omdat deze 3 outliers het model sterk beïnvloeden.
 Het model met dezelfde variabelen maar ongetransformeerd kan als volgt geïnterpreteerd worden:\\
-\textit{Als hier gezegd wordt meer kans, wordt veronderstelt dat alle andere variabelen strikt onveranderd blijven en gegeven zijn.}\\
-Iemand in Brussel heeft 54 procent meer kans dat het vol zit dan in Antwerpen. Iemand in Gent   73\% meer kans dat het vol zit dan in Antwerpen.
-Iemand die een privé kamer zoekt heeft 22.5 procent meer kans dat het vol zit dan bij een volledig huis of appartement.
-Iemand die een gedeelde kamer zoekt   heeft 16.2 procent minder kans dat het vol zit dan bij een  volledig huis of appartement.
+\textit{Als hier gezegd wordt meer kans, wordt veronderstelt dat alle andere variabelen strikt onveranderd blijven en gegeven zijn en het intercept vormen.}\\
+Iemand in Brussel heeft 47 procent meer kans dat het vol zit dan in Antwerpen. Iemand in Gent   57\% meer kans dat het vol zit dan in Antwerpen.
 Je hebt meer kans dat het verblijf permanent verhuurd is als:
 \begin{itemize}
-	\item prijs -     (1.2)
-	\item laatste review  + (0.3)
+	\item prijs -     (0.99)
+	\item laatste review  + (0.35)
 	\item aantal reviews - (0.7)
-	\item reviews maand - (22.1)
-	\item minimum nachten - (3)
-	\item zoekertjes uitbater - (4)
+	\item reviews maand - (22.8)
+	\item minimum nachten - (2.8)
+	\item zoekertjes uitbater - (4.2)
 \end{itemize}
-waarbij -/+ betekent de kans stijgt als het attribuut daalt/stijgt.
+waarbij -/+ betekent dat de kans stijgt als het attribuut daalt/stijgt.
 Het cijfer tussen de haakjes is het percentage dat de kans stijgt of daalt bij het veranderen van 1 van het attribuut.
 Als het langer geleden is dat de laatste review werd geschreven heb je een grotere kans dat het verblijf permanent verhuurd is.
 Als de prijs, het aantal reviews in totaal en per maand, het minimum aantal nachten en het aantal zoekertjes per uitbater lager is, heb je een grotere kans dat het verblijf permanent verhuurd is.
 Dit strookt met wat je zou denken dat er in de realiteit gebeurt, behalve dan het minimum aantal nachten.
-Mogelijks is dit omdat je maximum aantal minimum nachten 30 dagen kan zijn en dus niet relevant is voor permanente huurders, waardoor ze het gewoon op 1 laten staan.
+Mogelijks is dit omdat je maximum aantal minimum nachten 30 dagen kan zijn en dus niet relevant is voor permanente huurders, waardoor ze het gewoon op 1 laten staan. Of om de fiscus te ontlopen, it's Belgium after all.
 
 
 \end{document}
