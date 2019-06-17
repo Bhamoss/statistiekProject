@@ -1271,7 +1271,7 @@ library(MASS)
   
   
   #TODO: michiel haalt betere AIC na transorfmaties te doen, dus we kunnen dit opnieuw doen maar met de getransformeerde shit
-  
+  detach(ab)
   
   
     ab$price = ((ab$price)**(-1/4)-1)/(-1/4)
@@ -1298,6 +1298,20 @@ library(MASS)
   plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
   # zeer vreemde driehoek. 
   # TODO: bespreek
+  
+  # toont grafisch hoe goed het model is, mbv predicted values
+  mooiFiguurtje = function(X) {
+    predicted.data = data.frame(probability.of.full=X$fitted.values, full=ab$full)
+    predicted.data = predicted.data[order(predicted.data$probability.of.full, decreasing = FALSE),]
+    predicted.data$rank <- 1:nrow(predicted.data)
+    library(ggplot2)
+    library(cowplot)
+    ggplot(data=predicted.data, aes(x=predicted.data$rank, y = predicted.data$probability.of.full)) +
+      geom_point(aes(color=full), alpha=1,shape=4,stroke=2) +
+      xlab("Index") +
+      ylab("predicted prob")
+  }
+  mooiFiguurtje(model.fp)
   
   
   bgof = function(model){
@@ -1376,54 +1390,3 @@ library(MASS)
   detach(ab)
   attach(airbnb)
   
-  ################################################################################################################
-  #####################################        Michiel
-  ################################################################################################################
-  
-  # eventuele transformqties bekijken
-  summary(powerTransform((number_of_reviews+1))) # plus 1 want moet strikt positief zijn
-  plotBoxQQHist(number_of_reviews+1)
-  plotBoxQQHist(log10(number_of_reviews+1)) # nog steeds rechtsscheef, maar iets beter al
-  
-  summary(powerTransform(last_review+1))
-  plotBoxQQHist(last_review+1)
-  plotBoxQQHist(log10(last_review+1)) # ook een verbetering
-  
-  summary(powerTransform(reviews_per_month))
-  plotBoxQQHist(reviews_per_month)
-  plotBoxQQHist(log10(reviews_per_month)) # verbetering
-  # summary:
-  #   VARIABLE                        TRANSFORMATION
-  #   number_of_reviews:              (..+1) log10
-  #   last_review:                    (..+1) log10
-  #   reviews_per_month:              log10
-  
-  data <- airbnb[,-(1:7)]; #View(data)
-  data<- data[,-(7:8)] #View(data)
-  data<- data[,-(2:3)] #View(data)
-  data$city = as.factor(data$city)
-  data$full = as.factor(data$full)
-  detach(airbnb)
-  attach(data)
-  
-  full.null = glm(full~1, family = binomial)
-  full.glm = glm(full~(log10(last_review+1)+log10(number_of_reviews+1)+log10(reviews_per_month)+room_type+city), family = binomial, data=data)
-  summary(full.glm)
-  anova(full.glm, test="LRT")
-  
-  
-  
-  # toont grafisch hoe goed het model is, mbv predicted values
-  mooiFiguurtje = function(X) {
-    predicted.data = data.frame(probability.of.full=X$fitted.values, full=data$full)
-    predicted.data = predicted.data[order(predicted.data$probability.of.full, decreasing = FALSE),]
-    predicted.data$rank <- 1:nrow(predicted.data)
-    library(ggplot2)
-    library(cowplot)
-    ggplot(data=predicted.data, aes(x=predicted.data$rank, y = predicted.data$probability.of.full)) +
-      geom_point(aes(color=full), alpha=1,shape=4,stroke=2) +
-      xlab("Index") +
-      ylab("predicted prob")
-  }
-  mooiFiguurtje(full.glm)
-}
