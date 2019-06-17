@@ -962,6 +962,13 @@ library(MASS)
   vif(model4.2)
   # meer multicollineariteit in model4.2 dan in model4
   # model4 is hier die de beste
+  data2.transformed[,c(2,3,4,5,6)] = scale(data2.transformed[,c(2,3,4,5,6)], scale=FALSE)
+  model4.full2 = lm(price~(minimum_nights+reviews_per_month+calculated_host_listings_count+availability_365)*city*room_type, data=data2.transformed)
+  model4.step2 = stepAIC(model4.full2)
+  vif(model4.2) # na centreren nog steeds redelijk veel invloed van multicoll
+  # gemiddelde vif (met df in rekening gebracht) is hier 2.5 wat toch groter is dan 1
+  mean(vif(model4.2)[,3])
+  mean(vif(model4)[,3]) # bij model4 is het gemiddelde 1
   
   anova(model4,model2) # last_review heeft geen significante bijdrage
   anova(model2, model1)
@@ -987,8 +994,8 @@ library(MASS)
   Mr = covMcd(model1.lts$model[,-c(1,2,6)], alpha = 1)$center; Mr
   Cr = covMcd(model1.lts$model[,-c(1,2,6)], alpha = 1)$cov; Cr
   x = mahalanobis(model1.lts$model[,-c(1,2,6)], Mr, Cr)
-  y0=qnorm(.975)
-  x0=qchisq(.975,2)
+  y0=2.5
+  x0=qchisq(.975,5)
   z = rep(1,nrow(y))
   z[which(abs(y)>20)] = 4
   z[which(x>x0 & abs(y)>y0)] = 2
@@ -1277,7 +1284,7 @@ library(MASS)
   
   
   #TODO: michiel haalt betere AIC na transorfmaties te doen, dus we kunnen dit opnieuw doen maar met de getransformeerde shit
-  
+  detach(ab)
   
   
     ab$price = ((ab$price)**(-1/4)-1)/(-1/4)
@@ -1304,6 +1311,20 @@ library(MASS)
   plot(residuals(model.fp), ylab="Deviance residuals ipv andere") # vreemde driehoeken
   # zeer vreemde driehoek. 
   # geen grote speciale outliers
+  
+  # toont grafisch hoe goed het model is, mbv predicted values
+  mooiFiguurtje = function(X) {
+    predicted.data = data.frame(probability.of.full=X$fitted.values, full=ab$full)
+    predicted.data = predicted.data[order(predicted.data$probability.of.full, decreasing = FALSE),]
+    predicted.data$rank <- 1:nrow(predicted.data)
+    library(ggplot2)
+    library(cowplot)
+    ggplot(data=predicted.data, aes(x=predicted.data$rank, y = predicted.data$probability.of.full)) +
+      geom_point(aes(color=full), alpha=1,shape=4,stroke=2) +
+      xlab("Index") +
+      ylab("predicted prob")
+  }
+  mooiFiguurtje(model.fp)
   
   
   bgof = function(model){
@@ -1393,54 +1414,3 @@ library(MASS)
   detach(ab)
   attach(airbnb)
   
-  ################################################################################################################
-  #####################################        Michiel
-  ################################################################################################################
-  
-  # eventuele transformqties bekijken
-  summary(powerTransform((number_of_reviews+1))) # plus 1 want moet strikt positief zijn
-  plotBoxQQHist(number_of_reviews+1)
-  plotBoxQQHist(log10(number_of_reviews+1)) # nog steeds rechtsscheef, maar iets beter al
-  
-  summary(powerTransform(last_review+1))
-  plotBoxQQHist(last_review+1)
-  plotBoxQQHist(log10(last_review+1)) # ook een verbetering
-  
-  summary(powerTransform(reviews_per_month))
-  plotBoxQQHist(reviews_per_month)
-  plotBoxQQHist(log10(reviews_per_month)) # verbetering
-  # summary:
-  #   VARIABLE                        TRANSFORMATION
-  #   number_of_reviews:              (..+1) log10
-  #   last_review:                    (..+1) log10
-  #   reviews_per_month:              log10
-  
-  data <- airbnb[,-(1:7)]; #View(data)
-  data<- data[,-(7:8)] #View(data)
-  data<- data[,-(2:3)] #View(data)
-  data$city = as.factor(data$city)
-  data$full = as.factor(data$full)
-  detach(airbnb)
-  attach(data)
-  
-  full.null = glm(full~1, family = binomial)
-  full.glm = glm(full~(log10(last_review+1)+log10(number_of_reviews+1)+log10(reviews_per_month)+room_type+city), family = binomial, data=data)
-  summary(full.glm)
-  anova(full.glm, test="LRT")
-  
-  
-  
-  # toont grafisch hoe goed het model is, mbv predicted values
-  mooiFiguurtje = function(X) {
-    predicted.data = data.frame(probability.of.full=X$fitted.values, full=data$full)
-    predicted.data = predicted.data[order(predicted.data$probability.of.full, decreasing = FALSE),]
-    predicted.data$rank <- 1:nrow(predicted.data)
-    library(ggplot2)
-    library(cowplot)
-    ggplot(data=predicted.data, aes(x=predicted.data$rank, y = predicted.data$probability.of.full)) +
-      geom_point(aes(color=full), alpha=1,shape=4,stroke=2) +
-      xlab("Index") +
-      ylab("predicted prob")
-  }
-  mooiFiguurtje(full.glm)
-}
